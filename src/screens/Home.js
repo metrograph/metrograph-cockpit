@@ -11,6 +11,7 @@ import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
 import JobRow from "../components/JobRow";
+import Footer from "../components/Footer";
 function App() {
   return (
     <div classNameName="App">
@@ -29,7 +30,7 @@ function App() {
           {/*  Dashboard header end */}
 
           {/* Dahsboard Jobs start */}
-          <div className="mt-20">
+          <div className="mt-20 pb-44">
             <JobRow
               name="Call Weather Data From API"
               info="V3.5 - GIT ef802b0 - 18 hours ago"
@@ -58,6 +59,7 @@ function App() {
           </div>
           {/* Dahsboard Jobs end */}
         </div>
+        <Footer />
       </div>
     </div>
   );

@@ -1,6 +1,21 @@
+import { useState } from "react";
 import ButtonAction from "./ButtonAction";
 import ButtonStatus from "./ButtonStatus";
+import runIcon from "../assets/run.svg";
+import crossIcon from "../assets/cross.svg";
+
 export default function JobRow(props) {
+  const [status, setStatus] = useState(props.status);
+  const [actionType, setActionType] = useState(props.actionType);
+  const stopJob = () => {
+    setStatus("ready");
+    setActionType("run");
+  };
+  const runJob = () => {
+    setStatus("running");
+    setActionType("stop");
+  };
+
   return (
     <div>
       <div className="flex flex-row">
@@ -28,7 +43,7 @@ export default function JobRow(props) {
           {/*  element config end */}
           {/*  element status start */}
           <div className="w-1/7 flex place-items-center">
-            <ButtonStatus status={props.status} />
+            <ButtonStatus status={status} />
           </div>
           {/*  element status end */}
 
@@ -46,7 +61,26 @@ export default function JobRow(props) {
             </div>
             {/*  button SCHEDULE end  */}
             {/*  button Rund start */}
-            <ButtonAction actionType={props.actionType} />
+
+            {actionType === "run" && (
+              <button
+                onClick={runJob}
+                className="flex items-center bg-purple-600 border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
+              >
+                <img src={runIcon} height="10" width="10" />
+                <p className="text-white text-md">RUN</p>
+              </button>
+            )}
+            {actionType !== "run" && (
+              <button
+                onClick={stopJob}
+                className="flex items-center bg-red-600 border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-red-400 cursor-pointer"
+              >
+                <img src={crossIcon} height="10" width="10" />
+                <p className="text-white text-md">STOP</p>
+              </button>
+            )}
+
             {/*  button Run end */}
           </div>
           {/*  element config end */}

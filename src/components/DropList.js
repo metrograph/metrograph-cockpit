@@ -2,13 +2,9 @@ import { useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import dropIcon from "../assets/drop.svg";
 
-const os = ["20.04 LTS", "18.06 LTS", "14.02 LTS"];
-
-export default function DropList() {
-  const [selectedOs, setselectedOs] = useState("20.04 LTS");
-
+export default function DropList(props) {
   return (
-    <Listbox as="div" value={selectedOs} onChange={setselectedOs}>
+    <Listbox as="div" value={props.selectedOs} onChange={props.setselectedOs}>
       {({ open }) => (
         <>
           <div className="mt-8 relative">
@@ -25,7 +21,7 @@ export default function DropList() {
                 <div className="relative">
                   <span className="inline-block w-full">
                     <Listbox.Button className="flex justify-between pl-3 py-4 w-full text-left focus:outline-none  text-white text-sm font-Inter font-bold">
-                      <span className="block truncate">{selectedOs}</span>
+                      <span className="block truncate">{props.selectedOs}</span>
                       <img
                         src={dropIcon}
                         height="12"
@@ -47,7 +43,7 @@ export default function DropList() {
                   static
                   className="border border-brand-header bg-brand-primary  mt-1"
                 >
-                  {os.map((fruit) => (
+                  {props.oslist.map((fruit) => (
                     <Listbox.Option key={fruit} value={fruit}>
                       {({ selected, active }) => (
                         <div

@@ -12,10 +12,27 @@ import fedoraIcon from "../assets/fedora.svg";
 import DropList from "../components/DropList";
 import ConfirmationBox from "../components/ConfirmationBox";
 import Footer from "../components/Footer";
+
+const opsys = [
+  { key: 1, name: "ubunty", versions: ["20.04 LTS", "18.06 LTS", "14.02 LTS"] },
+  { key: 2, name: "fedora", versions: ["34 LTS", "33 LTS", "32 LTS"] },
+  { key: 3, name: "centos", versions: ["8 LTS", "7 LTS", "6 LTS"] },
+];
+
 export default function CreatJob() {
-  const [data, setData] = useState([{ id: "" }, { id: "" }, { id: "" }]);
-  const show = () => {
-    console.log(data);
+  const [oslist, setOslist] = useState(opsys[0].versions);
+  const [data, setData] = useState([
+    { id: "outline  outline-white" },
+    { id: "" },
+    { id: "" },
+  ]);
+  const [os, setOs] = useState(oslist[0]);
+  const [title, setTitle] = useState("");
+  const [selectedOs, setselectedOs] = useState(oslist[0]);
+  const updateOsList = (elementstyle, element) => {
+    setData(elementstyle);
+    setOslist(element);
+    setselectedOs(element[0]);
   };
   return (
     <div>
@@ -28,9 +45,15 @@ export default function CreatJob() {
           <div className="mt-8"></div>
           <div className="flex flex-row w-full">
             <div className="w-1/2">
-              <TextInput title="JOB NAME" placeholder="" />
+              <TextInput
+                title="JOB NAME"
+                placeholder="Backup MongoDB to S3..."
+              />
               <div className="mt-4">
-                <TextInput title="JOB DESCRIPTION" placeholder="" />
+                <TextInput
+                  title="JOB DESCRIPTION"
+                  placeholder="A Python script to copy the MongoDB instace to AWS S3..."
+                />
               </div>
               <div className="mt-8"></div>
               <div>
@@ -55,11 +78,14 @@ export default function CreatJob() {
                     data[0].id
                   }
                   onClick={() =>
-                    setData([
-                      { id: "outline  outline-white" },
-                      { id: "" },
-                      { id: "" },
-                    ])
+                    updateOsList(
+                      [
+                        { id: "outline  outline-white" },
+                        { id: "" },
+                        { id: "" },
+                      ],
+                      opsys[0].versions
+                    )
                   }
                 />
                 <img
@@ -69,11 +95,14 @@ export default function CreatJob() {
                     data[1].id
                   }
                   onClick={() =>
-                    setData([
-                      { id: "" },
-                      { id: "outline  outline-white" },
-                      { id: "" },
-                    ])
+                    updateOsList(
+                      [
+                        { id: "" },
+                        { id: "outline  outline-white" },
+                        { id: "" },
+                      ],
+                      opsys[1].versions
+                    )
                   }
                 />
                 <img
@@ -83,16 +112,24 @@ export default function CreatJob() {
                     data[2].id
                   }
                   onClick={() =>
-                    setData([
-                      { id: "" },
-                      { id: "" },
-                      { id: "outline  outline-white" },
-                    ])
+                    updateOsList(
+                      [
+                        { id: "" },
+                        { id: "" },
+                        { id: "outline  outline-white" },
+                      ],
+                      opsys[2].versions
+                    )
                   }
                 />
               </div>
 
-              <DropList />
+              <DropList
+                oslist={oslist}
+                setOslist={setOslist}
+                selectedOs={selectedOs}
+                setselectedOs={setselectedOs}
+              />
             </div>
           </div>
           <ConfirmationBox />

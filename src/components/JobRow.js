@@ -65,7 +65,7 @@ export default function JobRow(props) {
             {actionType === "run" && (
               <button
                 onClick={runJob}
-                className="flex items-center bg-purple-600 border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
+                className="flex items-center bg-cock-purple border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
               >
                 <img src={runIcon} height="10" width="10" />
                 <p className="text-white text-md">RUN</p>
@@ -74,7 +74,7 @@ export default function JobRow(props) {
             {actionType !== "run" && (
               <button
                 onClick={stopJob}
-                className="flex items-center bg-red-600 border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-red-400 cursor-pointer"
+                className="flex items-center bg-cock-red border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-red-400 cursor-pointer"
               >
                 <img src={crossIcon} height="10" width="10" />
                 <p className="text-white text-md">STOP</p>

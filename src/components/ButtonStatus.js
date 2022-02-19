@@ -7,7 +7,7 @@ export default function ButtonStatus(props) {
     );
   }
   return (
-    <div className=" bg-green-600 h-12 w-28 grid place-content-center ">
+    <div className=" bg-cock-green h-12 w-28 grid place-content-center ">
       <span className=" text-white text-md">RUNNING</span>
     </div>
   );

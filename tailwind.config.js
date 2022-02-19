@@ -9,6 +9,7 @@ module.exports = {
         "brand-dark-button": "#40394A",
         "cock-green": "#7ECA9C",
         "cock-purple": "#7900FF",
+        "cock-red": "#AD2A49",
         "cock-line": "#2D2439",
         "cock-footer": "#443E4D",
       },

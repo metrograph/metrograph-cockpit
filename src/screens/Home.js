@@ -14,7 +14,7 @@ import PageTitle from "../components/PageTitle";
 import JobRow from "../components/JobRow";
 import Footer from "../components/Footer";
 import job from "../local/jobs";
-
+import { useSelector } from "react-redux";
 function JobList(props) {
   const data = props.job;
   return data.map((element) => (
@@ -32,6 +32,8 @@ function JobList(props) {
   ));
 }
 function App() {
+  const jobsy = useSelector((state) => state)
+  console.log(jobsy);
   const [jobs, setJobs] = useState(job);
   return (
     <div classNameName="App">

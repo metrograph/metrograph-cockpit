@@ -12,6 +12,7 @@ import fedoraIcon from "../assets/fedora.svg";
 import DropList from "../components/DropList";
 import ConfirmationBox from "../components/ConfirmationBox";
 import Footer from "../components/Footer";
+import job from "../local/jobs";
 
 const opsys = [
   { key: 1, name: "ubunty", versions: ["20.04 LTS", "18.06 LTS", "14.02 LTS"] },

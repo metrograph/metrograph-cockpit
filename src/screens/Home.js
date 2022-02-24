@@ -13,12 +13,17 @@ import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
 import JobRow from "../components/JobRow";
 import Footer from "../components/Footer";
-import job from "../local/jobs";
-import { useSelector } from "react-redux";
+
+
+import { useDispatch, useSelector } from "react-redux";
+
 function JobList(props) {
+
   const data = props.job;
+  if (!props.job) return <idv></idv>
   return data.map((element) => (
     <JobRow
+      id={element._id}
       name={element.name}
       info={element.info}
       technologieIcon={element.technologieIcon}
@@ -31,14 +36,22 @@ function JobList(props) {
     />
   ));
 }
+
+
 function App() {
-  const jobsy = useSelector((state) => state)
-  console.log(jobsy);
-  const [jobs, setJobs] = useState(job);
+  const mystate = useSelector((state) => state)
+
+  const dispatch = useDispatch()
+
+  let payload = { key: 3, name: "Back to google drive", info: "SSH GITLAB 20s ago" }
+  const addjob = () => { dispatch({ type: "addedJob", payload }) }
+
+
   return (
     <div classNameName="App">
       <div className="bg-brand-primary min-h-screen">
         <Header logo={logo} />
+
         <div className="container mx-auto">
           {/*  Dashboard header start */}
           <div className="flex justify-between">
@@ -53,7 +66,7 @@ function App() {
 
           {/* Dahsboard Jobs start */}
           <div className="mt-20 pb-44 space-y-4">
-            <JobList job={job} />
+            <JobList job={mystate.jobs} />
           </div>
           {/* Dahsboard Jobs end */}
         </div>

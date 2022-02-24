@@ -17,7 +17,7 @@ export default function DropList(props) {
                 <div className="w-full border-t-2 border-brand-header" />
               </div>
 
-              <div class="border-2 border-t-0 border-brand-header -mt-2">
+              <div className="border-2 border-t-0 border-brand-header -mt-2">
                 <div className="relative">
                   <span className="inline-block w-full">
                     <Listbox.Button className="flex justify-between pl-3 py-4 w-full text-left focus:outline-none  text-white text-sm font-Inter font-bold">
@@ -47,22 +47,19 @@ export default function DropList(props) {
                     <Listbox.Option key={fruit} value={fruit}>
                       {({ selected, active }) => (
                         <div
-                          className={`${
-                            active ? " text-white bg-purple-600" : "text-white"
-                          } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
+                          className={`${active ? " text-white bg-purple-600" : "text-white"
+                            } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
                         >
                           <span
-                            className={`${
-                              selected ? " font-semibold" : "font-normal"
-                            }`}
+                            className={`${selected ? " font-semibold" : "font-normal"
+                              }`}
                           >
                             {fruit}
                           </span>
                           {selected && (
                             <span
-                              className={`${
-                                active ? "text-white" : "text-purple-600"
-                              } absolute inset-y-0 left-0 flex items-center pl-2`}
+                              className={`${active ? "text-white" : "text-purple-600"
+                                } absolute inset-y-0 left-0 flex items-center pl-2`}
                             >
                               <svg
                                 className="h-5 w-5"

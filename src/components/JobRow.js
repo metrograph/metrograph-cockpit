@@ -1,12 +1,20 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ButtonAction from "./ButtonAction";
 import ButtonStatus from "./ButtonStatus";
 import runIcon from "../assets/run.svg";
 import crossIcon from "../assets/cross.svg";
 
 export default function JobRow(props) {
+
   const [status, setStatus] = useState(props.status);
   const [actionType, setActionType] = useState(props.actionType);
+
+  const mystate = useSelector((state) => state)
+
+  const dispatch = useDispatch()
+  const removejob = () => { dispatch({ type: "deletedJob", payload: props.id }) };
+
   const stopJob = () => {
     setStatus("ready");
     setActionType("run");
@@ -19,9 +27,10 @@ export default function JobRow(props) {
   return (
     <div>
       <div className="flex flex-row">
-        <div className="w-full flex  bg-brand-header border-2 border-white h-24 px-4 justify-between">
+
+        <div className="w-full flex  bg-brand-header border-2 border-white h-24 px-4 justify-between content-center">
           {/*  element title and info start */}
-          <div className="w-1/7 flex flex-col place-content-center flex-wrap">
+          <div className="lg:w-3/12 md:w-3/12 flex flex-col place-content-center  ">
             <p className="text-white">{props.name}</p>
             <p className="text-gray-400 text-sm">{props.info}</p>
           </div>
@@ -29,28 +38,28 @@ export default function JobRow(props) {
           {/*  element title and info end */}
 
           {/*  element config start */}
-          <div className="w-2/7 flex  place-items-center space-x-2">
-            <div className="bg-brand-dark-button h-12 w-14 grid place-content-center">
+          <div className="lg:w-3/12 md:w-3/12 flex  place-items-center space-x-2 justify-center ">
+            <div className="bg-brand-dark-button h-12 lg:w-14 grid place-content-center ">
               <img className="" src={props.technologieIcon} />
             </div>
-            <div className="bg-brand-dark-button h-12 w-44 grid place-content-center">
+            <div className="bg-brand-dark-button h-12 lg:w-44 grid place-content-center ">
               <p className=" text-white  text-md">{props.serverConfig}</p>
             </div>
-            <div className="bg-brand-dark-button h-12 w-20 grid place-content-center">
+            <div className="bg-brand-dark-button h-12 lg:w-20 grid place-content-center">
               <p className=" text-white text-md">{props.serverLocation}</p>
             </div>
           </div>
           {/*  element config end */}
           {/*  element status start */}
-          <div className="w-1/7 flex place-items-center">
+          <div className="lg:w-3/12 md:w-1/12 flex place-items-center justify-center ">
             <ButtonStatus status={status} />
           </div>
           {/*  element status end */}
 
           {/*  element config start */}
-          <div className="w-2/7 flex  place-items-center space-x-2">
+          <div className="lg:w-3/12 md:w-4/12 flex  place-items-center space-x-2 justify-end ">
             {/*   button more start */}
-            <div className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
+            <div onClick={removejob} className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
               <img className="px-4" src={props.moreIcon} />
             </div>
             {/*   button more end */}

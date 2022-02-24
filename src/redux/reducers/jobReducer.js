@@ -1,18 +1,30 @@
-import { ActionTypes } from "../constans/actionTypes";
+//import { ActionTypes } from "../constans/actionTypes";
 import jobs from "../../local/jobs";
-const initialState = {
-    jobs: jobs
+
+const deleteJob = (state, payload) => {
+    let data = state.filter(e => e._id !== payload)
+
+    return data
+
 }
-export const jobReducer = (state = initialState, { type, payload }) => {
+
+
+const jobReducer = (state = jobs, { type, payload }) => {
+
     switch (type) {
-        case ActionTypes.SET_JOBS:
+        case "setJobs":
             return state
             break;
-        case ActionTypes.ADDED_JOB:
-            return state.jobs.push(payload.job)
+        case "addedJob":
+            return [...state, payload]
+            break;
+        case "deletedJob":
+            return deleteJob(state, payload)
             break;
 
         default:
             return state
     }
 }
+
+export default jobReducer

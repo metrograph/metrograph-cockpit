@@ -21,3 +21,9 @@ export const addedJob = (job) => {
     }
 }
 
+export const deletedJob = (job) => {
+    return {
+        type: ActionTypes.REMOVE_JOB,
+        payload: job
+    }
+}

@@ -20,6 +20,7 @@ import dropIcon from "../assets/drop.svg";
 import Footer from "../components/Footer";
 import job from "../local/jobs";
 import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 
 const opsys = [
   { key: 1, name: "ubunty", versions: ["20.04 LTS", "18.06 LTS", "14.02 LTS"] },
@@ -29,8 +30,8 @@ const opsys = [
 
 export default function CreatJob() {
   const navigate = useNavigate()
-  const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
+  const mystate = useSelector((state) => state)
 
   const [oslist, setOslist] = useState(opsys[0].versions);
   const [data, setData] = useState([
@@ -39,11 +40,10 @@ export default function CreatJob() {
     { id: "" },
   ]);
   const [os, setOs] = useState(oslist[0]);
-  const [title, setTitle] = useState("");
   const [selectedOs, setselectedOs] = useState(oslist[0]);
-  const [file, setFile] = useState(" Attach your Code here")
 
-  const [form, setForm] = useState({})
+
+  const [file, setFile] = useState(" Attach your Code here")
   const [taskname, setTaskname] = useState()
   const [taskdescription, setTaskdescription] = useState()
 
@@ -55,6 +55,26 @@ export default function CreatJob() {
   const submitform = () => {
     let payload = { id: "4", name: taskname, info: taskdescription }
     dispatch({ type: "addedJob", payload })
+
+    let config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+    let job = new FormData();
+    job.append("file", file);
+    job.set("task_name", taskname);
+    job.set("task_description", taskdescription);
+    job.set("language", "python");
+    job.set("version", "3.9.10");
+
+
+    axios.post("http://142.132.162.157:1337/task", { job }, config)
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      })
+
     return navigate('/')
 
 

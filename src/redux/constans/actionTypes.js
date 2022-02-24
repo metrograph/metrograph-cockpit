@@ -1,6 +1,0 @@
-export const ActionTypes = {
-    SET_JOBS: "SET_JOBS",
-    SELECTED_JOB: "SELECTED_JOB",
-    ADDED_JOB: "ADDED_JOB",
-    REMOVE_JOB: "REMOVE_SELECTED_JOB"
-}

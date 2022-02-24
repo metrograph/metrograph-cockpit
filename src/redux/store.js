@@ -1,7 +1,6 @@
 import { createStore } from "redux";
 import { combineReducers } from 'redux'
 import jobReducer from "./reducers/jobReducer";
-import formReducer from "./reducers/formReducer";
 const reducers = combineReducers({
     jobs: jobReducer
 })

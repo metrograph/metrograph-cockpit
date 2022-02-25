@@ -52,15 +52,14 @@ export default function CreatJob() {
     setOslist(element);
     setselectedOs(element[0]);
   };
+
+
   const submitform = () => {
+
     let payload = { id: "4", name: taskname, info: taskdescription }
     dispatch({ type: "addedJob", payload })
 
-    let config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*"
-      }
-    }
+
     let job = new FormData();
     job.append("file", file);
     job.set("task_name", taskname);
@@ -69,7 +68,7 @@ export default function CreatJob() {
     job.set("version", "3.9.10");
 
 
-    axios.post("http://142.132.162.157:1337/task", { job }, config)
+    axios.post("http://142.132.162.157:80/task", { job }, { headers: { 'Access-Control-Allow-Origin': "*" } })
       .then(res => {
         console.log(res);
         console.log(res.data);

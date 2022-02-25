@@ -29,10 +29,24 @@ const opsys = [
 ];
 
 export default function CreatJob() {
+  const [tagInput, setTagInput] = useState()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const mystate = useSelector((state) => state)
 
+  const Tags = (props) => {
+
+    const mytags = props.mytags;
+    if (!mytags) return <idv></idv>
+    return mytags.map((element) => (
+      <div className=" bg-cock-purple px-2 cursor-pointer" onClick={() => removeTag(element)}>{element}</div>
+    ));
+  }
+
+  const removeTag = (element) => {
+    let data = tasktags.filter(e => e !== element)
+    if (data) setTasktags(data)
+  }
   const [oslist, setOslist] = useState(opsys[0].versions);
   const [data, setData] = useState([
     { id: "outline  outline-white" },
@@ -46,12 +60,24 @@ export default function CreatJob() {
   const [file, setFile] = useState(" Attach your Code here")
   const [taskname, setTaskname] = useState()
   const [taskdescription, setTaskdescription] = useState()
+  const [tasktags, setTasktags] = useState([])
 
   const updateOsList = (elementstyle, element) => {
     setData(elementstyle);
     setOslist(element);
     setselectedOs(element[0]);
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (tagInput) {
+        console.log(tasktags);
+        setTasktags([...tasktags, tagInput])
+        setTagInput("")
+        console.log('do validate');
+      }
+    }
+  }
 
 
   const submitform = () => {
@@ -129,6 +155,33 @@ export default function CreatJob() {
               </div>
               {/* Job description input end */}
 
+              {/* Job tags start */}
+              <div className="mt-4">
+                <div className="flex flex-row items-center space-x-2">
+                  <div className="w-2 border-t-2 border-brand-header" />
+                  <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
+                    TAGS
+                  </p>
+                  <div className="w-full border-t-2 border-brand-header" />
+                </div>
+                <div className="border-2 border-t-0 border-brand-header -mt-4">
+                  <div className="flex flex-row items-center bg-transparent focus:outline-none h-14 text-white px-4 my-2  w-full text-lg font-Inter font-medium">
+                    <div className="flex flex-row space-x-2 mt-2">
+                      <Tags mytags={tasktags} />
+                    </div>
+                    <input
+                      onKeyDown={handleKeyDown}
+                      className="mt-2 bg-transparent focus:outline-none h-8 text-white px-4  w-full text-lg font-Inter font-medium"
+                      placeholder="Add tags..."
+                      onChange={e => setTagInput(e.target.value)}
+                      value={tagInput}
+
+                    />
+                  </div>
+
+                </div>
+              </div>
+              {/* Job tags end */}
               <div className="mt-8"></div>
               <div>
                 <p className="text-white text-sm mb-6 font-Inter font-bold">

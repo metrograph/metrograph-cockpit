@@ -68,7 +68,7 @@ export default function CreatJob() {
     job.set("version", "3.9.10");
 
 
-    axios.post("http://142.132.162.157:80/task", { job }, { headers: { 'Access-Control-Allow-Origin': "*" } })
+    axios.post("http://142.132.162.157:80/task", { job })
       .then(res => {
         console.log(res);
         console.log(res.data);

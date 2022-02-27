@@ -68,6 +68,8 @@ export default function CreatJob() {
     setselectedOs(element[0]);
   };
 
+
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (tagInput) {
@@ -87,7 +89,7 @@ export default function CreatJob() {
 
 
     let job = new FormData();
-    job.append("file", file);
+    job.append("task_package", file);
     job.set("task_name", taskname);
     job.set("task_description", taskdescription);
     job.set("language", "python");

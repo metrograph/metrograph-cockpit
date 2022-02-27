@@ -57,7 +57,7 @@ export default function CreatJob() {
   const [selectedOs, setselectedOs] = useState(oslist[0]);
 
 
-  const [file, setFile] = useState(" Attach your Code here")
+  const [file, setFile] = useState({ name: " Attach your Code here" })
   const [taskname, setTaskname] = useState()
   const [taskdescription, setTaskdescription] = useState()
   const [tasktags, setTasktags] = useState([])
@@ -81,6 +81,10 @@ export default function CreatJob() {
     }
   }
 
+  const uploadfile = (e) => {
+    let fileTarge = e.target.files[0]
+    setFile(fileTarge)
+  }
 
   const submitform = () => {
 
@@ -90,13 +94,13 @@ export default function CreatJob() {
 
     let job = new FormData();
     job.append("task_package", file);
-    job.set("task_name", taskname);
-    job.set("task_description", taskdescription);
-    job.set("language", "python");
-    job.set("version", "3.9.10");
+    job.append("task_name", taskname);
+    job.append("task_description", taskdescription);
+    job.append("language", "python");
+    job.append("version", "3.9.10");
 
 
-    axios.post("http://142.132.162.157:80/task", { job })
+    axios.post("http://157.90.233.37:80/task", job)
       .then(res => {
         console.log(res);
         console.log(res.data);
@@ -206,7 +210,7 @@ export default function CreatJob() {
                         <div className="absolute">
                           <div className="flex flex-col items-center">
                             <span className="block text-white text-xs font-Inter font-medium">
-                              {file}
+                              {file.name}
                             </span>
                           </div>
                         </div>
@@ -214,7 +218,7 @@ export default function CreatJob() {
                           type="file"
                           className="h-full w-full opacity-0"
                           name="myfile"
-                          onChange={(e) => console.log(e.target.files[0])}
+                          onChange={(e) => uploadfile(e)}
                         />
                       </div>
                     </div>

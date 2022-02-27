@@ -87,20 +87,27 @@ export default function CreatJob() {
 
 
     let job = new FormData();
-    job.append("file", file);
+    job.append("task_package", file);
     job.set("task_name", taskname);
     job.set("task_description", taskdescription);
     job.set("language", "python");
     job.set("version", "3.9.10");
 
 
-    axios.post("http://142.132.162.157:80/task", { job })
+    axios.post(
+      "http://localhost:1337/task", 
+      { job },
+      { 
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      })
       .then(res => {
         console.log(res);
         console.log(res.data);
       })
 
-    return navigate('/')
+    //return navigate('/')
 
 
   }

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 import "../App.css";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
 import python from "../assets/python.svg";
 import more from "../assets/more.svg";
@@ -49,6 +50,11 @@ function App() {
 
   return (
     <div classNameName="App">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Metrograph</title>
+
+      </Helmet>
       <div className="bg-brand-primary min-h-screen">
         <Header logo={logo} />
 

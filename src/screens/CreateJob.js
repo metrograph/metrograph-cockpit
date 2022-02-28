@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.png";
+import { Helmet } from "react-helmet";
+import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
 import runIcon from "../assets/run.svg";
 import crossIcon from "../assets/cross.svg";
@@ -11,8 +12,11 @@ import TextInput from "../components/TextInput";
 import FileInput from "../components/FileInput";
 import CheckBox from "../components/CheckBox";
 import ubuntuIcon from "../assets/ubuntu.png";
+import pythonIcon from "../assets/runtime/python.svg"
 import ubunIcon from "../assets/ubuntu.svg";
 import fedoraIcon from "../assets/fedora.svg";
+import nodejsIcon from "../assets/runtime/nodejs.svg";
+import javaIcon from "../assets/runtime/java.svg";
 import DropList from "../components/DropList";
 import ConfirmationBox from "../components/ConfirmationBox";
 import { Listbox, Transition } from "@headlessui/react";
@@ -23,9 +27,9 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 
 const opsys = [
-  { key: 1, name: "ubunty", versions: ["20.04 LTS", "18.06 LTS", "14.02 LTS"] },
-  { key: 2, name: "fedora", versions: ["34 LTS", "33 LTS", "32 LTS"] },
-  { key: 3, name: "centos", versions: ["8 LTS", "7 LTS", "6 LTS"] },
+  { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
+  { key: 2, name: "nodejs", versions: ["34 LTS", "33 LTS", "32 LTS"] },
+  { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
 ];
 
 export default function CreatJob() {
@@ -112,6 +116,11 @@ export default function CreatJob() {
   }
   return (
     <div>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Create Job | Metrograph</title>
+
+      </Helmet>
 
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
@@ -234,7 +243,7 @@ export default function CreatJob() {
               </p>
               <div className="flex flex-row space-x-4 mt-8">
                 <img
-                  src={ubunIcon}
+                  src={pythonIcon}
                   className={
                     "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
                     data[0].id
@@ -251,7 +260,7 @@ export default function CreatJob() {
                   }
                 />
                 <img
-                  src={fedoraIcon}
+                  src={nodejsIcon}
                   className={
                     "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
                     data[1].id
@@ -268,7 +277,7 @@ export default function CreatJob() {
                   }
                 />
                 <img
-                  src={ubuntuIcon}
+                  src={javaIcon}
                   className={
                     "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
                     data[2].id

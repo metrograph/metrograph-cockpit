@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import runIcon from "../assets/run.svg";
 import successIcon from "../assets/message/done.svg"
 import warningIcon from "../assets/message/error.svg"
@@ -6,9 +7,17 @@ import crossIcon from "../assets/cross.svg";
 import acceptIcon from "../assets/accept.svg";
 import { Link } from "react-router-dom";
 export default function Alert(props) {
+
+    const mystate = useSelector((state) => state)
+    const dispatch = useDispatch()
     const [type, setType] = useState(props.type)
-    const hide = () => { setType(null) }
-    if (!type) return (<div></div>)
+    const hide = () => {
+        let payload = { is_hide: true, type: null }
+        dispatch({ type: "setAlert", payload })
+    }
+
+
+
     if (type === "success") {
         return (<div className="mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
 

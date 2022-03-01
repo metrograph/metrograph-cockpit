@@ -34,10 +34,11 @@ const opsys = [
 ];
 
 export default function CreatJob() {
-  const [tagInput, setTagInput] = useState()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+
   const mystate = useSelector((state) => state)
+  const dispatch = useDispatch()
+  const [tagInput, setTagInput] = useState()
 
   const Tags = (props) => {
 
@@ -62,7 +63,7 @@ export default function CreatJob() {
   const [selectedOs, setselectedOs] = useState(oslist[0]);
 
 
-  const [file, setFile] = useState({ name: " Attach your Code here" })
+  const [file, setFile] = useState({ name: " Attach your Code here", is_empty: true })
   const [taskname, setTaskname] = useState()
   const [taskdescription, setTaskdescription] = useState()
   const [tasktags, setTasktags] = useState([])
@@ -87,31 +88,41 @@ export default function CreatJob() {
   }
 
   const uploadfile = (e) => {
+
     let fileTarge = e.target.files[0]
     setFile(fileTarge)
   }
 
   const submitform = () => {
+    let payloadAlert = {}
+    if (file.is_empty) {
+      payloadAlert = { is_hide: false, type: "error" }
+      return dispatch({ type: "setAlert", payload: payloadAlert })
+    }
 
-    let payload = { id: "4", name: taskname, info: taskdescription }
-    dispatch({ type: "addedJob", payload })
+    else {
+      let payload = { id: "4", name: taskname, info: taskdescription }
+      payloadAlert = { is_hide: false, type: "success" }
+      dispatch({ type: "addedJob", payload })
 
 
-    let job = new FormData();
-    job.append("task_package", file);
-    job.append("task_name", taskname);
-    job.append("task_description", taskdescription);
-    job.append("language", "python");
-    job.append("version", "3.9.10");
+      let job = new FormData();
+      job.append("task_package", file);
+      job.append("task_name", taskname);
+      job.append("task_description", taskdescription);
+      job.append("language", "python");
+      job.append("version", "3.9.10");
 
 
-    axios.post("http://157.90.233.37:80/task", job)
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
+      axios.post("http://157.90.233.37:80/task", job)
+        .then(res => {
+          dispatch({ type: "setAlert", payload: payloadAlert })
+        })
 
-    return navigate('/')
+
+
+      return navigate('/')
+    }
 
 
   }
@@ -120,13 +131,12 @@ export default function CreatJob() {
       <Helmet>
         <meta charSet="utf-8" />
         <title>Create Job | Metrograph</title>
-
       </Helmet>
 
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
         <div className="container mx-auto">
-          <Alert type="error" />
+          {!mystate.alert.is_hide && <Alert type={mystate.alert.type} />}
           <PageTitle icon={dashboard} text="CREATE JOB" />
 
           <div className="mt-8"></div>

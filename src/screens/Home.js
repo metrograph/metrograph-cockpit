@@ -14,6 +14,7 @@ import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
 import JobRow from "../components/JobRow";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
 
 
 import { useDispatch, useSelector } from "react-redux";
@@ -59,6 +60,7 @@ function App() {
         <Header logo={logo} />
 
         <div className="container mx-auto">
+          {!mystate.alert.is_hide && <Alert type={mystate.alert.type} />}
           {/*  Dashboard header start */}
           <div className="flex justify-between">
             {/*  Title page start */}

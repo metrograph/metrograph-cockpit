@@ -25,6 +25,7 @@ import Footer from "../components/Footer";
 import job from "../local/jobs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
+import Alert from "../components/Alert";
 
 const opsys = [
   { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
@@ -125,6 +126,7 @@ export default function CreatJob() {
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
         <div className="container mx-auto">
+          <Alert type="error" />
           <PageTitle icon={dashboard} text="CREATE JOB" />
 
           <div className="mt-8"></div>

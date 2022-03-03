@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../mycss.css"
 import { Helmet } from "react-helmet";
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
@@ -33,10 +34,10 @@ const opsys = [
   { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
 ];
 
-export default function CreatJob() {
+export default function CreateJob() {
   const navigate = useNavigate()
-
   const mystate = useSelector((state) => state)
+
   const dispatch = useDispatch()
   const [tagInput, setTagInput] = useState()
 
@@ -117,6 +118,7 @@ export default function CreatJob() {
       axios.post("http://157.90.233.37:80/task", job)
         .then(res => {
           dispatch({ type: "setAlert", payload: payloadAlert })
+
         })
 
 
@@ -391,7 +393,66 @@ export default function CreatJob() {
               </Listbox>
               {/* List box end */}
 
+              <div class="w-full mt-44">
+                <label for="step" class="font-bold text-white">CONFIGURATION</label>
+
+                <div className="flex flex-row space-x-4 mt-4">
+                  <div className="text-white font-bold">CPU</div>
+                  <div className="w-2/3">
+                    <input type="range" defaultValue="2" list="tickmarks" min="0" step="2" max="8" class="w-full h-1   bg-cock-footer appearance-none" />
+                    <div className="bg"></div>
+                    <datalist id="tickmarks">
+                      <option value="0"></option>
+                      <option value="2"></option>
+                      <option value="4"></option>
+                      <option value="6"></option>
+                      <option value="8"></option>
+
+                    </datalist>
+                  </div>
+                  <div className="text-white font-semibold text-sm">4 VCORES</div>
+
+                </div>
+                <div className="flex flex-row space-x-4 mt-4">
+                  <div className="text-white font-bold">RAM</div>
+                  <div className="w-2/3">
+                    <input type="range" defaultValue="2" list="tickmarks" min="0" step="2" max="8" class="w-full h-1   bg-cock-footer appearance-none" />
+                    <div className="bg"></div>
+                    <datalist id="tickmarks">
+                      <option value="0"></option>
+                      <option value="2"></option>
+                      <option value="4"></option>
+                      <option value="6"></option>
+                      <option value="8"></option>
+
+                    </datalist>
+                  </div>
+                  <div className="text-white font-semibold text-sm">16 GB</div>
+
+                </div>
+                <div className="flex flex-row space-x-4 mt-4">
+                  <div className="text-white font-bold">DISK</div>
+                  <div className="w-2/3">
+                    <input type="range" defaultValue="2" list="tickmarks" min="0" step="2" max="8" class="w-full h-1   bg-cock-footer appearance-none" />
+                    <div className="bg"></div>
+                    <datalist id="tickmarks">
+                      <option value="0"></option>
+                      <option value="2"></option>
+                      <option value="4"></option>
+                      <option value="6"></option>
+                      <option value="8"></option>
+
+                    </datalist>
+                  </div>
+                  <div className="text-white font-semibold text-sm">80 GB</div>
+
+                </div>
+              </div>
+
+
             </div>
+
+
           </div>
           {/* Confirmation box start */}
           <div className="mt-12 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">

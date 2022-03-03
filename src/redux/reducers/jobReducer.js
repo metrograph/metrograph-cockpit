@@ -1,4 +1,4 @@
-//import { ActionTypes } from "../constans/actionTypes";
+
 import jobs from "../../local/jobs";
 
 const deleteJob = (state, payload) => {

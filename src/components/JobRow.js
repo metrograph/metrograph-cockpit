@@ -13,7 +13,7 @@ export default function JobRow(props) {
   const mystate = useSelector((state) => state)
 
   const dispatch = useDispatch()
-  const removejob = () => { dispatch({ type: "deletedJob", payload: props.id }) };
+  const removejob = () => { dispatch({ type: "deletedJob", payload: props.key }) };
 
   const stopJob = () => {
     setStatus("ready");

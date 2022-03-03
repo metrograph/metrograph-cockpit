@@ -1,0 +1,19 @@
+input[type=range]::-moz-range-track {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  padding: 0px;
+  background: #282133;
+
+
+ 
+} 
+input[type=range]::-moz-range-thumb {
+  background-color: #7900FF;
+  border-color: #282133;
+  border-width: 4px;
+  height: 19px;
+  width: 19px;
+  border-radius: 100%;
+  cursor: pointer;
+}

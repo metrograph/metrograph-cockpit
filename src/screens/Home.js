@@ -17,6 +17,7 @@ import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 
 
+
 import { useDispatch, useSelector } from "react-redux";
 
 function JobList(props) {
@@ -25,7 +26,7 @@ function JobList(props) {
   if (!props.job) return <idv></idv>
   return data.map((element) => (
     <JobRow
-      id={element._id}
+      key={element._id}
       name={element.name}
       info={element.info}
       technologieIcon={element.technologieIcon}
@@ -41,21 +42,17 @@ function JobList(props) {
 
 
 function App() {
-  const mystate = useSelector((state) => state)
 
+  const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
 
-  let payload = { key: 3, name: "Back to google drive", info: "SSH GITLAB 20s ago" }
-  const addjob = () => { dispatch({ type: "addedJob", payload }) }
-
-
   return (
-    <div classNameName="App">
+    <div>
       <Helmet>
         <meta charSet="utf-8" />
         <title>Metrograph</title>
-
       </Helmet>
+
       <div className="bg-brand-primary min-h-screen">
         <Header logo={logo} />
 

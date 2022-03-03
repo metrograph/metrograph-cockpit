@@ -1,45 +1,60 @@
 import React, { useState } from "react";
-import "../mycss.css"
+
+import axios from 'axios';
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
+import { Listbox, Transition } from "@headlessui/react";
+
+import "../mycss.css"
+
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
-import runIcon from "../assets/run.svg";
 import crossIcon from "../assets/cross.svg";
 import acceptIcon from "../assets/accept.svg";
-import { Link, useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import PageTitle from "../components/PageTitle";
-import TextInput from "../components/TextInput";
-import FileInput from "../components/FileInput";
-import CheckBox from "../components/CheckBox";
-import ubuntuIcon from "../assets/ubuntu.png";
 import pythonIcon from "../assets/runtime/python.svg"
-import ubunIcon from "../assets/ubuntu.svg";
-import fedoraIcon from "../assets/fedora.svg";
 import nodejsIcon from "../assets/runtime/nodejs.svg";
 import javaIcon from "../assets/runtime/java.svg";
-import DropList from "../components/DropList";
-import ConfirmationBox from "../components/ConfirmationBox";
-import { Listbox, Transition } from "@headlessui/react";
 import dropIcon from "../assets/drop.svg";
-import Footer from "../components/Footer";
-import job from "../local/jobs";
-import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios';
-import Alert from "../components/Alert";
 
-const opsys = [
-  { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
-  { key: 2, name: "nodejs", versions: ["34 LTS", "33 LTS", "32 LTS"] },
-  { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
-];
+import Header from "../components/Header";
+import Alert from "../components/Alert";
+import PageTitle from "../components/PageTitle";
+import CheckBox from "../components/CheckBox";
+import Footer from "../components/Footer";
+
+
+
 
 export default function CreateJob() {
-  const navigate = useNavigate()
-  const mystate = useSelector((state) => state)
 
+  const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const opsys = [
+    { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
+    { key: 2, name: "nodejs", versions: ["34 LTS", "33 LTS", "32 LTS"] },
+    { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
+  ];
+
   const [tagInput, setTagInput] = useState()
+  const [oslist, setOslist] = useState(opsys[0].versions);
+  const [data, setData] = useState([
+    { id: "outline  outline-white" },
+    { id: "" },
+    { id: "" },
+  ]);
+
+  const [os, setOs] = useState(oslist[0]);
+  const [selectedOs, setselectedOs] = useState(oslist[0]);
+
+
+  const [file, setFile] = useState({ name: " Attach your Code here", is_empty: true })
+  const [taskname, setTaskname] = useState()
+  const [taskdescription, setTaskdescription] = useState()
+  const [tasktags, setTasktags] = useState([])
+
 
   const Tags = (props) => {
 
@@ -50,35 +65,19 @@ export default function CreateJob() {
     ));
   }
 
-  const removeTag = (element) => {
+  function removeTag(element) {
     let data = tasktags.filter(e => e !== element)
     if (data) setTasktags(data)
   }
-  const [oslist, setOslist] = useState(opsys[0].versions);
-  const [data, setData] = useState([
-    { id: "outline  outline-white" },
-    { id: "" },
-    { id: "" },
-  ]);
-  const [os, setOs] = useState(oslist[0]);
-  const [selectedOs, setselectedOs] = useState(oslist[0]);
 
-
-  const [file, setFile] = useState({ name: " Attach your Code here", is_empty: true })
-  const [taskname, setTaskname] = useState()
-  const [taskdescription, setTaskdescription] = useState()
-  const [tasktags, setTasktags] = useState([])
-
-  const updateOsList = (elementstyle, element) => {
+  function updateOsList(elementstyle, element) {
     setData(elementstyle);
     setOslist(element);
     setselectedOs(element[0]);
   };
 
-
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+  function handleKeyDown(element) {
+    if (element.key === 'Enter') {
       if (tagInput) {
         console.log(tasktags);
         setTasktags([...tasktags, tagInput])
@@ -88,13 +87,13 @@ export default function CreateJob() {
     }
   }
 
-  const uploadfile = (e) => {
+  function uploadfile(element) {
 
-    let fileTarge = e.target.files[0]
+    let fileTarge = element.target.files[0]
     setFile(fileTarge)
   }
 
-  const submitform = () => {
+  function submitform() {
     let payloadAlert = {}
     if (file.is_empty) {
       payloadAlert = { is_hide: false, type: "error" }
@@ -128,6 +127,8 @@ export default function CreateJob() {
 
 
   }
+
+
   return (
     <div>
       <Helmet>
@@ -393,7 +394,7 @@ export default function CreateJob() {
               </Listbox>
               {/* List box end */}
 
-              <div class="w-full mt-44">
+              {/*  <div class="w-full mt-44">
                 <label for="step" class="font-bold text-white">CONFIGURATION</label>
 
                 <div className="flex flex-row space-x-4 mt-4">
@@ -447,7 +448,7 @@ export default function CreateJob() {
                   <div className="text-white font-semibold text-sm">80 GB</div>
 
                 </div>
-              </div>
+              </div> */}
 
 
             </div>

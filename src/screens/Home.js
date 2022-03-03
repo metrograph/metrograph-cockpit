@@ -1,14 +1,8 @@
+import React from "react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-import "../App.css";
-import logo from "../assets/logo.svg";
-import dashboard from "../assets/dashboard.svg";
-import python from "../assets/python.svg";
-import more from "../assets/more.svg";
-import time from "../assets/time.svg";
-import run from "../assets/run.svg";
-import nodejs from "../assets/node-js.svg";
-import cross from "../assets/cross.svg";
+
 import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
@@ -16,36 +10,45 @@ import JobRow from "../components/JobRow";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 
+import "../App.css";
+
+import logo from "../assets/logo.svg";
+import dashboard from "../assets/dashboard.svg";
+import more from "../assets/more.svg";
+import time from "../assets/time.svg";
 
 
-import { useDispatch, useSelector } from "react-redux";
 
-function JobList(props) {
 
-  const data = props.job;
-  if (!props.job) return <idv></idv>
-  return data.map((element) => (
-    <JobRow
-      key={element._id}
-      name={element.name}
-      info={element.info}
-      technologieIcon={element.technologieIcon}
-      serverConfig={element.serverConfig}
-      serverLocation={element.serverLocation}
-      status={element.status}
-      moreIcon={more}
-      timeIcon={time}
-      actionType={element.actionType}
-    />
-  ));
+class JobList extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = { jobList: this.props.job }
+  }
+
+  render() {
+    if (!this.state.jobList) return <idv></idv>
+    return this.state.jobList.map((element) => (
+      <JobRow
+        key={element._id}
+        name={element.name}
+        info={element.info}
+        technologieIcon={element.technologieIcon}
+        serverConfig={element.serverConfig}
+        serverLocation={element.serverLocation}
+        status={element.status}
+        moreIcon={more}
+        timeIcon={time}
+        actionType={element.actionType}
+      />
+    ));
+  }
 }
 
 
 function App() {
-
   const mystate = useSelector((state) => state)
-  const dispatch = useDispatch()
-
   return (
     <div>
       <Helmet>
@@ -80,5 +83,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

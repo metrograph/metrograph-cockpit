@@ -114,7 +114,8 @@ export default function CreateJob() {
       axios.post("http://157.90.233.37:80/task", job)
         .then(res => {
           console.log(res);
-          let payload = { uuid: res.payload.task_uid, task_name: taskname, task_description: taskdescription }
+          payloadAlert = { is_hide: false, type: "success" }
+          let payload = { uuid: res.data.payload.task.uuid, task_name: taskname, task_description: taskdescription }
           dispatch({ type: "addedJob", payload: payload })
           dispatch({ type: "setAlert", payload: payloadAlert })
 

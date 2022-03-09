@@ -14,11 +14,13 @@ export default function JobRow(props) {
   const mystate = useSelector((state) => state)
 
   const dispatch = useDispatch()
-  function runTask() {
+
+  function runTask(id) {
+
     let payloadAlert = { is_hide: false, type: "success" }
 
 
-    axios.post("http://157.90.233.37:80/task/51115941-2310-4967-a5af-d68c80e72f06/run")
+    axios.post("http://157.90.233.37:80/task/" + id + "/run")
       .then(res => {
         console.log(res);
         setStatus("running");
@@ -28,7 +30,14 @@ export default function JobRow(props) {
       })
     setStatus("pending");
   }
-  const removejob = () => { dispatch({ type: "deletedJob", payload: props.key }) };
+
+  function deleteJob(id) {
+
+    axios.delete("http://157.90.233.37:80/task/" + id)
+      .then(res => {
+        dispatch({ type: "deletedJob", payload: id })
+      })
+  };
 
   const stopJob = () => {
     setStatus("ready");
@@ -74,7 +83,7 @@ export default function JobRow(props) {
           {/*  element config start */}
           <div className="lg:w-3/12 md:w-4/12 flex  place-items-center space-x-2 justify-end ">
             {/*   button more start */}
-            <div onClick={removejob} className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
+            <div onClick={() => deleteJob(props.id)} className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
               <img className="px-4" src={props.moreIcon} />
             </div>
             {/*   button more end */}
@@ -88,7 +97,7 @@ export default function JobRow(props) {
 
             {actionType === "run" && (
               <button
-                onClick={runTask}
+                onClick={() => runTask(props.id)}
                 className="flex items-center bg-cock-purple border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
               >
                 <img src={runIcon} height="10" width="10" />

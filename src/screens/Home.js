@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 
@@ -16,26 +17,30 @@ import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
 import more from "../assets/more.svg";
 import time from "../assets/time.svg";
+import python_icon from "../assets/python.svg";
 
 
 
 
 function JobList(props) {
-
+  console.log(props);
   const jobList = props.job
   if (!jobList) return <idv></idv>
   return jobList.map((element) => (
     <JobRow
-      key={element._id}
-      name={element.name}
-      info={element.info}
-      technologieIcon={element.technologieIcon}
-      serverConfig={element.serverConfig}
-      serverLocation={element.serverLocation}
-      status={element.status}
+      key={element.uuid}
+      id={element.uuid}
+      name={element.task_name}
+      info={element.task_description}
+      technologieIcon={python_icon}
+      serverConfig="2vCPUs / 2G RAM"
+      serverLocation="LOCAL"
+      status="ready"
       moreIcon={more}
       timeIcon={time}
-      actionType={element.actionType}
+      actionType="run"
+
+
     />
   ));
 
@@ -45,7 +50,23 @@ function JobList(props) {
 
 
 function App() {
+  const endPoint = "http://157.90.233.37:80/task"
   const mystate = useSelector((state) => state)
+  const dispatch = useDispatch()
+
+  function loadJob(endPoint) {
+    axios.get("http://157.90.233.37:80/task")
+      .then(function (response) {
+        let data = response.data.payload.tasks
+        dispatch({ type: "setJobs", payload: data })
+      })
+  }
+
+
+  useEffect(() => {
+    loadJob()
+  }, []);
+
   return (
     <div>
       <Helmet>
@@ -71,7 +92,8 @@ function App() {
 
           {/* Dahsboard Jobs start */}
           <div className="mt-20 pb-44 space-y-4">
-            <JobList job={mystate.jobs} />
+            {mystate.jobs.length && <JobList job={mystate.jobs} />}
+
           </div>
           {/* Dahsboard Jobs end */}
         </div>

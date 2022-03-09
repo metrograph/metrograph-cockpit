@@ -102,10 +102,6 @@ export default function CreateJob() {
     }
 
     else {
-      let payload = { id: "4", name: taskname, info: taskdescription }
-      payloadAlert = { is_hide: false, type: "success" }
-      dispatch({ type: "addedJob", payload })
-
 
       let job = new FormData();
       job.append("task_package", file);
@@ -118,6 +114,8 @@ export default function CreateJob() {
       axios.post("http://157.90.233.37:80/task", job)
         .then(res => {
           console.log(res);
+          let payload = { uuid: res.payload.task_uid, task_name: taskname, task_description: taskdescription }
+          dispatch({ type: "addedJob", payload: payload })
           dispatch({ type: "setAlert", payload: payloadAlert })
 
         })

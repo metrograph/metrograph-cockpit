@@ -1,4 +1,5 @@
 import logoFooter from "../assets/logo-footer.svg";
+
 export default function Footer() {
   return (
     <div className="flex mt-44 h-56 border-t-2 border-cock-line items-center ">

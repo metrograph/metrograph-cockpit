@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 import ButtonAction from "./ButtonAction";
 import ButtonStatus from "./ButtonStatus";
 import runIcon from "../assets/run.svg";
@@ -13,6 +14,20 @@ export default function JobRow(props) {
   const mystate = useSelector((state) => state)
 
   const dispatch = useDispatch()
+  function runTask() {
+    let payloadAlert = { is_hide: false, type: "success" }
+
+
+    axios.post("http://157.90.233.37:80/task/51115941-2310-4967-a5af-d68c80e72f06/run")
+      .then(res => {
+        console.log(res);
+        setStatus("running");
+        setActionType("stop");
+        dispatch({ type: "setAlert", payload: payloadAlert })
+
+      })
+    setStatus("pending");
+  }
   const removejob = () => { dispatch({ type: "deletedJob", payload: props.key }) };
 
   const stopJob = () => {
@@ -73,7 +88,7 @@ export default function JobRow(props) {
 
             {actionType === "run" && (
               <button
-                onClick={runJob}
+                onClick={runTask}
                 className="flex items-center bg-cock-purple border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
               >
                 <img src={runIcon} height="10" width="10" />

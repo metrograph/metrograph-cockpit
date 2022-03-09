@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import { Listbox, Transition } from "@headlessui/react";
+
+import Header from "../components/Header";
+import Alert from "../components/Alert";
+import PageTitle from "../components/PageTitle";
+import CheckBox from "../components/CheckBox";
+import Footer from "../components/Footer";
 
 import "../mycss.css"
 
@@ -17,11 +22,7 @@ import nodejsIcon from "../assets/runtime/nodejs.svg";
 import javaIcon from "../assets/runtime/java.svg";
 import dropIcon from "../assets/drop.svg";
 
-import Header from "../components/Header";
-import Alert from "../components/Alert";
-import PageTitle from "../components/PageTitle";
-import CheckBox from "../components/CheckBox";
-import Footer from "../components/Footer";
+
 
 
 
@@ -110,12 +111,13 @@ export default function CreateJob() {
       job.append("task_package", file);
       job.append("task_name", taskname);
       job.append("task_description", taskdescription);
-      job.append("language", "python");
-      job.append("version", "3.9.10");
+      job.append("runtime", "python");
+      job.append("runtime_version", "3.9.10");
 
 
       axios.post("http://157.90.233.37:80/task", job)
         .then(res => {
+          console.log(res);
           dispatch({ type: "setAlert", payload: payloadAlert })
 
         })

@@ -20,30 +20,27 @@ import time from "../assets/time.svg";
 
 
 
-class JobList extends React.Component {
+function JobList(props) {
 
-  constructor(props) {
-    super(props)
-    this.state = { jobList: this.props.job }
-  }
+  const jobList = props.job
+  if (!jobList) return <idv></idv>
+  return jobList.map((element) => (
+    <JobRow
+      key={element._id}
+      name={element.name}
+      info={element.info}
+      technologieIcon={element.technologieIcon}
+      serverConfig={element.serverConfig}
+      serverLocation={element.serverLocation}
+      status={element.status}
+      moreIcon={more}
+      timeIcon={time}
+      actionType={element.actionType}
+    />
+  ));
 
-  render() {
-    if (!this.state.jobList) return <idv></idv>
-    return this.state.jobList.map((element) => (
-      <JobRow
-        key={element._id}
-        name={element.name}
-        info={element.info}
-        technologieIcon={element.technologieIcon}
-        serverConfig={element.serverConfig}
-        serverLocation={element.serverLocation}
-        status={element.status}
-        moreIcon={more}
-        timeIcon={time}
-        actionType={element.actionType}
-      />
-    ));
-  }
+
+
 }
 
 

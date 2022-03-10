@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
-import JobRow from "../components/JobRow";
+import JobRow from "../components/v1/JobRow";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 

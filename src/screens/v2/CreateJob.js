@@ -265,12 +265,54 @@ export default function CreateJob() {
                 <img
                   src={pythonIcon}
                   className={
-                    "w-20 h-20  hover:outline hover:outline-white " +
+                    "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
                     data[0].id
                   }
-
+                  onClick={() =>
+                    updateOsList(
+                      [
+                        { id: "outline  outline-white" },
+                        { id: "" },
+                        { id: "" },
+                      ],
+                      opsys[0].versions
+                    )
+                  }
                 />
-
+                <img
+                  src={nodejsIcon}
+                  className={
+                    "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
+                    data[1].id
+                  }
+                  onClick={() =>
+                    updateOsList(
+                      [
+                        { id: "" },
+                        { id: "outline  outline-white" },
+                        { id: "" },
+                      ],
+                      opsys[1].versions
+                    )
+                  }
+                />
+                <img
+                  src={javaIcon}
+                  className={
+                    "w-20 h-20 cursor-pointer hover:outline hover:outline-white " +
+                    data[2].id
+                  }
+                  onClick={() =>
+                    updateOsList(
+                      [
+                        { id: "" },
+                        { id: "" },
+                        { id: "outline  outline-white" },
+                      ],
+                      opsys[2].versions
+                    )
+                  }
+                />
               </div>
               {/* Listbox start */}
               <Listbox as="div" value={selectedOs} onChange={setselectedOs}>

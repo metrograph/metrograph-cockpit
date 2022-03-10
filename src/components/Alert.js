@@ -7,9 +7,10 @@ import crossIcon from "../assets/cross.svg";
 
 
 
-export default function Alert(props) {
+export default function Alert() {
 
     const mystate = useSelector((state) => state)
+
     const dispatch = useDispatch()
 
     function hideAlert() {
@@ -18,7 +19,7 @@ export default function Alert(props) {
 
 
 
-    if (props.type === "success") {
+    if (mystate.alert.type === "success") {
         return (
             <div className="mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
 
@@ -27,10 +28,10 @@ export default function Alert(props) {
                         <img src={successIcon} className="mx-4" /></div>
                     <div>
                         <p className="text-white texl-3xl   font-Rajdhani font-semibold">
-                            Job Built Successfully
+                            {mystate.alert.title}
                         </p>
                         <p className="text-white texl-3xl   font-Rajdhani font-regular">
-                            Your job extract_flights_data has been deployed and scheduled successfully! click here to check the logs.
+                            {mystate.alert.description}
                         </p>
                     </div>
                 </div>
@@ -45,7 +46,7 @@ export default function Alert(props) {
             </div>)
     }
 
-    else if (props.type === "error") {
+    else if (mystate.alert.type === "error") {
         return (
             <div className="mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
 
@@ -54,10 +55,10 @@ export default function Alert(props) {
                         <img src={warningIcon} className="mx-4" /></div>
                     <div>
                         <p className="text-white texl-3xl   font-Rajdhani font-semibold">
-                            Task code is missing!
+                            {mystate.alert.title}
                         </p>
                         <p className="text-white texl-3xl   font-Rajdhani font-regular">
-                            Please make sure to choose the code package you wish to submit.
+                            {mystate.alert.description}
                         </p>
                     </div>
                 </div>

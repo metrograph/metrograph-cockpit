@@ -95,7 +95,7 @@ function App() {
           <div className="mt-20 pb-44 space-y-4">
             {mystate.jobs.length && <JobList job={mystate.jobs} />}
             {!mystate.jobs.length && <div className="mt-44 mb-20 flex flex-col items-center"><img src={empty_image} height="125px" width="125px" />
-              <p className="font-Rajdhani font-bold text-cock-purple-light text-center text-3xl">Your space is still empty.<br />Start creating Tasks and let the creativity begin!</p></div>}
+              <p className="mt-6 font-Rajdhani font-bold text-cock-purple-light text-center text-3xl">Your space is still empty.<br />Start creating Tasks and let the creativity begin!</p></div>}
 
           </div>
           {/* Dahsboard Jobs end */}

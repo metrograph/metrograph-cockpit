@@ -25,6 +25,7 @@ export default function JobRow(props) {
                 console.log(res);
                 setStatus("running");
                 setActionType("stop");
+                let payloadAlert = { is_hide: false, type: "success", title: "Job Operation completed successfully", description: 'Your job ' + props.name + ' did run successfully!' }
                 dispatch({ type: "setAlert", payload: payloadAlert })
 
             })
@@ -36,6 +37,8 @@ export default function JobRow(props) {
         axios.delete("http://157.90.233.37:80/task/" + id)
             .then(res => {
                 dispatch({ type: "deletedJob", payload: id })
+                let payloadAlert = { is_hide: false, type: "success", title: "Job Removed Successfully", description: 'Your job ' + props.name + ' has been removed successfully!' }
+                dispatch({ type: "setAlert", payload: payloadAlert })
             })
     };
 

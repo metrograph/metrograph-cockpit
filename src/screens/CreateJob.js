@@ -101,7 +101,7 @@ export default function CreateJob() {
   function submitform() {
     let payloadAlert = {}
     if (file.is_empty) {
-      payloadAlert = { is_hide: false, type: "error" }
+      payloadAlert = { is_hide: false, type: "error", title: "Task code is missing!", description: "Please make sure to choose the code package you wish to submit." }
       return dispatch({ type: "setAlert", payload: payloadAlert })
     }
 
@@ -118,7 +118,7 @@ export default function CreateJob() {
       axios.post("http://157.90.233.37:80/task", job)
         .then(res => {
           console.log(res);
-          payloadAlert = { is_hide: false, type: "success" }
+          payloadAlert = { is_hide: false, type: "success", title: "Job Built Successfully", description: 'Your job ' + taskname + ' has been deployed successfully! ready to run.' }
           let payload = { uuid: res.data.payload.task.uuid, task_name: taskname, task_description: taskdescription }
           dispatch({ type: "addedJob", payload: payload })
           dispatch({ type: "setAlert", payload: payloadAlert })
@@ -144,7 +144,7 @@ export default function CreateJob() {
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
         <div className="container mx-auto">
-          {!mystate.alert.is_hide && <Alert type={mystate.alert.type} />}
+          {!mystate.alert.is_hide && <Alert />}
           <PageTitle icon={dashboard} text="CREATE JOB" />
 
           <div className="mt-8"></div>

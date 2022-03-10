@@ -14,7 +14,7 @@ export default function App() {
   return (
     <Router>
       <Provider store={store}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="bg-brand-primary min-h-screen"></div>}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/createjob" element={<CreateJob />} />

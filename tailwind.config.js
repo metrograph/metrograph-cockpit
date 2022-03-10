@@ -5,6 +5,8 @@ module.exports = {
       colors: {
         // Configure your color palette here
         "brand-primary": "#1C1427",
+        "cock-purple-light": "#282133",
+        "cock-purple-dark": "#1C1427",
         "brand-header": "#282133",
         "brand-dark-button": "#40394A",
         "cock-green": "#7ECA9C",

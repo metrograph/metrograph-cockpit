@@ -18,6 +18,7 @@ import dashboard from "../assets/dashboard.svg";
 import more from "../assets/more.svg";
 import time from "../assets/time.svg";
 import python_icon from "../assets/python.svg";
+import empty_image from "../assets/empty.svg"
 
 
 
@@ -93,6 +94,8 @@ function App() {
           {/* Dahsboard Jobs start */}
           <div className="mt-20 pb-44 space-y-4">
             {mystate.jobs.length && <JobList job={mystate.jobs} />}
+            {!mystate.jobs.length && <div className="mt-44 mb-20 flex flex-col items-center"><img src={empty_image} height="125px" width="125px" />
+              <p className="font-Rajdhani font-bold text-cock-purple-light text-center text-3xl">Your space is still empty.<br />Start creating Tasks and let the creativity begin!</p></div>}
 
           </div>
           {/* Dahsboard Jobs end */}

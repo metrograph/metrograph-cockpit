@@ -6,7 +6,10 @@ import ButtonStatus from "../ButtonStatus";
 import runIcon from "../../assets/run.svg";
 import crossIcon from "../../assets/cross.svg";
 
+
 export default function JobRow(props) {
+
+
 
     const [status, setStatus] = useState(props.status);
     const [actionType, setActionType] = useState(props.actionType);

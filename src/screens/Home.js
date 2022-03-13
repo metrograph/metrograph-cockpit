@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
+import { Transition, CSSTransition } from 'react-transition-group';
+
 
 import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
@@ -19,14 +21,19 @@ import more from "../assets/more.svg";
 import time from "../assets/time.svg";
 import python_icon from "../assets/python.svg";
 import empty_image from "../assets/empty.svg"
+import imge from "../assets/1.jpg"
 
 
 
 
 function JobList(props) {
-  console.log(props);
+
+
   const jobList = props.job
   if (!jobList) return <idv></idv>
+
+
+
   return jobList.map((element) => (
     <JobRow
       key={element.uuid}
@@ -51,20 +58,43 @@ function JobList(props) {
 
 
 function App() {
+
   const endPoint = "http://157.90.233.37:80/task"
   const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
+  const [inProp, setInProp] = useState(false);
+  const [transitionState, setTransitionState] = useState(false)
+  const transitions = {
+    entering: {
+
+      display: 'block'
+    },
+    entered: {
+      opacity: 1,
+      display: 'block'
+    },
+    exiting: {
+      opacity: 0,
+      display: 'block'
+    },
+    exited: {
+      opacity: 0,
+      display: 'none'
+    }
+  };
 
   function loadJob(endPoint) {
     axios.get("http://157.90.233.37:80/task")
       .then(function (response) {
         let data = response.data.payload.tasks
         dispatch({ type: "setJobs", payload: data })
+        setTransitionState(!transitionState)
       })
   }
 
 
   useEffect(() => {
+
     loadJob()
   }, []);
 
@@ -79,7 +109,20 @@ function App() {
         <Header logo={logo} />
 
         <div className="container mx-auto">
-          {!mystate.alert.is_hide && <Alert type={mystate.alert.type} />}
+
+
+          <Transition in={!mystate.alert.is_hide} timeout={300} >
+            {state => (
+              <div
+                className="space-y-4"
+                style={{
+                  transition: '700ms',
+                  opacity: 0,
+                  display: 'none',
+                  ...transitions[state]
+                }}> <Alert type={mystate.alert.type} /></div>
+            )}
+          </Transition>
           {/*  Dashboard header start */}
           <div className="flex justify-between">
             {/*  Title page start */}
@@ -93,12 +136,30 @@ function App() {
 
           {/* Dahsboard Jobs start */}
           <div className="mt-20 pb-44 space-y-4">
-            {mystate.jobs.length && <JobList job={mystate.jobs} />}
+            <Transition in={transitionState} timeout={300} >
+              {state => (
+                <div
+                  className="space-y-4"
+                  style={{
+                    transition: '700ms',
+                    opacity: 0,
+                    display: 'none',
+                    ...transitions[state]
+                  }}> <JobList job={mystate.jobs} /></div>
+              )}
+            </Transition>
+
+
             {!mystate.jobs.length && <div className="mt-44 mb-20 flex flex-col items-center"><img src={empty_image} height="125px" width="125px" />
               <p className="mt-6 font-Rajdhani font-bold text-cock-purple-light text-center text-3xl">Your space is still empty.<br />Start creating Tasks and let the creativity begin!</p></div>}
 
           </div>
           {/* Dahsboard Jobs end */}
+        </div>
+        <div>
+
+
+
         </div>
         <Footer />
       </div>

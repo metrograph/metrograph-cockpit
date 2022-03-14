@@ -6,6 +6,7 @@ import store from "./redux/store";
 
 const Home = lazy(() => import("./screens/Home"));
 const CreateJob = lazy(() => import("./screens/CreateJob"));
+const Login = lazy(() => import("./screens/Login"))
 
 
 
@@ -18,6 +19,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/createjob" element={<CreateJob />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Suspense>
       </Provider>

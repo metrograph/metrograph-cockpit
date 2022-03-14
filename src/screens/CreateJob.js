@@ -12,6 +12,7 @@ import CheckBox from "../components/CheckBox";
 import Footer from "../components/Footer";
 
 import "../mycss.css"
+import "../logo.css"
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
@@ -127,7 +128,7 @@ export default function CreateJob() {
 
 
 
-      return navigate('/')
+      return navigate(-1)
     }
 
 
@@ -143,7 +144,7 @@ export default function CreateJob() {
 
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
-        <div className="container mx-auto">
+        <div className="container mx-auto App-logo">
           {!mystate.alert.is_hide && <Alert />}
           <PageTitle icon={dashboard} text="CREATE JOB" />
 

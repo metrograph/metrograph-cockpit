@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import successIcon from "../assets/message/done.svg"
 import warningIcon from "../assets/message/error.svg"
 import crossIcon from "../assets/cross.svg";
+import "../logo.css"
 
 
 
@@ -21,7 +22,7 @@ export default function Alert() {
 
     if (mystate.alert.type === "success") {
         return (
-            <div className="mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
+            <div className="App-logo mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
 
                 <div className="flex flex-row">
                     <div>
@@ -48,7 +49,7 @@ export default function Alert() {
 
     else if (mystate.alert.type === "error") {
         return (
-            <div className="mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
+            <div className="App-logo mt-12 mb-16 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
 
                 <div className="flex flex-row">
                     <div>

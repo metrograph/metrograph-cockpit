@@ -5,6 +5,7 @@ import ButtonAction from "../ButtonAction";
 import ButtonStatus from "../ButtonStatus";
 import runIcon from "../../assets/run.svg";
 import crossIcon from "../../assets/cross.svg";
+import "../../logo.css"
 
 
 export default function JobRow(props) {
@@ -13,7 +14,7 @@ export default function JobRow(props) {
 
     const [status, setStatus] = useState(props.status);
     const [actionType, setActionType] = useState(props.actionType);
-
+    const [vanish, setVanish] = useState("")
     const mystate = useSelector((state) => state)
 
     const dispatch = useDispatch()
@@ -37,11 +38,18 @@ export default function JobRow(props) {
 
     function deleteJob(id) {
 
+
+
         axios.delete("http://157.90.233.37:80/task/" + id)
             .then(res => {
-                dispatch({ type: "deletedJob", payload: id })
-                let payloadAlert = { is_hide: false, type: "success", title: "Job Removed Successfully", description: 'Your job ' + props.name + ' has been removed successfully!' }
-                dispatch({ type: "setAlert", payload: payloadAlert })
+                setVanish("vanish")
+                setTimeout(
+                    function () {
+                        dispatch({ type: "deletedJob", payload: id })
+                        let payloadAlert = { is_hide: false, type: "success", title: "Job Removed Successfully", description: 'Your job ' + props.name + ' has been removed successfully!' }
+                        dispatch({ type: "setAlert", payload: payloadAlert })
+                    }, 400);
+
             })
     };
 
@@ -55,8 +63,8 @@ export default function JobRow(props) {
     };
 
     return (
-        <div>
-            <div className="flex flex-row">
+        <div className={"App-logo " + vanish}>
+            <div className="flex flex-row ">
 
                 <div className="w-full flex  bg-brand-header border-2 border-white h-24 px-4 justify-between content-center">
                     {/*  element title and info start */}

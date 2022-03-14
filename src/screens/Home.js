@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-import { Transition, CSSTransition } from 'react-transition-group';
+
 
 
 import Header from "../components/Header";
@@ -13,7 +13,6 @@ import JobRow from "../components/v1/JobRow";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 
-import "../App.css";
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
@@ -22,6 +21,7 @@ import time from "../assets/time.svg";
 import python_icon from "../assets/python.svg";
 import empty_image from "../assets/empty.svg"
 import imge from "../assets/1.jpg"
+
 
 
 
@@ -105,24 +105,13 @@ function App() {
         <title>Metrograph</title>
       </Helmet>
 
-      <div className="bg-brand-primary min-h-screen">
+      <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
 
         <div className="container mx-auto">
+          {!mystate.alert.is_hide && <Alert type={mystate.alert.type} />}
 
 
-          <Transition in={!mystate.alert.is_hide} timeout={300} >
-            {state => (
-              <div
-                className="space-y-4"
-                style={{
-                  transition: '700ms',
-                  opacity: 0,
-                  display: 'none',
-                  ...transitions[state]
-                }}> <Alert type={mystate.alert.type} /></div>
-            )}
-          </Transition>
           {/*  Dashboard header start */}
           <div className="flex justify-between">
             {/*  Title page start */}
@@ -136,18 +125,7 @@ function App() {
 
           {/* Dahsboard Jobs start */}
           <div className="mt-20 pb-44 space-y-4">
-            <Transition in={transitionState} timeout={300} >
-              {state => (
-                <div
-                  className="space-y-4"
-                  style={{
-                    transition: '700ms',
-                    opacity: 0,
-                    display: 'none',
-                    ...transitions[state]
-                  }}> <JobList job={mystate.jobs} /></div>
-              )}
-            </Transition>
+            <JobList job={mystate.jobs} />
 
 
             {!mystate.jobs.length && <div className="mt-44 mb-20 flex flex-col items-center"><img src={empty_image} height="125px" width="125px" />

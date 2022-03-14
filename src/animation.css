@@ -22,7 +22,7 @@
   left:0;
   height: 100%;
   background-color:#F48140;
-  animation: animate-pending  3s infinite;
+  animation: animate-pending  3s;
 }
 
 @keyframes animate-pending {

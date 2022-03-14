@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import successIcon from "../assets/message/done.svg"
 import warningIcon from "../assets/message/error.svg"
 import crossIcon from "../assets/cross.svg";
-import "../logo.css"
+import "../animation.css"
 
 
 

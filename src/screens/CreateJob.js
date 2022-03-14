@@ -12,7 +12,7 @@ import CheckBox from "../components/CheckBox";
 import Footer from "../components/Footer";
 
 import "../mycss.css"
-import "../logo.css"
+import "../animation.css"
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";

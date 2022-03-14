@@ -5,7 +5,7 @@ import ButtonAction from "../ButtonAction";
 import ButtonStatus from "../ButtonStatus";
 import runIcon from "../../assets/run.svg";
 import crossIcon from "../../assets/cross.svg";
-import "../../logo.css"
+import "../../animation.css"
 
 
 export default function JobRow(props) {

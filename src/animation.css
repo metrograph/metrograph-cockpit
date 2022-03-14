@@ -9,6 +9,33 @@
     
 }
 
+.pending {
+  
+  position: relative;
+ 
+}
+.pending::before {
+  
+  content: "";
+  position: absolute;
+  top:0;
+  left:0;
+  height: 100%;
+  background-color:#F48140;
+  animation: animate-pending  3s infinite;
+}
+
+@keyframes animate-pending {
+  from {
+     width: 0%;
+  }
+ 
+  to {
+      width: 100%;
+  }
+  
+}
+
 @keyframes App-logo-spin {
     from {
        opacity: 0;

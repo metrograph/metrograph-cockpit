@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import imageLogin from "../assets/bg-image-2.jpg"
 import logo from "../assets/logo.svg"
 import dashboardIcon from "../assets/dashboard.svg"
-import "../logo.css"
+import "../animation.css"
 
 export default function Login() {
     const navigate = useNavigate()

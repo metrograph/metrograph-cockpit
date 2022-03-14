@@ -101,6 +101,10 @@ export default function CreateJob() {
 
   function submitform() {
     let payloadAlert = {}
+    if (!taskname) {
+      payloadAlert = { is_hide: false, type: "error", title: "Task Name is missing!", description: "Please make sure to give a name to the task you wish to create." }
+      return dispatch({ type: "setAlert", payload: payloadAlert })
+    }
     if (file.is_empty) {
       payloadAlert = { is_hide: false, type: "error", title: "Task code is missing!", description: "Please make sure to choose the code package you wish to submit." }
       return dispatch({ type: "setAlert", payload: payloadAlert })

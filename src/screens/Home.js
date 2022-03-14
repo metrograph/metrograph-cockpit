@@ -31,9 +31,6 @@ function JobList(props) {
 
   const jobList = props.job
   if (!jobList) return <idv></idv>
-
-
-
   return jobList.map((element) => (
     <JobRow
       key={element.uuid}
@@ -62,33 +59,15 @@ function App() {
   const endPoint = "http://157.90.233.37:80/task"
   const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
-  const [inProp, setInProp] = useState(false);
-  const [transitionState, setTransitionState] = useState(false)
-  const transitions = {
-    entering: {
 
-      display: 'block'
-    },
-    entered: {
-      opacity: 1,
-      display: 'block'
-    },
-    exiting: {
-      opacity: 0,
-      display: 'block'
-    },
-    exited: {
-      opacity: 0,
-      display: 'none'
-    }
-  };
+
 
   function loadJob(endPoint) {
     axios.get("http://157.90.233.37:80/task")
       .then(function (response) {
         let data = response.data.payload.tasks
         dispatch({ type: "setJobs", payload: data })
-        setTransitionState(!transitionState)
+
       })
   }
 

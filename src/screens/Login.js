@@ -70,7 +70,7 @@ export default function Login() {
                             {/* Button start */}
 
                             <div className="mt-12 flex justify-end">
-                                <button onClick={() => navigate('/')} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
+                                <button onClick={() => navigate('/home')} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
                                     LOGIN
                                 </button>
                             </div>

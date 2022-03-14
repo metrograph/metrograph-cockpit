@@ -428,12 +428,12 @@ export default function CreateJob() {
               CONFIRMATION
             </p>
             <div className="mr-8 flex flex-row justify-between space-x-4 items-center">
-              <Link to="/">
-                <div className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer">
-                  <img src={crossIcon} height="10" width="10" />
-                  <p className="text-white text-xs font-Rajdhani font-bold">CANCEL</p>
-                </div>
-              </Link>
+
+              <div onClick={() => navigate(-1)} className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer">
+                <img src={crossIcon} height="10" width="10" />
+                <p className="text-white text-xs font-Rajdhani font-bold">CANCEL</p>
+              </div>
+
               <div
                 onClick={submitform}
                 className="flex items-center justify-center bg-cock-green border-2 border-white h-10 w-42 space-x-2 px-6 hover:bg-green-400 cursor-pointer">

@@ -17,9 +17,9 @@ export default function App() {
       <Provider store={store}>
         <Suspense fallback={<div className="bg-brand-primary min-h-screen"></div>}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Login />} />
             <Route path="/createjob" element={<CreateJob />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/home" element={<Home />} />
           </Routes>
         </Suspense>
       </Provider>

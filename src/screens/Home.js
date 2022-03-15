@@ -63,7 +63,7 @@ function App() {
 
 
   function loadJob(endPoint) {
-    axios.get("http://157.90.233.37:80/task")
+    axios.get("http://157.90.233.37/v1/task", { headers: { "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InV1aWQiOiI2Nzc4YmFlNS1mNTJlLTQ1NjEtYmZlZC1iYjFhYTI2YmZkODkiLCJ1c2VybmFtZSI6ImRhcmsiLCJ0b2tlbiI6IiJ9LCJ0aW1lIjoiMTY0NzM1MDM5Ni4yMDczOTYifQ.mNjUqyeVW-iBGWC_IrRGttpiZnfrpT20i_7hTgTg1L0" } })
       .then(function (response) {
         let data = response.data.payload.tasks
         dispatch({ type: "setJobs", payload: data })

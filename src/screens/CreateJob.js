@@ -119,8 +119,13 @@ export default function CreateJob() {
       job.append("runtime", "python");
       job.append("runtime_version", "3.9.10");
 
+      const headers = {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InV1aWQiOiI2Nzc4YmFlNS1mNTJlLTQ1NjEtYmZlZC1iYjFhYTI2YmZkODkiLCJ1c2VybmFtZSI6ImRhcmsiLCJ0b2tlbiI6IiJ9LCJ0aW1lIjoiMTY0NzM1MDM5Ni4yMDczOTYifQ.mNjUqyeVW-iBGWC_IrRGttpiZnfrpT20i_7hTgTg1L0'
+      }
 
-      axios.post("http://157.90.233.37:80/task", job)
+
+      axios.post("http://157.90.233.37/v1/task", job, { headers: headers })
         .then(res => {
           console.log(res);
           payloadAlert = { is_hide: false, type: "success", title: "Job Built Successfully", description: 'Your job ' + taskname + ' has been deployed successfully! ready to run.' }

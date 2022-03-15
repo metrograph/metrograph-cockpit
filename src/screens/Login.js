@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import imageLogin from "../assets/bg-image-2.jpg"
@@ -8,6 +9,21 @@ import "../animation.css"
 
 export default function Login() {
     const navigate = useNavigate()
+
+
+    function loadLocalStorage() {
+        const localstorage = localStorage.getItem("localState")
+        const data = JSON.parse(localstorage)
+        if (data.token) {
+            return navigate("/home")
+        }
+
+    }
+
+    useEffect(() => {
+
+        loadLocalStorage()
+    }, []);
     return (
         <div>
 

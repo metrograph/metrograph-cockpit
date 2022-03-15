@@ -10,7 +10,9 @@ import "../../animation.css"
 
 export default function JobRow(props) {
 
-
+    const headers = {
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InV1aWQiOiIyZGJlNGFiMi00N2RlLTQzZjItYmQ2Yi03MzYzOWE5MjU5M2YiLCJ1c2VybmFtZSI6ImVoYW16YSIsInRva2VuIjoiIn0sInRpbWUiOiIxNjQ3MzYwMjg3LjY5NTEzNyJ9.BDVa0mDwMHIyR_1R1iKfpAORR43-wuA69Gnpg6Fyy1A'
+    }
 
     const [status, setStatus] = useState(props.status);
     const [actionType, setActionType] = useState(props.actionType);
@@ -22,9 +24,8 @@ export default function JobRow(props) {
     function runTask(id) {
 
         let payloadAlert = { is_hide: false, type: "success" }
-
-
-        axios.post("http://157.90.233.37:80/task/" + id + "/run")
+        const url = 'http://157.90.233.37/v1/task/' + id + '/run'
+        axios.post(url, {}, { headers: headers })
             .then(res => {
                 console.log(res);
                 setStatus("running");
@@ -40,7 +41,9 @@ export default function JobRow(props) {
 
 
 
-        axios.delete("http://157.90.233.37:80/task/" + id)
+        axios.delete("http://157.90.233.37/v1/task/" + id, {
+            headers: headers
+        })
             .then(res => {
                 setVanish("vanish")
                 setTimeout(

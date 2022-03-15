@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import imageLogin from "../assets/bg-image-2.jpg"
 import logo from "../assets/logo.svg"
 import dashboardIcon from "../assets/dashboard.svg"
+import ball from "../assets/ball.png"
 import "../animation.css"
 
 export default function Login() {
@@ -17,9 +18,12 @@ export default function Login() {
 
             <div className="bg-cock-purple-dark min-h-screen ">
                 <div className="flex flex-row">
-                    <div className="flex flex-col w-full md:w-1/2  justify-center md:justify-start my-auto md:pt-0 md:px-24">
-                        <div className="flex justify-center">
-                            <img className=" h-16" src={logo} />
+
+                    <div className="flex flex-col w-full md:w-1/2  justify-center md:justify-start my-auto md:pt-0 md:px-24 ">
+
+                        <div className="flex justify-center ">
+                            <div className="logo-load"></div>
+
                         </div>
                         <div className="flex flex-col px-12">
                             <div className="mt-28 flex items-start space-x-4">

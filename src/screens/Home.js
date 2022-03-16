@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-
+import { Link, useNavigate } from "react-router-dom";
 
 
 import Header from "../components/Header";
@@ -57,13 +57,32 @@ function JobList(props) {
 function App() {
 
   const endPoint = "http://157.90.233.37:80/task"
-  const mystate = useSelector((state) => state)
   const dispatch = useDispatch()
+  const mystate = useSelector((state) => state)
+  const navigate = useNavigate()
 
 
 
-  function loadJob(endPoint) {
-    axios.get("http://157.90.233.37/v1/task", { headers: { "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InV1aWQiOiI2Nzc4YmFlNS1mNTJlLTQ1NjEtYmZlZC1iYjFhYTI2YmZkODkiLCJ1c2VybmFtZSI6ImRhcmsiLCJ0b2tlbiI6IiJ9LCJ0aW1lIjoiMTY0NzM1MDM5Ni4yMDczOTYifQ.mNjUqyeVW-iBGWC_IrRGttpiZnfrpT20i_7hTgTg1L0" } })
+
+
+  function loadLocalStorage() {
+    if (!mystate.user.token) {
+      const localstorage = localStorage.getItem("localState")
+      const data = JSON.parse(localstorage)
+      if (!data) {
+        return navigate("/")
+      }
+      dispatch({ type: "setUser", payload: data })
+    }
+
+
+
+  }
+
+  function loadJob() {
+
+    let token = "Bearer " + mystate.user.token
+    axios.get("http://157.90.233.37/v1/task", { headers: { "Authorization": token } })
       .then(function (response) {
         let data = response.data.payload.tasks
         dispatch({ type: "setJobs", payload: data })
@@ -74,8 +93,17 @@ function App() {
 
   useEffect(() => {
 
-    loadJob()
-  }, []);
+
+    loadLocalStorage()
+    if (mystate.user.token) {
+      loadJob()
+    }
+
+
+
+  }, [mystate.user]);
+
+
 
   return (
     <div>

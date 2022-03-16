@@ -10,21 +10,23 @@ import "../../animation.css"
 
 export default function JobRow(props) {
 
-    const headers = {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InV1aWQiOiIyZGJlNGFiMi00N2RlLTQzZjItYmQ2Yi03MzYzOWE5MjU5M2YiLCJ1c2VybmFtZSI6ImVoYW16YSIsInRva2VuIjoiIn0sInRpbWUiOiIxNjQ3MzYwMjg3LjY5NTEzNyJ9.BDVa0mDwMHIyR_1R1iKfpAORR43-wuA69Gnpg6Fyy1A'
-    }
+
 
     const [status, setStatus] = useState(props.status);
     const [actionType, setActionType] = useState(props.actionType);
     const [vanish, setVanish] = useState("")
     const mystate = useSelector((state) => state)
-
+    let token = "Bearer " + mystate.user.token
     const dispatch = useDispatch()
 
+    const headers = {
+        'Authorization': token
+    }
     function runTask(id) {
 
         let payloadAlert = { is_hide: false, type: "success" }
         const url = 'http://157.90.233.37/v1/task/' + id + '/run'
+
         axios.post(url, {}, { headers: headers })
             .then(res => {
                 console.log(res);

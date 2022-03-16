@@ -12,6 +12,7 @@ import dashboardIcon from "../assets/dashboard.svg"
 
 import ball from "../assets/ball.png"
 import "../animation.css"
+import { stringify } from "postcss";
 const endPoint = "http://157.90.233.37/v1/auth"
 
 export default function Login() {
@@ -25,6 +26,7 @@ export default function Login() {
     function loadLocalStorage() {
         const localstorage = localStorage.getItem("localState")
         const data = JSON.parse(localstorage)
+        console.log(data);
         if (data) {
             return navigate("/home")
         }
@@ -43,7 +45,14 @@ export default function Login() {
         axios.post(endPoint, inputs)
             .then(function (response) {
                 setTimeout(() => setOnLoad(false), 200)
-                console.log(response)
+                if (response.status === 200) {
+                    console.log(response.data.payload);
+                    localStorage.setItem("localState", JSON.stringify(response.data.payload))
+                    dispatch({ type: "setUser", payload: response.data.payload })
+                    return navigate("/home")
+                }
+
+
 
             }).catch(error => {
                 if (error.response.status === 401) {
@@ -72,72 +81,74 @@ export default function Login() {
 
                 <div className="flex flex-row">
 
-                    <div className="flex flex-col w-1/2 md:justify-start my-auto md:pt-0 md:px-24">
+                    <div className="flex flex-col w-1/2 md:justify-start  md:pt-0 md:px-24">
 
-                        {!mystate.alert.is_hide && <div className="-mt-16"><Alert /></div>}
+                        {!mystate.alert.is_hide && <div className="mt-4 px-12"><Alert /></div>}
                         {onLoad && <div className="load_bar" />}
-                        <div className=" flex flex-col justify-center items-center">
-                            <div className="logo" />
+                        <div className="flex flex-col my-auto">
+                            <div className="flex flex-col justify-center items-center">
+                                <div className="logo" />
 
 
-                        </div>
-                        <div className="flex flex-col px-12">
-                            <div className="mt-28 flex items-start space-x-4">
-                                <img src={dashboardIcon} height="24" width="24" />
-                                <p className="text-2xl text-white font-Rajdhani font-medium">
-                                    Login to your account
-                                </p>
                             </div>
-                            {/* username  input start */}
-                            <div className="mt-16">
-                                <div className="flex flex-row items-center space-x-2">
-                                    <div className="w-2 border-t-2 border-brand-header" />
-                                    <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
-                                        USERNAME
+                            <div className="flex flex-col px-12">
+                                <div className="mt-28 flex items-start space-x-4">
+                                    <img src={dashboardIcon} height="24" width="24" />
+                                    <p className="text-2xl text-white font-Rajdhani font-medium">
+                                        Login to your account
                                     </p>
-                                    <div className="w-full border-t-2 border-brand-header" />
                                 </div>
-                                <div className="border-2 border-t-0 border-brand-header -mt-2">
-                                    <input
-                                        className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
-                                        placeholder="@username.."
-                                        onChange={(e) => setInputs({ username: e.target.value, password: inputs.password })}
-                                        value={inputs.username}
+                                {/* username  input start */}
+                                <div className="mt-16">
+                                    <div className="flex flex-row items-center space-x-2">
+                                        <div className="w-2 border-t-2 border-brand-header" />
+                                        <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
+                                            USERNAME
+                                        </p>
+                                        <div className="w-full border-t-2 border-brand-header" />
+                                    </div>
+                                    <div className="border-2 border-t-0 border-brand-header -mt-2">
+                                        <input
+                                            className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
+                                            placeholder="@username.."
+                                            onChange={(e) => setInputs({ username: e.target.value, password: inputs.password })}
+                                            value={inputs.username}
 
-                                    />
+                                        />
+                                    </div>
                                 </div>
+                                {/* username input end */}
+
+                                {/* password  input start */}
+                                <div className="mt-4">
+                                    <div className="flex flex-row items-center space-x-2">
+                                        <div className="w-2 border-t-2 border-brand-header" />
+                                        <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
+                                            PASSWORD
+                                        </p>
+                                        <div className="w-full border-t-2 border-brand-header" />
+                                    </div>
+                                    <div className="border-2 border-t-0 border-brand-header -mt-2">
+                                        <input
+                                            type="password"
+                                            className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
+                                            placeholder="........."
+                                            onChange={(e) => setInputs({ username: inputs.username, password: e.target.value })}
+                                            value={inputs.password}
+                                        />
+                                    </div>
+                                </div>
+                                {/* password input end */}
+
+                                {/* Button start */}
+
+                                <div className="mt-12 flex justify-end">
+                                    <button onClick={() => login()} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
+                                        LOGIN
+                                    </button>
+                                </div>
+                                {/* Button end */}
                             </div>
-                            {/* username input end */}
-
-                            {/* password  input start */}
-                            <div className="mt-4">
-                                <div className="flex flex-row items-center space-x-2">
-                                    <div className="w-2 border-t-2 border-brand-header" />
-                                    <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
-                                        PASSWORD
-                                    </p>
-                                    <div className="w-full border-t-2 border-brand-header" />
-                                </div>
-                                <div className="border-2 border-t-0 border-brand-header -mt-2">
-                                    <input
-                                        type="password"
-                                        className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
-                                        placeholder="........."
-                                        onChange={(e) => setInputs({ username: inputs.username, password: e.target.value })}
-                                        value={inputs.password}
-                                    />
-                                </div>
-                            </div>
-                            {/* password input end */}
-
-                            {/* Button start */}
-
-                            <div className="mt-12 flex justify-end">
-                                <button onClick={() => login()} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
-                                    LOGIN
-                                </button>
-                            </div>
-                            {/* Button end */}
                         </div>
                     </div>
                     <div className="w-1/2 flex justify-end relative">

@@ -1,4 +1,5 @@
 
+
 .ball{
   background: url("./assets/ball.png");
 
@@ -7,6 +8,27 @@
   background-size:55px;
   
 }
+.logo {
+ 
+  background: url("./assets/logo-top-dark.svg");
+  width:259px;
+  height:64px;
+  background-size:cover;
+ 
+  
+}
+.load_bar {
+  position:absolute;
+  top:0;
+  left:0;
+  background: #7ECA9C;
+  height:3px;
+  width: 0%;
+  
+  animation:loading 4s linear;
+  }
+
+
 .logo-load {
  
   background: url("./assets/logo-top-dark.svg");
@@ -28,10 +50,48 @@
   height:100%;
   background-size:cover;
   animation: load 3s linear;
+}
+
+.App-logo {
+   
+  animation: App-logo-spin  400ms ease-in   ;
+   
+ }
+
+.pending {
  
+ position: relative;
+
+}
+.pending::before {
+ 
+ content: "";
+ position: absolute;
+ top:0;
+ left:0;
+ height: 100%;
+ background-color:#F48140;
+ animation: animate-pending  3s;
+}
+
+.vanish {
+ animation: animate-vanish  400ms;
  
 }
 
+.jump {
+ animation: jump 500ms infinite;
+}
+.rotate {
+ animation: rotate 5s infinite linear;
+}
+.walk {
+ animation: walk 2s infinite;
+}
+.fadeIn{
+ 
+ animation: fadeIn 1s linear;
+}
 @keyframes load {
   from {
      width: 0%;
@@ -43,47 +103,17 @@
   
 }
 
-
-.App-logo {
-   
-   animation: App-logo-spin  400ms ease-in   ;
-    
+@keyframes loading {
+  from {
+     width: 0%;
   }
-
-.pending {
-  
-  position: relative;
  
-}
-.pending::before {
-  
-  content: "";
-  position: absolute;
-  top:0;
-  left:0;
-  height: 100%;
-  background-color:#F48140;
-  animation: animate-pending  3s;
-}
-
-.vanish {
-  animation: animate-vanish  400ms;
+  to {
+    width: 54%;
+  }
   
 }
 
-.jump {
-  animation: jump 500ms infinite;
-}
-.rotate {
-  animation: rotate 5s infinite linear;
-}
-.walk {
-  animation: walk 2s infinite;
-}
-.fadeIn{
-  
-  animation: fadeIn 1s linear;
-}
 @keyframes fadeIn {
   from {
     opacity: 0;

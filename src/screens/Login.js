@@ -1,6 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import Alert from "../components/Alert";
 
 import art from "../assets/animation/art.gif"
 import logo from "../assets/logo.svg"
@@ -8,9 +12,14 @@ import dashboardIcon from "../assets/dashboard.svg"
 
 import ball from "../assets/ball.png"
 import "../animation.css"
+const endPoint = "http://157.90.233.37/v1/auth"
 
 export default function Login() {
+    const [inputs, setInputs] = useState({ username: "", password: "" })
+    const [onLoad, setOnLoad] = useState(false)
     const navigate = useNavigate()
+    const mystate = useSelector((state) => state)
+    const dispatch = useDispatch()
 
 
     function loadLocalStorage() {
@@ -21,7 +30,32 @@ export default function Login() {
         }
 
     }
+    function login() {
+        setOnLoad(true)
+        if (!inputs.username || !inputs.password) {
 
+            let payloadAlert = { is_hide: false, type: "error", title: "Login failed.", description: "Invalid credentials or password requirements not met" }
+            dispatch({ type: "setAlert", payload: payloadAlert })
+            setTimeout(() => setOnLoad(false), 200)
+            return console.log("error")
+        }
+
+        axios.post(endPoint, inputs)
+            .then(function (response) {
+                setTimeout(() => setOnLoad(false), 200)
+                console.log(response)
+
+            }).catch(error => {
+                if (error.response.status === 401) {
+                    console.log(error.response.status);
+                    setTimeout(() => setOnLoad(false), 200)
+                    let payloadAlert = { is_hide: false, type: "error", title: "Login failed.", description: "Invalid credentials or password requirements not met" }
+                    dispatch({ type: "setAlert", payload: payloadAlert })
+                }
+            });
+
+
+    }
     useEffect(() => {
 
         loadLocalStorage()
@@ -35,12 +69,16 @@ export default function Login() {
             </Helmet>
 
             <div className="bg-cock-purple-dark min-h-screen ">
+
                 <div className="flex flex-row">
 
-                    <div className="flex flex-col w-full md:w-1/2  justify-center md:justify-start my-auto md:pt-0 md:px-24 ">
+                    <div className="flex flex-col w-1/2 md:justify-start my-auto md:pt-0 md:px-24">
 
-                        <div className="flex justify-center ">
-                            <img src={logo} className=" w-80" />
+                        {!mystate.alert.is_hide && <div className="-mt-16"><Alert /></div>}
+                        {onLoad && <div className="load_bar" />}
+                        <div className=" flex flex-col justify-center items-center">
+                            <div className="logo" />
+
 
                         </div>
                         <div className="flex flex-col px-12">
@@ -63,6 +101,8 @@ export default function Login() {
                                     <input
                                         className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
                                         placeholder="@username.."
+                                        onChange={(e) => setInputs({ username: e.target.value, password: inputs.password })}
+                                        value={inputs.username}
 
                                     />
                                 </div>
@@ -83,7 +123,8 @@ export default function Login() {
                                         type="password"
                                         className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
                                         placeholder="........."
-
+                                        onChange={(e) => setInputs({ username: inputs.username, password: e.target.value })}
+                                        value={inputs.password}
                                     />
                                 </div>
                             </div>
@@ -92,14 +133,12 @@ export default function Login() {
                             {/* Button start */}
 
                             <div className="mt-12 flex justify-end">
-                                <button onClick={() => navigate('/home')} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
+                                <button onClick={() => login()} className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
                                     LOGIN
                                 </button>
                             </div>
                             {/* Button end */}
                         </div>
-
-
                     </div>
                     <div className="w-1/2 flex justify-end relative">
                         <img src={art} className="fadeIn h-screen" />

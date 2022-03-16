@@ -20,7 +20,7 @@ import more from "../assets/more.svg";
 import time from "../assets/time.svg";
 import python_icon from "../assets/python.svg";
 import empty_image from "../assets/empty.svg"
-import imge from "../assets/1.jpg"
+
 
 
 

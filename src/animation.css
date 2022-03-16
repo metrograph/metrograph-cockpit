@@ -1,3 +1,14 @@
+.art{
+  position: relative;
+}
+.ball{
+  background: url("./assets/ball.png");
+
+  height: 55px;
+  width: 55px;
+  background-size:55px;
+  
+}
 .logo-load {
  
   background: url("./assets/logo-top-dark.svg");

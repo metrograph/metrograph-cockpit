@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
-import imageLogin from "../assets/bg-image-2.jpg"
+
+import art from "../assets/anime.gif"
 import logo from "../assets/logo.svg"
 import dashboardIcon from "../assets/dashboard.svg"
+
 import ball from "../assets/ball.png"
 import "../animation.css"
 
@@ -14,7 +16,7 @@ export default function Login() {
     function loadLocalStorage() {
         const localstorage = localStorage.getItem("localState")
         const data = JSON.parse(localstorage)
-        if (data.token) {
+        if (data) {
             return navigate("/home")
         }
 
@@ -99,8 +101,12 @@ export default function Login() {
 
 
                     </div>
-                    <div className="w-1/2 bg-cock-dark">
-                        <img className="object-cover w-full h-screen hidden md:block" src={imageLogin} />
+                    <div className="w-1/2 bg-cock-dark art">
+                        <img src={art} className=" h-screen" />
+
+
+
+
                     </div>
                 </div>
             </div>

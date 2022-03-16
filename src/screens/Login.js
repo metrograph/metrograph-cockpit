@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 
-import art from "../assets/anime.gif"
+import art from "../assets/animation/art.gif"
 import logo from "../assets/logo.svg"
 import dashboardIcon from "../assets/dashboard.svg"
 

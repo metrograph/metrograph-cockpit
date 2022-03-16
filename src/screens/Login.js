@@ -101,8 +101,9 @@ export default function Login() {
 
 
                     </div>
-                    <div className="w-1/2 flex justify-end">
+                    <div className="w-1/2 flex justify-end relative">
                         <img src={art} className="fadeIn h-screen" />
+                        <div className="absolute h-screen w-full"></div>
 
 
 

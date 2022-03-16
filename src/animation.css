@@ -1,6 +1,4 @@
-.art{
-  position: relative;
-}
+
 .ball{
   background: url("./assets/ball.png");
 
@@ -83,6 +81,7 @@
   animation: walk 2s infinite;
 }
 .fadeIn{
+  
   animation: fadeIn 1s linear;
 }
 @keyframes fadeIn {

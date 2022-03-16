@@ -40,7 +40,7 @@ export default function Login() {
                     <div className="flex flex-col w-full md:w-1/2  justify-center md:justify-start my-auto md:pt-0 md:px-24 ">
 
                         <div className="flex justify-center ">
-                            <div className="logo-load"></div>
+                            <img src={logo} className=" w-80" />
 
                         </div>
                         <div className="flex flex-col px-12">
@@ -101,8 +101,8 @@ export default function Login() {
 
 
                     </div>
-                    <div className="w-1/2 bg-cock-dark art">
-                        <img src={art} className=" h-screen" />
+                    <div className="w-1/2 flex justify-end">
+                        <img src={art} className="fadeIn h-screen" />
 
 
 

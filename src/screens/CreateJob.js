@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
@@ -11,33 +11,24 @@ import PageTitle from "../components/PageTitle";
 import CheckBox from "../components/CheckBox";
 import Footer from "../components/Footer";
 
-import "../mycss.css"
-import "../animation.css"
+import "../mycss.css";
+import "../animation.css";
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
 import crossIcon from "../assets/cross.svg";
 import acceptIcon from "../assets/accept.svg";
-import pythonIcon from "../assets/runtime/python.svg"
+import pythonIcon from "../assets/runtime/python.svg";
 import nodejsIcon from "../assets/runtime/nodejs.svg";
 import javaIcon from "../assets/runtime/java.svg";
 import dropIcon from "../assets/drop.svg";
 
-
-
-
-
-
 export default function CreateJob() {
+  const mystate = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const mystate = useSelector((state) => state)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
-  const opsys = [
-    { key: 1, name: "python", versions: ["3.9.10"] },
-
-  ];
+  const opsys = [{ key: 1, name: "python", versions: ["3.9.10"] }];
 
   const opsysV2 = [
     { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
@@ -45,7 +36,7 @@ export default function CreateJob() {
     { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
   ];
 
-  const [tagInput, setTagInput] = useState()
+  const [tagInput, setTagInput] = useState();
   const [oslist, setOslist] = useState(opsys[0].versions);
   const [data, setData] = useState([
     { id: "outline  outline-white" },
@@ -56,93 +47,113 @@ export default function CreateJob() {
   const [os, setOs] = useState(oslist[0]);
   const [selectedOs, setselectedOs] = useState(oslist[0]);
 
-
-  const [file, setFile] = useState({ name: " Attach your Code here", is_empty: true })
-  const [taskname, setTaskname] = useState()
-  const [taskdescription, setTaskdescription] = useState()
-  const [tasktags, setTasktags] = useState([])
-
+  const [file, setFile] = useState({
+    name: " Attach your Code here",
+    is_empty: true,
+  });
+  const [taskname, setTaskname] = useState();
+  const [taskdescription, setTaskdescription] = useState();
+  const [tasktags, setTasktags] = useState([]);
 
   function Tags(props) {
     const mytags = props.mytags;
-    if (!mytags) return <idv></idv>
+    if (!mytags) return <idv></idv>;
     return mytags.map((element) => (
-      <div className=" bg-cock-purple px-2 cursor-pointer" onClick={() => removeTag(element)}>{element}</div>
+      <div
+        className=" bg-cock-purple px-2 cursor-pointer"
+        onClick={() => removeTag(element)}
+      >
+        {element}
+      </div>
     ));
   }
 
   function removeTag(element) {
-    let data = tasktags.filter(e => e !== element)
-    if (data) setTasktags(data)
+    let data = tasktags.filter((e) => e !== element);
+    if (data) setTasktags(data);
   }
 
   function updateOsList(elementstyle, element) {
     setData(elementstyle);
     setOslist(element);
     setselectedOs(element[0]);
-  };
+  }
 
   function handleKeyDown(element) {
-    if (element.key === 'Enter') {
+    if (element.key === "Enter") {
       if (tagInput) {
         console.log(tasktags);
-        setTasktags([...tasktags, tagInput])
-        setTagInput("")
-        console.log('do validate');
+        setTasktags([...tasktags, tagInput]);
+        setTagInput("");
+        console.log("do validate");
       }
     }
   }
 
   function uploadfile(element) {
-
-    let fileTarge = element.target.files[0]
-    setFile(fileTarge)
+    let fileTarge = element.target.files[0];
+    setFile(fileTarge);
   }
 
   function submitform() {
-    let payloadAlert = {}
+    let payloadAlert = {};
     if (!taskname) {
-      payloadAlert = { is_hide: false, type: "error", title: "Task Name is missing!", description: "Please make sure to give a name to the task you wish to create." }
-      return dispatch({ type: "setAlert", payload: payloadAlert })
+      payloadAlert = {
+        is_hide: false,
+        type: "error",
+        title: "Task Name is missing!",
+        description:
+          "Please make sure to give a name to the task you wish to create.",
+      };
+      return dispatch({ type: "setAlert", payload: payloadAlert });
     }
     if (file.is_empty) {
-      payloadAlert = { is_hide: false, type: "error", title: "Task code is missing!", description: "Please make sure to choose the code package you wish to submit." }
-      return dispatch({ type: "setAlert", payload: payloadAlert })
-    }
-
-    else {
-
+      payloadAlert = {
+        is_hide: false,
+        type: "error",
+        title: "Task code is missing!",
+        description:
+          "Please make sure to choose the code package you wish to submit.",
+      };
+      return dispatch({ type: "setAlert", payload: payloadAlert });
+    } else {
       let job = new FormData();
       job.append("task_package", file);
       job.append("task_name", taskname);
       job.append("task_description", taskdescription);
       job.append("runtime", "python");
       job.append("runtime_version", "3.9.10");
-      let token = "Bearer " + mystate.user.token
+      let token = "Bearer " + mystate.user.token;
       const headers = {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': token
-      }
+        "Content-Type": "multipart/form-data",
+        Authorization: token,
+      };
 
-
-      axios.post("http://157.90.233.37/v1/task", job, { headers: headers })
-        .then(res => {
+      axios
+        .post("http://157.90.233.37/v1/task", job, { headers: headers })
+        .then((res) => {
           console.log(res);
-          payloadAlert = { is_hide: false, type: "success", title: "Job Built Successfully", description: 'Your job ' + taskname + ' has been deployed successfully! ready to run.' }
-          let payload = { uuid: res.data.payload.task.uuid, task_name: taskname, task_description: taskdescription }
-          dispatch({ type: "addedJob", payload: payload })
-          dispatch({ type: "setAlert", payload: payloadAlert })
+          payloadAlert = {
+            is_hide: false,
+            type: "success",
+            title: "Job Built Successfully",
+            description:
+              "Your job " +
+              taskname +
+              " has been deployed successfully! ready to run.",
+          };
+          let payload = {
+            uuid: res.data.payload.task.uuid,
+            task_name: taskname,
+            task_description: taskdescription,
+          };
+          dispatch({ type: "addedJob", payload: payload });
+          dispatch({ type: "setAlert", payload: payloadAlert });
+        });
 
-        })
-
-
-
-      return navigate(-1)
+      return navigate(-1);
     }
-
-
   }
-
 
   return (
     <div>
@@ -154,7 +165,11 @@ export default function CreateJob() {
       <div className="bg-brand-primary min-h-screen ">
         <Header logo={logo} />
         <div className="container mx-auto App-logo">
-          {!mystate.alert.is_hide && <Alert />}
+          {!mystate.alert.is_hide && (
+            <div className="mb-8">
+              <Alert />
+            </div>
+          )}
           <PageTitle icon={dashboard} text="CREATE JOB" />
 
           <div className="mt-8"></div>
@@ -173,7 +188,7 @@ export default function CreateJob() {
                   <input
                     className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
                     placeholder="Job name.."
-                    onChange={e => setTaskname(e.target.value)}
+                    onChange={(e) => setTaskname(e.target.value)}
                     value={taskname}
                   />
                 </div>
@@ -193,7 +208,7 @@ export default function CreateJob() {
                   <input
                     className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
                     placeholder="Job description..."
-                    onChange={e => setTaskdescription(e.target.value)}
+                    onChange={(e) => setTaskdescription(e.target.value)}
                     value={taskdescription}
                   />
                 </div>
@@ -275,12 +290,9 @@ export default function CreateJob() {
                 <img
                   src={pythonIcon}
                   className={
-                    "w-20 h-20  hover:outline hover:outline-white " +
-                    data[0].id
+                    "w-20 h-20  hover:outline hover:outline-white " + data[0].id
                   }
-
                 />
-
               </div>
               {/* Listbox start */}
               <Listbox as="div" value={selectedOs} onChange={setselectedOs}>
@@ -300,7 +312,9 @@ export default function CreateJob() {
                           <div className="relative">
                             <span className="inline-block w-full">
                               <Listbox.Button className="flex justify-between pl-3 py-4 w-full text-left focus:outline-none  text-white text-sm font-Inter font-bold">
-                                <span className="block truncate">{selectedOs}</span>
+                                <span className="block truncate">
+                                  {selectedOs}
+                                </span>
                                 <img
                                   src={dropIcon}
                                   height="12"
@@ -326,19 +340,28 @@ export default function CreateJob() {
                               <Listbox.Option key={fruit} value={fruit}>
                                 {({ selected, active }) => (
                                   <div
-                                    className={`${active ? " text-white bg-purple-600" : "text-white"
-                                      } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
+                                    className={`${
+                                      active
+                                        ? " text-white bg-purple-600"
+                                        : "text-white"
+                                    } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
                                   >
                                     <span
-                                      className={`${selected ? " font-semibold" : "font-normal"
-                                        }`}
+                                      className={`${
+                                        selected
+                                          ? " font-semibold"
+                                          : "font-normal"
+                                      }`}
                                     >
                                       {fruit}
                                     </span>
                                     {selected && (
                                       <span
-                                        className={`${active ? "text-white" : "text-purple-600"
-                                          } absolute inset-y-0 left-0 flex items-center pl-2`}
+                                        className={`${
+                                          active
+                                            ? "text-white"
+                                            : "text-purple-600"
+                                        } absolute inset-y-0 left-0 flex items-center pl-2`}
                                       >
                                         <svg
                                           className="h-5 w-5"
@@ -366,9 +389,6 @@ export default function CreateJob() {
                 )}
               </Listbox>
               {/* List box end */}
-
-
-
 
               {/*  <div class="w-full mt-44">
                 <label for="step" class="font-bold text-white">CONFIGURATION</label>
@@ -425,11 +445,7 @@ export default function CreateJob() {
 
                 </div>
               </div> */}
-
-
             </div>
-
-
           </div>
           {/* Confirmation box start */}
           <div className="mt-12 bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
@@ -437,15 +453,20 @@ export default function CreateJob() {
               CONFIRMATION
             </p>
             <div className="mr-8 flex flex-row justify-between space-x-4 items-center">
-
-              <div onClick={() => navigate(-1)} className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer">
+              <div
+                onClick={() => navigate(-1)}
+                className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer"
+              >
                 <img src={crossIcon} height="10" width="10" />
-                <p className="text-white text-xs font-Rajdhani font-bold">CANCEL</p>
+                <p className="text-white text-xs font-Rajdhani font-bold">
+                  CANCEL
+                </p>
               </div>
 
               <div
                 onClick={submitform}
-                className="flex items-center justify-center bg-cock-green border-2 border-white h-10 w-42 space-x-2 px-6 hover:bg-green-400 cursor-pointer">
+                className="flex items-center justify-center bg-cock-green border-2 border-white h-10 w-42 space-x-2 px-6 hover:bg-green-400 cursor-pointer"
+              >
                 <img src={acceptIcon} height="10" width="10" />
                 <p className="text-white text-xs font-Rajdhani font-bold">
                   CREATE JOB

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Switch, Route, Link, useNavigate } from "react-router-dom";
-import avatar from "../assets/avatar.jpg"
+import avatar from "../assets/avatar/avatar.webp"
 
 export default function Header(props) {
   const navigate = useNavigate()

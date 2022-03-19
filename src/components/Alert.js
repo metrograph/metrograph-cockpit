@@ -22,7 +22,7 @@ export default function Alert() {
   if (mystate.alert.type === "success") {
     return (
       <div className={vanish}>
-        <div className="App-logo   bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
+        <div className="bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static fadeIn">
           <div className="flex flex-row">
             <div>
               <img src={successIcon} className="mx-4" />
@@ -54,7 +54,7 @@ export default function Alert() {
   } else if (mystate.alert.type === "error") {
     return (
       <div className={vanish}>
-        <div className="App-logo  bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static">
+        <div className=" bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static fadeIn">
           <div className="flex flex-row">
             <div>
               <img src={warningIcon} className="mx-4" />

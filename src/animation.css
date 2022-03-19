@@ -90,7 +90,7 @@
 }
 .fadeIn{
  
- animation: fadeIn 1s linear;
+ animation: fadeIn 400ms linear;
 }
 @keyframes load {
   from {

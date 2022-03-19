@@ -1,0 +1,47 @@
+.myBackround{
+background: black;
+height:100vh;
+width: 100%;
+}
+
+
+.circle{
+    --x:100px;
+    --y:100px;
+    background-color: azure;
+    height: var(--x);
+    width: var(--y);
+    border-radius: 100%;
+    
+    transition: height .5s,width .5s,background-color 2s,transform 1s;
+}
+.circle:hover{
+    transform: scale(4);
+   
+    background-color: rgb(72, 224, 135);
+}
+
+.rectangle{
+    --x:100px;
+    --y:100px;
+    background-color: rgb(32, 165, 165);
+    
+    height: var(--x);
+    width: var(--y);
+    z-index: 1;
+   transition: height .5s,width .5s,background-color 2s,border-radius 300ms,transform 100ms;
+}
+.rectangle:hover{
+    --x:80px;
+    --y:80px;
+    border-radius: 100%;
+    background-color: blueviolet;
+}
+.rectangle:active {
+    transition: background-color 4s,height 4s,width 4s;
+    --x:600px;
+    --y:600px;
+    border-radius: 100%;
+   
+    background-color: rgb(43, 226, 98);
+}

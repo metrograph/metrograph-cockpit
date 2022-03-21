@@ -28,3 +28,5 @@ jobs:
     - run: export CI=false
     - run: npm i
     - run: npm run build
+    - env:
+          CI: ""

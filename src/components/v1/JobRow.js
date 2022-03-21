@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import ButtonAction from "../ButtonAction";
 import ButtonStatus from "../ButtonStatus";
 import runIcon from "../../assets/run.svg";
 import crossIcon from "../../assets/cross.svg";
@@ -19,7 +18,7 @@ export default function JobRow(props) {
     Authorization: token,
   };
   function runTask(id) {
-    let payloadAlert = { is_hide: false, type: "success" };
+
     const url = "http://157.90.233.37/v1/task/" + id + "/run";
 
     axios.post(url, {}, { headers: headers }).then((res) => {
@@ -59,10 +58,7 @@ export default function JobRow(props) {
     setStatus("ready");
     setActionType("run");
   };
-  const runJob = () => {
-    setStatus("running");
-    setActionType("stop");
-  };
+
 
   return (
     <div className={"App-logo " + vanish}>

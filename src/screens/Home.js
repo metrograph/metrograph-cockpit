@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
+
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
@@ -39,8 +39,8 @@ function JobList(props) {
   ));
 }
 
-function App() {
-  const endPoint = "http://157.90.233.37:80/task";
+export default function App() {
+
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
   const navigate = useNavigate();
@@ -128,4 +128,4 @@ function App() {
   );
 }
 
-export default App;
+

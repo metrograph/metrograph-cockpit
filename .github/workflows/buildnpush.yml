@@ -36,9 +36,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: metrograph/cokpit:latest
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: metrograph/cokpit:latest
     

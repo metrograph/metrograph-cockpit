@@ -64,7 +64,7 @@ export default function JobRow(props) {
           {/*  element config start */}
           <div className="lg:w-3/12 md:w-3/12 flex  place-items-center space-x-2 justify-center ">
             <div className="bg-brand-dark-button h-12 lg:w-14 grid place-content-center ">
-              <img className="" src={props.technologieIcon} />
+              <img alt="Runtime" className="" src={props.technologieIcon} />
             </div>
             <div className="bg-brand-dark-button h-12 lg:w-44 grid place-content-center ">
               <p className=" text-white  text-md">{props.serverConfig}</p>
@@ -84,12 +84,12 @@ export default function JobRow(props) {
           <div className="lg:w-3/12 md:w-4/12 flex  place-items-center space-x-2 justify-end ">
             {/*   button more start */}
             <div onClick={() => deleteJob(props.id)} className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
-              <img className="px-4" src={props.moreIcon} />
+              <img alt="" className="px-4" src={props.moreIcon} />
             </div>
             {/*   button more end */}
             {/*  button SCHEDULE start  */}
             <div className="flex items-center bg-brand-dark-button  border-2 border-white h-12 space-x-2 px-2 hover:bg-zinc-500 cursor-pointer">
-              <img src={props.timeIcon} height="16" width="16" />
+              <img alt="" src={props.timeIcon} height="16" width="16" />
               <p className="text-white text-md">SCHEDULE</p>
             </div>
             {/*  button SCHEDULE end  */}
@@ -100,7 +100,7 @@ export default function JobRow(props) {
                 onClick={() => runTask(props.id)}
                 className="flex items-center bg-cock-purple border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
               >
-                <img src={runIcon} height="10" width="10" />
+                <img alt="" src={runIcon} height="10" width="10" />
                 <p className="text-white text-md">RUN</p>
               </button>
             )}
@@ -109,7 +109,7 @@ export default function JobRow(props) {
                 onClick={stopJob}
                 className="flex items-center bg-cock-red border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-red-400 cursor-pointer"
               >
-                <img src={crossIcon} height="10" width="10" />
+                <img alt="" src={crossIcon} height="10" width="10" />
                 <p className="text-white text-md">STOP</p>
               </button>
             )}

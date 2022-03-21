@@ -139,7 +139,7 @@ export default function Login() {
                             </div>
                             <div className="flex flex-col px-12">
                                 <div className="mt-28 flex items-center space-x-4">
-                                    <img src={dashboardIcon} height="38" width="38" />
+                                    <img alt="" src={dashboardIcon} height="38" width="38" />
                                     <div className="flex flex-col">
                                         <p className="text-2xl text-white font-Rajdhani font-medium">
                                             Create Account
@@ -188,7 +188,7 @@ export default function Login() {
                                             onChange={(e) => setInputs({ username: inputs.username, password: e.target.value, confirmPassword: inputs.confirmPassword })}
                                             value={inputs.password}
                                         />
-                                        <img src={eye ? hiddenIcon : viewerIcon} className="h-6 w-6 cursor-pointer mr-4" onClick={() => toogleEye()} />
+                                        <img alt="" src={eye ? hiddenIcon : viewerIcon} className="h-6 w-6 cursor-pointer mr-4" onClick={() => toogleEye()} />
                                     </div>
                                 </div>
                                 {/* password input end */}
@@ -227,7 +227,7 @@ export default function Login() {
                         </div>
                     </div>
                     <div className="w-1/2 flex justify-end relative">
-                        <img src={art} className="fadeIn h-screen" />
+                        <img alt="" src={art} className="fadeIn h-screen" />
                         <div className="absolute h-screen w-full"></div>
 
 

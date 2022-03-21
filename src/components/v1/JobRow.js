@@ -79,7 +79,7 @@ export default function JobRow(props) {
           {/*  element config start */}
           <div className="lg:w-3/12 md:w-3/12 flex  place-items-center space-x-2 justify-center ">
             <div className="bg-brand-dark-button h-12 lg:w-14 grid place-content-center ">
-              <img className="" src={props.technologieIcon} />
+              <img alt="" className="" src={props.technologieIcon} />
             </div>
             <div className="bg-brand-dark-button h-12 lg:w-20 grid place-content-center ">
               <p className=" text-white  text-md">3.9.10</p>
@@ -99,7 +99,7 @@ export default function JobRow(props) {
                 onClick={() => runTask(props.id)}
                 className="flex items-center bg-cock-purple border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-purple-400 cursor-pointer"
               >
-                <img src={runIcon} height="10" width="10" />
+                <img alt="" src={runIcon} height="10" width="10" />
                 <p className="text-white text-md">RUN</p>
               </button>
             )}
@@ -108,7 +108,7 @@ export default function JobRow(props) {
                 onClick={stopJob}
                 className="flex items-center bg-cock-red border-2 border-white h-12 w-28 space-x-2 px-6 hover:bg-red-400 cursor-pointer"
               >
-                <img src={crossIcon} height="10" width="10" />
+                <img alt="" src={crossIcon} height="10" width="10" />
                 <p className="text-white text-md">STOP</p>
               </button>
             )}

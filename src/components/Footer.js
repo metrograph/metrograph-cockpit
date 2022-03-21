@@ -5,7 +5,7 @@ export default function Footer() {
     <div className="flex mt-44 h-56 border-t-2 border-cock-line items-center ">
       <div className="flex flex-row w-full justify-between mx-32">
         <div className="space-y-4 cursor-pointer">
-          <img src={logoFooter} width="134" height="71" className=" opacity-25" />
+          <img src={logoFooter} alt="Metrograph Logo" width="134" height="71" className=" opacity-25" />
           <p className="text-sm font-Inter font-regular text-cock-footer cursor-pointer">
             Building and Scaling apps has never been easier!
           </p>

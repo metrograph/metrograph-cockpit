@@ -110,7 +110,7 @@ function App() {
 
             {!mystate.jobs.length && (
               <div className="mt-44 mb-20 flex flex-col items-center">
-                <img src={empty_image} height="125px" width="125px" />
+                <img alt="" src={empty_image} height="125px" width="125px" />
                 <p className="mt-6 font-Rajdhani font-bold text-cock-purple-light text-center text-3xl">
                   Your space is still empty.
                   <br />

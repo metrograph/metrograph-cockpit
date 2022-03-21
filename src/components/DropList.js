@@ -23,6 +23,7 @@ export default function DropList(props) {
                     <Listbox.Button className="flex justify-between pl-3 py-4 w-full text-left focus:outline-none  text-white text-sm font-Inter font-bold">
                       <span className="block truncate">{props.selectedOs}</span>
                       <img
+                        alt="Runtime"
                         src={dropIcon}
                         height="12"
                         width="12"

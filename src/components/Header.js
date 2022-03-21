@@ -12,13 +12,13 @@ export default function Header(props) {
     <div className="bg-brand-header h-28  mb-14 font-title flex items-center  justify-between relative">
       <div className="h-12 w-12 mr-20"></div>
       <Link to="/">
-        <img src={props.logo} className="w-44" />
+        <img src={props.logo} alt="Metrograph Logo" className="w-44" />
       </Link>
       <div className="flex items-center mr-28">
         <div className="h-12 w-12 cursor-pointer mr-4">
 
           <div className=" flex w-full h-full items-end">
-            <img className=" flex  bg-white w-full h-full" src={avatar} />
+            <img alt="User Avatar" className=" flex bg-white w-full h-full" src={avatar} />
             <div className=" border-l-2 h-10  border-cock-purple" />
           </div>
           <div className="border-b-2 border-cock-purple"></div>

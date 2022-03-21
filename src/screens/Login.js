@@ -94,7 +94,7 @@ export default function Login() {
                             </div>
                             <div className="flex flex-col px-12">
                                 <div className="mt-28 flex items-center space-x-4">
-                                    <img src={dashboardIcon} height="38" width="38" />
+                                    <img alt="" src={dashboardIcon} height="38" width="38" />
                                     <div className="flex flex-col">
                                         <p className="text-2xl text-white font-Rajdhani font-medium">
                                             Login to your account

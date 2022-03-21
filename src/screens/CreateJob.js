@@ -288,6 +288,7 @@ export default function CreateJob() {
               </p>
               <div className="flex flex-row space-x-4 mt-8">
                 <img
+                  alt=""
                   src={pythonIcon}
                   className={
                     "w-20 h-20  hover:outline hover:outline-white " + data[0].id
@@ -316,6 +317,7 @@ export default function CreateJob() {
                                   {selectedOs}
                                 </span>
                                 <img
+                                  alt=""
                                   src={dropIcon}
                                   height="12"
                                   width="12"
@@ -457,7 +459,7 @@ export default function CreateJob() {
                 onClick={() => navigate(-1)}
                 className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer"
               >
-                <img src={crossIcon} height="10" width="10" />
+                <img alt="" src={crossIcon} height="10" width="10" />
                 <p className="text-white text-xs font-Rajdhani font-bold">
                   CANCEL
                 </p>
@@ -467,7 +469,7 @@ export default function CreateJob() {
                 onClick={submitform}
                 className="flex items-center justify-center bg-cock-green border-2 border-white h-10 w-42 space-x-2 px-6 hover:bg-green-400 cursor-pointer"
               >
-                <img src={acceptIcon} height="10" width="10" />
+                <img alt="" src={acceptIcon} height="10" width="10" />
                 <p className="text-white text-xs font-Rajdhani font-bold">
                   CREATE JOB
                 </p>

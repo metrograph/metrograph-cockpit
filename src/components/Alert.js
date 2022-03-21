@@ -25,7 +25,7 @@ export default function Alert() {
         <div className="bg-brand-header w-full h-28 flex flex-row border-r-4 justify-between  border-b-4 border-cock-purple items-center static fadeIn">
           <div className="flex flex-row">
             <div>
-              <img src={successIcon} className="mx-4" />
+              <img alt="" src={successIcon} className="mx-4" />
             </div>
             <div>
               <p className="text-white texl-3xl   font-Rajdhani font-semibold">
@@ -42,7 +42,7 @@ export default function Alert() {
               onClick={hideAlert}
               className="flex items-center justify-center bg-brand-header border-2 border-white h-10 w-36 space-x-2 px-6 hover:bg-zinc-600 cursor-pointer"
             >
-              <img src={crossIcon} height="10" width="10" />
+              <img alt="" src={crossIcon} height="10" width="10" />
               <p className="text-white text-xs font-Rajdhani font-bold">
                 DISMISS
               </p>

@@ -1,4 +1,4 @@
-import "../animation.css"
+import "../assets/css/animation.css"
 export default function ButtonStatus(props) {
 
   if (props.status === "ready") {

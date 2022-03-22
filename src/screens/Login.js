@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Alert from "../components/Alert";
-
 import art from "../assets/animation/art.gif"
-import logo from "../assets/logo.svg"
 import dashboardIcon from "../assets/dashboard.svg"
 
-import ball from "../assets/ball.png"
-import "../animation.css"
-import { stringify } from "postcss";
+
+import "../assets/css/animation.css"
+
 const endPoint = "http://157.90.233.37/v1/auth"
 
 export default function Login() {
@@ -66,10 +64,11 @@ export default function Login() {
 
 
     }
+
     useEffect(() => {
 
         loadLocalStorage()
-    }, []);
+    });
     return (
         <div>
 

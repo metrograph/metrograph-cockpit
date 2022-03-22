@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import { Listbox, Transition } from "@headlessui/react";
@@ -11,16 +11,14 @@ import PageTitle from "../components/PageTitle";
 import CheckBox from "../components/CheckBox";
 import Footer from "../components/Footer";
 
-import "../mycss.css";
-import "../animation.css";
+import "../assets/css/mycss.css";
+import "../assets/css/animation.css";
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";
 import crossIcon from "../assets/cross.svg";
 import acceptIcon from "../assets/accept.svg";
 import pythonIcon from "../assets/runtime/python.svg";
-import nodejsIcon from "../assets/runtime/nodejs.svg";
-import javaIcon from "../assets/runtime/java.svg";
 import dropIcon from "../assets/drop.svg";
 
 export default function CreateJob() {
@@ -28,24 +26,9 @@ export default function CreateJob() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const opsys = [{ key: 1, name: "python", versions: ["3.9.10"] }];
-
-  const opsysV2 = [
-    { key: 1, name: "python", versions: ["3.9.10", "18.06", "14.02"] },
-    { key: 2, name: "nodejs", versions: ["34 LTS", "33 LTS", "32 LTS"] },
-    { key: 3, name: "java", versions: ["8 LTS", "7 LTS", "6 LTS"] },
-  ];
-
-  const [tagInput, setTagInput] = useState();
-  const [oslist, setOslist] = useState(opsys[0].versions);
-  const [data, setData] = useState([
-    { id: "outline  outline-white" },
-    { id: "" },
-    { id: "" },
-  ]);
-
-  const [os, setOs] = useState(oslist[0]);
-  const [selectedOs, setselectedOs] = useState(oslist[0]);
+  const runtimeList = [{ key: 1, name: "python", versions: ["3.9.10"] }];
+  const runtimeVersionList = runtimeList[0].versions
+  const [selectedRuntime, setSelectedRuntime] = useState(runtimeList[0].versions[0]);
 
   const [file, setFile] = useState({
     name: " Attach your Code here",
@@ -53,42 +36,6 @@ export default function CreateJob() {
   });
   const [taskname, setTaskname] = useState();
   const [taskdescription, setTaskdescription] = useState();
-  const [tasktags, setTasktags] = useState([]);
-
-  function Tags(props) {
-    const mytags = props.mytags;
-    if (!mytags) return <idv></idv>;
-    return mytags.map((element) => (
-      <div
-        className=" bg-cock-purple px-2 cursor-pointer"
-        onClick={() => removeTag(element)}
-      >
-        {element}
-      </div>
-    ));
-  }
-
-  function removeTag(element) {
-    let data = tasktags.filter((e) => e !== element);
-    if (data) setTasktags(data);
-  }
-
-  function updateOsList(elementstyle, element) {
-    setData(elementstyle);
-    setOslist(element);
-    setselectedOs(element[0]);
-  }
-
-  function handleKeyDown(element) {
-    if (element.key === "Enter") {
-      if (tagInput) {
-        console.log(tasktags);
-        setTasktags([...tasktags, tagInput]);
-        setTagInput("");
-        console.log("do validate");
-      }
-    }
-  }
 
   function uploadfile(element) {
     let fileTarge = element.target.files[0];
@@ -291,12 +238,12 @@ export default function CreateJob() {
                   alt=""
                   src={pythonIcon}
                   className={
-                    "w-20 h-20  hover:outline hover:outline-white " + data[0].id
+                    "w-20 h-20  hover:outline hover:outline-white outline  outline-white"
                   }
                 />
               </div>
               {/* Listbox start */}
-              <Listbox as="div" value={selectedOs} onChange={setselectedOs}>
+              <Listbox as="div" value={selectedRuntime} onChange={setSelectedRuntime}>
                 {({ open }) => (
                   <>
                     <div className="mt-8 relative">
@@ -314,7 +261,7 @@ export default function CreateJob() {
                             <span className="inline-block w-full">
                               <Listbox.Button className="flex justify-between pl-3 py-4 w-full text-left focus:outline-none  text-white text-sm font-Inter font-bold">
                                 <span className="block truncate">
-                                  {selectedOs}
+                                  {selectedRuntime}
                                 </span>
                                 <img
                                   alt=""
@@ -338,32 +285,29 @@ export default function CreateJob() {
                             static
                             className="border border-brand-header bg-brand-primary  mt-1"
                           >
-                            {oslist.map((fruit) => (
+                            {runtimeVersionList.map((fruit) => (
                               <Listbox.Option key={fruit} value={fruit}>
                                 {({ selected, active }) => (
                                   <div
-                                    className={`${
-                                      active
-                                        ? " text-white bg-purple-600"
-                                        : "text-white"
-                                    } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
+                                    className={`${active
+                                      ? " text-white bg-purple-600"
+                                      : "text-white"
+                                      } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
                                   >
                                     <span
-                                      className={`${
-                                        selected
-                                          ? " font-semibold"
-                                          : "font-normal"
-                                      }`}
+                                      className={`${selected
+                                        ? " font-semibold"
+                                        : "font-normal"
+                                        }`}
                                     >
                                       {fruit}
                                     </span>
                                     {selected && (
                                       <span
-                                        className={`${
-                                          active
-                                            ? "text-white"
-                                            : "text-purple-600"
-                                        } absolute inset-y-0 left-0 flex items-center pl-2`}
+                                        className={`${active
+                                          ? "text-white"
+                                          : "text-purple-600"
+                                          } absolute inset-y-0 left-0 flex items-center pl-2`}
                                       >
                                         <svg
                                           className="h-5 w-5"

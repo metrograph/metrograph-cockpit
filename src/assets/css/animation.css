@@ -1,7 +1,7 @@
 
 
 .ball{
-  background: url("./assets/ball.png");
+  background: url("../ball.png");
 
   height: 55px;
   width: 55px;
@@ -10,7 +10,7 @@
 }
 .logo {
  
-  background: url("./assets/logo-top-dark.svg");
+  background: url("../logo-top-dark.svg");
   width:259px;
   height:64px;
   background-size:cover;
@@ -31,7 +31,7 @@
 
 .logo-load {
  
-  background: url("./assets/logo-top-dark.svg");
+  background: url("../logo-top-dark.svg");
   position: relative;
   width:259px;
   height:64px;
@@ -42,7 +42,7 @@
 
 .logo-load::before{
   content: "";
-  background: url("./assets/logo.svg");
+  background: url("../logo.svg");
   position: absolute;
   top:0;
   left: 0;

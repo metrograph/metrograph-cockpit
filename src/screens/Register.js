@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import Alert from "../components/Alert";
 
 import art from "../assets/animation/art.gif"
-import logo from "../assets/logo.svg"
+
 import dashboardIcon from "../assets/dashboard.svg"
 import hiddenIcon from "../assets/icons/hidden.svg"
 import viewerIcon from "../assets/icons/viewer.svg"
 
-import ball from "../assets/ball.png"
-import "../animation.css"
-import { stringify } from "postcss";
-const endPoint = "http://157.90.233.37/v1/auth"
+
+import "../assets/css/animation.css"
+
+
 
 export default function Login() {
     const [inputs, setInputs] = useState({ username: "", password: "", confirmPassword: "" })
@@ -74,39 +74,7 @@ export default function Login() {
                 }
             });
     }
-    function login() {
-        setOnLoad(true)
-        if (!inputs.username || !inputs.password) {
 
-            let payloadAlert = { is_hide: false, type: "error", title: "Register failed.", description: "Invalid credentials or password requirements not met" }
-            dispatch({ type: "setAlert", payload: payloadAlert })
-            setTimeout(() => setOnLoad(false), 200)
-            return console.log("error")
-        }
-
-        axios.post(endPoint, inputs)
-            .then(function (response) {
-                setTimeout(() => setOnLoad(false), 200)
-                if (response.status === 200) {
-                    console.log(response.data.payload);
-                    localStorage.setItem("localState", JSON.stringify(response.data.payload))
-                    dispatch({ type: "setUser", payload: response.data.payload })
-                    return navigate("/home")
-                }
-
-
-
-            }).catch(error => {
-                if (error.response.status === 401) {
-                    console.log(error.response.status);
-                    setTimeout(() => setOnLoad(false), 200)
-                    let payloadAlert = { is_hide: false, type: "error", title: "Register failed.", description: "Invalid credentials or password requirements not met" }
-                    dispatch({ type: "setAlert", payload: payloadAlert })
-                }
-            });
-
-
-    }
     function toogleEye() {
 
         setEye(!eye)

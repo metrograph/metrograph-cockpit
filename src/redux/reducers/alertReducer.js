@@ -12,8 +12,6 @@ const jobReducer = (state = { is_hide: true, type: null }, { type, payload }) =>
                 title: payload.title,
                 description: payload.description
             }
-            break;
-
         default:
             return state
     }

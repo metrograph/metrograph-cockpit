@@ -1,57 +1,68 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios';
-import ButtonAction from "./ButtonAction";
+import axios from "axios";
 import ButtonStatus from "./ButtonStatus";
 import runIcon from "../assets/run.svg";
 import crossIcon from "../assets/cross.svg";
+import "../assets/css/animation.css";
 
 export default function JobRow(props) {
-
   const [status, setStatus] = useState(props.status);
   const [actionType, setActionType] = useState(props.actionType);
+  const [vanish, setVanish] = useState("");
+  const mystate = useSelector((state) => state);
+  let token = "Bearer " + mystate.user.token;
+  const dispatch = useDispatch();
 
-  const mystate = useSelector((state) => state)
-
-  const dispatch = useDispatch()
-
+  const headers = {
+    Authorization: token,
+  };
   function runTask(id) {
 
-    let payloadAlert = { is_hide: false, type: "success" }
+    const url = "http://157.90.233.37/v1/task/" + id + "/run";
 
-
-    axios.post("http://157.90.233.37:80/task/" + id + "/run")
-      .then(res => {
-        console.log(res);
-        setStatus("running");
-        setActionType("stop");
-        dispatch({ type: "setAlert", payload: payloadAlert })
-
-      })
+    axios.post(url, {}, { headers: headers }).then((res) => {
+      setStatus("running");
+      setActionType("stop");
+      let payloadAlert = {
+        is_hide: false,
+        type: "success",
+        title: "Job Operation completed successfully",
+        description: "Your job " + props.name + " did run successfully!",
+      };
+      dispatch({ type: "setAlert", payload: payloadAlert });
+    });
     setStatus("pending");
   }
 
   function deleteJob(id) {
-
-    axios.delete("http://157.90.233.37:80/task/" + id)
-      .then(res => {
-        dispatch({ type: "deletedJob", payload: id })
-      })
-  };
+    axios
+      .delete("http://157.90.233.37/v1/task/" + id, { headers: headers })
+      .then((res) => {
+        setVanish("vanish");
+        setTimeout(function () {
+          dispatch({ type: "deletedJob", payload: id });
+          let payloadAlert = {
+            is_hide: false,
+            type: "success",
+            title: "Job Removed Successfully",
+            description:
+              "Your job " + props.name + " has been removed successfully!",
+          };
+          dispatch({ type: "setAlert", payload: payloadAlert });
+        }, 400);
+      });
+  }
 
   const stopJob = () => {
     setStatus("ready");
     setActionType("run");
   };
-  const runJob = () => {
-    setStatus("running");
-    setActionType("stop");
-  };
+
 
   return (
-    <div>
-      <div className="flex flex-row">
-
+    <div className={"App-logo " + vanish}>
+      <div className="flex flex-row ">
         <div className="w-full flex  bg-brand-header border-2 border-white h-24 px-4 justify-between content-center">
           {/*  element title and info start */}
           <div className="lg:w-3/12 md:w-3/12 flex flex-col place-content-center  ">
@@ -64,13 +75,10 @@ export default function JobRow(props) {
           {/*  element config start */}
           <div className="lg:w-3/12 md:w-3/12 flex  place-items-center space-x-2 justify-center ">
             <div className="bg-brand-dark-button h-12 lg:w-14 grid place-content-center ">
-              <img alt="Runtime" className="" src={props.technologieIcon} />
+              <img alt="" className="" src={props.technologieIcon} />
             </div>
-            <div className="bg-brand-dark-button h-12 lg:w-44 grid place-content-center ">
-              <p className=" text-white  text-md">{props.serverConfig}</p>
-            </div>
-            <div className="bg-brand-dark-button h-12 lg:w-20 grid place-content-center">
-              <p className=" text-white text-md">{props.serverLocation}</p>
+            <div className="bg-brand-dark-button h-12 lg:w-20 grid place-content-center ">
+              <p className=" text-white  text-md">3.9.10</p>
             </div>
           </div>
           {/*  element config end */}
@@ -82,19 +90,6 @@ export default function JobRow(props) {
 
           {/*  element config start */}
           <div className="lg:w-3/12 md:w-4/12 flex  place-items-center space-x-2 justify-end ">
-            {/*   button more start */}
-            <div onClick={() => deleteJob(props.id)} className="bg-brand-dark-button h-12  border-2 border-white grid place-content-center hover:bg-zinc-500 cursor-pointer">
-              <img alt="" className="px-4" src={props.moreIcon} />
-            </div>
-            {/*   button more end */}
-            {/*  button SCHEDULE start  */}
-            <div className="flex items-center bg-brand-dark-button  border-2 border-white h-12 space-x-2 px-2 hover:bg-zinc-500 cursor-pointer">
-              <img alt="" src={props.timeIcon} height="16" width="16" />
-              <p className="text-white text-md">SCHEDULE</p>
-            </div>
-            {/*  button SCHEDULE end  */}
-            {/*  button Rund start */}
-
             {actionType === "run" && (
               <button
                 onClick={() => runTask(props.id)}
@@ -113,6 +108,12 @@ export default function JobRow(props) {
                 <p className="text-white text-md">STOP</p>
               </button>
             )}
+            <div
+              onClick={() => deleteJob(props.id)}
+              className="flex  place-items-center justify-center bg-cock-red  border-2 border-white h-12 w-28 space-x-2 px-2 hover:bg-red-400 cursor-pointer"
+            >
+              <p className="text-white text-md">DELETE</p>
+            </div>
 
             {/*  button Run end */}
           </div>

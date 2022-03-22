@@ -11,8 +11,8 @@ import PageTitle from "../components/PageTitle";
 import CheckBox from "../components/CheckBox";
 import Footer from "../components/Footer";
 
-import "../mycss.css";
-import "../animation.css";
+import "../assets/css/mycss.css";
+import "../assets/css/animation.css";
 
 import logo from "../assets/logo.svg";
 import dashboard from "../assets/dashboard.svg";

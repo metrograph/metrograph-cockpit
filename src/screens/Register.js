@@ -13,7 +13,7 @@ import hiddenIcon from "../assets/icons/hidden.svg"
 import viewerIcon from "../assets/icons/viewer.svg"
 
 
-import "../animation.css"
+import "../assets/css/animation.css"
 
 
 

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import ButtonCreate from "../components/ButtonCreate";
 import PageTitle from "../components/PageTitle";
-import JobRow from "../components/v1/JobRow";
+import JobRow from "../components/JobRow";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 
@@ -46,35 +46,39 @@ export default function App() {
   const navigate = useNavigate();
 
 
-  function loadLocalStorage() {
-    if (!mystate.user.token) {
-      const localstorage = localStorage.getItem("localState");
-      const data = JSON.parse(localstorage);
-      if (!data) {
-        return navigate("/");
-      }
-      dispatch({ type: "setUser", payload: data });
-    }
-  }
 
-  function loadJob() {
-    let token = "Bearer " + mystate.user.token;
-    axios
-      .get("http://157.90.233.37/v1/task", {
-        headers: { Authorization: token },
-      })
-      .then(function (response) {
-        let data = response.data.payload.tasks;
-        dispatch({ type: "setJobs", payload: data });
-      });
-  }
 
   useEffect(() => {
-    loadLocalStorage();
-    if (mystate.user.token) {
-      loadJob();
+    function loadLocalStorage() {
+      if (!mystate.user.token) {
+        const localstorage = localStorage.getItem("localState");
+        const data = JSON.parse(localstorage);
+        if (!data) {
+          return navigate("/");
+        }
+        dispatch({ type: "setUser", payload: data });
+      }
     }
-  }, [mystate.user]);
+
+    function loadJob() {
+      if (mystate.user.token) {
+        let token = "Bearer " + mystate.user.token;
+        axios
+          .get("http://157.90.233.37/v1/task", {
+            headers: { Authorization: token },
+          })
+          .then(function (response) {
+            let data = response.data.payload.tasks;
+            dispatch({ type: "setJobs", payload: data });
+          });
+      }
+    }
+
+    console.log("hello");
+    loadLocalStorage();
+    loadJob();
+
+  }, [mystate.user, navigate, dispatch]);
 
   return (
     <div>

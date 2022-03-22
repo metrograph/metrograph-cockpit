@@ -9,7 +9,7 @@ import art from "../assets/animation/art.gif"
 import dashboardIcon from "../assets/dashboard.svg"
 
 
-import "../animation.css"
+import "../assets/css/animation.css"
 
 const endPoint = "http://157.90.233.37/v1/auth"
 
@@ -68,7 +68,7 @@ export default function Login() {
     useEffect(() => {
 
         loadLocalStorage()
-    }, []);
+    });
     return (
         <div>
 

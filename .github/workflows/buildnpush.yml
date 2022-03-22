@@ -22,9 +22,8 @@ jobs:
       with:
         node-version: '16'
         cache: 'npm'
-    - run: export CI=false
     - run: npm i
-    - run: npm run build
+    - run: CI='' npm run build
     
     - run: ls
       name: ls

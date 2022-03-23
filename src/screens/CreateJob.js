@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -101,6 +101,26 @@ export default function CreateJob() {
       return navigate(-1);
     }
   }
+
+  useEffect(() => {
+    function loadLocalStorage() {
+      if (!mystate.user.token) {
+        const localstorage = localStorage.getItem("localState");
+        const data = JSON.parse(localstorage);
+        if (!data) {
+          return navigate("/");
+        }
+        dispatch({ type: "setUser", payload: data });
+      }
+    }
+
+
+
+
+    loadLocalStorage();
+
+
+  }, [navigate, dispatch]);
 
   return (
     <div>

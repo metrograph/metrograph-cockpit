@@ -88,7 +88,7 @@ export default function App() {
       </Helmet>
 
       <div className="bg-brand-primary min-h-screen ">
-        <Header logo={logo} />
+        <Header logo={logo} username={mystate.user.username} />
 
         <div className="container mx-auto">
           {!mystate.alert.is_hide && (

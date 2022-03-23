@@ -21,16 +21,8 @@ export default function Login() {
     const dispatch = useDispatch()
 
 
-    function loadLocalStorage() {
-        const localstorage = localStorage.getItem("localState")
-        const data = JSON.parse(localstorage)
-        console.log(data);
-        if (data) {
-            return navigate("/home")
-        }
-
-    }
     function login() {
+        console.log(inputs)
         setOnLoad(true)
         if (!inputs.username || !inputs.password) {
 
@@ -39,7 +31,6 @@ export default function Login() {
             setTimeout(() => setOnLoad(false), 200)
             return console.log("error")
         }
-
         axios.post(endPoint, inputs)
             .then(function (response) {
                 setTimeout(() => setOnLoad(false), 200)
@@ -63,12 +54,25 @@ export default function Login() {
             });
 
 
+
     }
+
+
+
+    function loadLocalStorage() {
+        const localstorage = localStorage.getItem("localState")
+        const data = JSON.parse(localstorage)
+        if (data) {
+            return navigate("/home")
+        }
+
+    }
+
 
     useEffect(() => {
 
         loadLocalStorage()
-    });
+    }, []);
     return (
         <div>
 
@@ -118,6 +122,7 @@ export default function Login() {
                                             placeholder="@username.."
                                             onChange={(e) => setInputs({ username: e.target.value, password: inputs.password })}
                                             value={inputs.username}
+                                            onKeyDown={e => e.key === 'Enter' && login()}
 
                                         />
                                     </div>
@@ -140,6 +145,7 @@ export default function Login() {
                                             placeholder="........."
                                             onChange={(e) => setInputs({ username: inputs.username, password: e.target.value })}
                                             value={inputs.password}
+                                            onKeyDown={e => e.key === 'Enter' && login()}
                                         />
                                     </div>
                                 </div>

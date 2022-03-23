@@ -1,7 +1,7 @@
-![Metrograph Cockpit](https://i.imgur.com/QbQPt3N.png)
-
+<img src="https://i.imgur.com/QbQPt3N.png" alt="Metrograph Cockpit" width=300>
 
 This is the official Metrograph Cockpit repository. It contains to source code of the web application of Metrograph.
+___
 
 ## Quick Start
 

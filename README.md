@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+![Metrograph Cockpit](https://i.imgur.com/QbQPt3N.png)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+This is the official Metrograph Cockpit repository. It contains to source code of the web application of Metrograph.
 
-In the project directory, you can run:
+## Quick Start
 
-### `npm start`
+Cockpit is based on React Native and running it is pretty simple. You only need npm to run it locally.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**Note:**
+*If you want to use Metrograph, please refer to our metrograph/metrograph repository that contains the whole stack of services. This repository only contains the web app and will not function properly by itself. This repository is aimed at the project developpers and contributers.*
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Run the code locally
 
-### `npm test`
+First, clone the project locally:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+git clone git@github.com:metrograph/metrograph-cockpit.git
+```
 
-### `npm run build`
+Install the dependencies:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`npm i`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Run the application:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`npm start`
 
-### `npm run eject`
+The page will reload when you make changes. You may also see any lint errors in the console.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Testing and building the app
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To run the applications tests in an interactive mode. 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+`npm test`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+To build the application, run the following command. The final package will be created in the `./build` directory.
 
-## Learn More
+`npm run build`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Note:** It's recommended to use the CI building tools already setup in the repository. When you create a pull request and if it's approved, automatic tests and a build are ran on the project.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Contributing to the Project
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Metrograph is a community project. Everyone is welcomed to contribute no matter the size of the contribution. Feel free to follow our **Contribution Guide**, and create a pull request of your contribution when it's ready!

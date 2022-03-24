@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 
 import art from "../assets/animation/art.gif"
+
 import "../assets/css/animation.css"
 
 

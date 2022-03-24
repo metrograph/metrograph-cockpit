@@ -17,7 +17,7 @@ import "../assets/css/animation.css"
 
 
 
-export default function Login() {
+export default function Register() {
     const [inputs, setInputs] = useState({ username: "", password: "", confirmPassword: "" })
     const [onLoad, setOnLoad] = useState(false)
     const [eye, setEye] = useState(false)
@@ -27,7 +27,7 @@ export default function Login() {
 
 
 
-    function regiser() {
+    function submitUser() {
         setOnLoad(true)
         if (!inputs.username || !inputs.password || !inputs.confirmPassword) {
 
@@ -75,10 +75,12 @@ export default function Login() {
             });
     }
 
+
     function toogleEye() {
 
         setEye(!eye)
     }
+
     useEffect(() => {
 
 
@@ -132,7 +134,7 @@ export default function Login() {
                                             placeholder="@username.."
                                             onChange={(e) => setInputs({ username: e.target.value, password: inputs.password, confirmPassword: inputs.confirmPassword })}
                                             value={inputs.username}
-
+                                            onKeyDown={e => e.key === 'Enter' && submitUser()}
                                         />
 
                                     </div>
@@ -155,6 +157,7 @@ export default function Login() {
                                             placeholder="........."
                                             onChange={(e) => setInputs({ username: inputs.username, password: e.target.value, confirmPassword: inputs.confirmPassword })}
                                             value={inputs.password}
+                                            onKeyDown={e => e.key === 'Enter' && submitUser()}
                                         />
                                         <img alt="" src={eye ? hiddenIcon : viewerIcon} className="h-6 w-6 cursor-pointer mr-4" onClick={() => toogleEye()} />
                                     </div>
@@ -177,6 +180,7 @@ export default function Login() {
                                             placeholder="........."
                                             onChange={(e) => setInputs({ username: inputs.username, password: inputs.password, confirmPassword: e.target.value })}
                                             value={inputs.confirmPassword}
+                                            onKeyDown={e => e.key === 'Enter' && submitUser()}
                                         />
                                     </div>
                                 </div>
@@ -186,7 +190,7 @@ export default function Login() {
                                 {/* Button start */}
 
                                 <div className="mt-12 flex justify-end">
-                                    <button onClick={() => regiser()} className="bg-cock-green border-2 border-white h-10  space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
+                                    <button onClick={() => submitUser()} className="bg-cock-green border-2 border-white h-10  space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold">
                                         CREATE USER
                                     </button>
                                 </div>

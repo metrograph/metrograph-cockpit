@@ -9,6 +9,7 @@ const CreateJob = lazy(() => import("./screens/CreateJob"));
 const Login = lazy(() => import("./screens/Login"))
 const Register = lazy(() => import("./screens/Register"))
 const AccountSettings = lazy(() => import("./screens/AccountSettings"))
+const NotFound = lazy(() => import("./screens/NotFound"))
 
 
 export default function App() {
@@ -23,6 +24,8 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/accountsettings" element={<AccountSettings />} />
+            <Route path="*" element={<NotFound />} />
+
           </Routes>
         </Suspense>
       </Provider>

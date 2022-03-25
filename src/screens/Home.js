@@ -40,13 +40,9 @@ function JobList(props) {
 }
 
 export default function App() {
-
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
   const navigate = useNavigate();
-
-
-
 
   useEffect(() => {
     function loadLocalStorage() {
@@ -70,14 +66,34 @@ export default function App() {
           .then(function (response) {
             let data = response.data.payload.tasks;
             dispatch({ type: "setJobs", payload: data });
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              let payloadAlert = {
+                is_hide: false,
+                type: "error",
+                title: "Login failed.",
+                description:
+                  "Invalid credentials or password requirements not met",
+              };
+              dispatch({ type: "setAlert", payload: payloadAlert });
+
+              return console.log("error");
+            } else {
+              let payloadAlert = {
+                is_hide: false,
+                type: "error",
+                title: "Network Error",
+                description: "Sorry, we encountered a network error.",
+              };
+              dispatch({ type: "setAlert", payload: payloadAlert });
+            }
           });
       }
     }
 
-    console.log("hello");
     loadLocalStorage();
     loadJob();
-
   }, [mystate.user, navigate, dispatch]);
 
   return (
@@ -131,5 +147,3 @@ export default function App() {
     </div>
   );
 }
-
-

@@ -15,7 +15,11 @@ module.exports = {
         "cock-line": "#2D2439",
         "cock-footer": "#443E4D",
         "cock-orange": "#F48140",
-        "cock-dark": "#171021"
+        "cock-blue": "#156FF8",
+        "cock-dark": "#171021",
+        "cock-board": "#F5F5F5",
+        "cock-dark-400": "#322741",
+        "cock-border-light": "#F9F9F9",
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],

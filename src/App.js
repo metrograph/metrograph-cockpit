@@ -6,26 +6,28 @@ import store from "./redux/store";
 
 const Home = lazy(() => import("./screens/Home"));
 const CreateJob = lazy(() => import("./screens/CreateJob"));
-const Login = lazy(() => import("./screens/Login"))
-const Register = lazy(() => import("./screens/Register"))
-const AccountSettings = lazy(() => import("./screens/AccountSettings"))
-const NotFound = lazy(() => import("./screens/NotFound"))
+const Login = lazy(() => import("./screens/Login"));
+const Register = lazy(() => import("./screens/Register"));
+const AccountSettings = lazy(() => import("./screens/AccountSettings"));
+const NotFound = lazy(() => import("./screens/NotFound"));
 
+const Workspace = lazy(() => import("./screens/workspace/Main"));
 
 export default function App() {
-
   return (
     <Router>
       <Provider store={store}>
-        <Suspense fallback={<div className="bg-brand-primary min-h-screen"></div>}>
+        <Suspense
+          fallback={<div className="bg-brand-primary min-h-screen"></div>}
+        >
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/createjob" element={<CreateJob />} />
+            <Route path="/workspace" element={<Workspace />} />
             <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/accountsettings" element={<AccountSettings />} />
             <Route path="*" element={<NotFound />} />
-
           </Routes>
         </Suspense>
       </Provider>

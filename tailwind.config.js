@@ -24,6 +24,7 @@ module.exports = {
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
         Rajdhani: ["Rajdhani", "sans-serif"],
+        "IBM-Plex-Sans": ["'IBM Plex Sans'", "sans-serif"],
       },
     },
   },

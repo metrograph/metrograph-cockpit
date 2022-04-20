@@ -35,7 +35,7 @@ export default function TopBar() {
         </div>
         <div className="h-[42px] w-[1px] bg-white opacity-20" />
         <div className="flex items-center space-x-4">
-          <img src={avatar} className="h-[62px] w-[62px] rounded-md" />
+          <img src={avatar} className="h-[62px] w-[62px] rounded-full" />
           <div className="flex space-x-2 cursor-pointer">
             <div className="text-white font-Inter font-semibold text-[16px]">
               Hamza

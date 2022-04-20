@@ -134,7 +134,7 @@ export default function Main() {
         {/* Left Side End*/}
         <div className="grow bg-cock-board"></div>
         {/* right Side */}
-        <div className="w-[384px]">
+        <div className="w-[384px] flex flex-col">
           <div>
             <div className="mt-[28px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center mx-[28px] px-[19px] cursor-pointer">
               Choose Discrod Server
@@ -142,55 +142,61 @@ export default function Main() {
             <div className="mt-[32px] border-b-[3px] border-[#F5F5F5] w-full"></div>
           </div>
 
-          <div className="mt-[31px] mx-[28px]">
-            <div className="flex justify-between">
-              <div className="font-Inter font-semibold text-[12px]">
-                SERVER CHANNEL
-              </div>
-              <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                  i
+          <div className="grow">
+            <div className="mt-[31px] mx-[28px]">
+              <div className="flex justify-between">
+                <div className="font-Inter font-semibold text-[12px]">
+                  SERVER CHANNEL
+                </div>
+                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                    i
+                  </div>
                 </div>
               </div>
+              <div className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] cursor-pointer">
+                Choose Channel
+              </div>
             </div>
-            <div className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] cursor-pointer">
-              Choose Channel
+
+            <div className="mt-[32px] mx-[28px]">
+              <div className="flex justify-between">
+                <div className="font-Inter font-semibold text-[12px]">
+                  Bot Name
+                </div>
+                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                    i
+                  </div>
+                </div>
+              </div>
+              <input
+                className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
+                placeholder="Bot name"
+              />
+            </div>
+
+            <div className="mt-[32px] mx-[28px]">
+              <div className="flex justify-between">
+                <div className="font-Inter font-semibold text-[12px]">
+                  Message
+                </div>
+                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                    i
+                  </div>
+                </div>
+              </div>
+              <textarea
+                id="textareaResizeNone"
+                className="mt-[16px] pt-[15px] font-Inter font-medium text-[15px] rounded-[11px] h-[127px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
+                placeholder="Message.."
+              />
             </div>
           </div>
-
-          <div className="mt-[32px] mx-[28px]">
-            <div className="flex justify-between">
-              <div className="font-Inter font-semibold text-[12px]">
-                Bot Name
-              </div>
-              <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                  i
-                </div>
-              </div>
-            </div>
-            <input
-              className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
-              placeholder="Bot name"
-            />
-          </div>
-
-          <div className="mt-[32px] mx-[28px]">
-            <div className="flex justify-between">
-              <div className="font-Inter font-semibold text-[12px]">
-                Message
-              </div>
-              <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                  i
-                </div>
-              </div>
-            </div>
-            <textarea
-              id="textareaResizeNone"
-              className="mt-[16px] pt-[15px] font-Inter font-medium text-[15px] rounded-[11px] h-[127px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
-              placeholder="Message.."
-            />
+          <div className="flex space-x-[7px] mb-4 mx-8">
+            <div className="bg-[#156FF8] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">TEST</div>
+            <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">SAVE</div>
           </div>
         </div>
         {/* right Side End*/}

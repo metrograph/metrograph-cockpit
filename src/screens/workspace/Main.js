@@ -2,20 +2,23 @@ import React, { useEffect } from "react";
 
 import TopBar from "./TopBar";
 import loopIcon from "../../assets/icons/loop.svg";
-import actionIcon from "../../assets/icons/action.svg";
-import delayIcon from "../../assets/icons/delay.svg";
-import loopiIcon from "../../assets/icons/loopi.svg";
-import branchIcon from "../../assets/icons/branch.svg";
-import stopIcon from "../../assets/icons/stop.svg";
-import scriptIcon from "../../assets/icons/script.svg";
-import toggleIcon from "../../assets/icons/toggle.svg";
-import clipperIcon from "../../assets/icons/cliper.svg";
-import outIcon from "../../assets/icons/out.svg";
-import paramsIcon from "../../assets/icons/params.svg";
+
+import { ReactComponent as ActionIcon } from "../../assets/icons/action.svg";
+import { ReactComponent as LoopIcon } from "../../assets/icons/loopi.svg";
+import { ReactComponent as DelayIcon } from "../../assets/icons/delay.svg";
+import { ReactComponent as BranchIcon } from "../../assets/icons/branch.svg";
+import { ReactComponent as StopIcon } from "../../assets/icons/stop.svg";
+import { ReactComponent as ScriptIcon } from "../../assets/icons/script.svg";
+import { ReactComponent as ToggleIcon } from "../../assets/icons/toggle.svg";
+import { ReactComponent as ClipperIcon } from "../../assets/icons/cliper.svg";
+import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
+import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
+
+import "../../assets/css/App.css"
 
 export default function Main() {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen ">
       <TopBar />
       <div className="flex grow">
         {/* Left Side */}
@@ -30,7 +33,7 @@ export default function Main() {
           </div>
           {/* Search bar end*/}
           {/* Navigation tab*/}
-          <div className=" relative mt-[35px]">
+          <div className=" relative mt-[35px] ">
             <div className="top-[30px] -z-10 absolute border-b-[3px] border-[#F5F5F5] w-full"></div>
             <div className="flex flex-wrap justify-between ">
               <div className="border-b-[3px] border-black px-4 leading-[30px]  cursor-pointer font-bold text-[13px] font-IBM-Plex-Sans">
@@ -48,87 +51,86 @@ export default function Main() {
             </div>
           </div>
           {/* Navigation tab end*/}
-          <div className="flex flex-col  overflow-y-auto height-panel">
+
+          {/* Panel */}
+          <div className="flex flex-col  overflow-y-auto height-panel text-[#545454]" style={{ scrollbarWidth: "thin" }}>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img
-                  src={actionIcon}
-                  alt=""
-                  className="mb-[36px] h-[46px] fill-red-400"
-                />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ActionIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px] ">
                   Action
                 </div>
               </div>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={delayIcon} alt="" className="mb-[36px] h-[46px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <DelayIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Delay
                 </div>
               </div>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={branchIcon} alt="" className="mb-[36px] h-[42px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center strokeArea cursor-pointer">
+                <BranchIcon className="mb-[36px] hover:stroke-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Branch Condition
                 </div>
               </div>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={loopiIcon} alt="" className="mb-[36px] h-[44px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <LoopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Loop
                 </div>
               </div>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={scriptIcon} alt="" className="mb-[36px] h-[32px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ScriptIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px] ">
                   Script
                 </div>
               </div>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={stopIcon} alt="" className="mb-[36px] h-[44px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <StopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Stop
                 </div>
               </div>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={toggleIcon} alt="" className="mb-[36px] h-[22px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ToggleIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Toggle
                 </div>
               </div>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={clipperIcon} alt="" className="mb-[36px] h-[40px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ClipperIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px]">
                   Call Endpoint
                 </div>
               </div>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={outIcon} alt="" className="mb-[36px] h-[39px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <OutIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">
                   Action
                 </div>
               </div>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center">
-                <img src={paramsIcon} alt="" className="mb-[36px] h-[28px]" />
-                <div className="font-Inter font-medium text-[11px] text-[#545454]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ParamsIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px]">
                   Parameters
                 </div>
               </div>
             </div>
           </div>
+          {/* Panel End*/}
         </div>
 
         {/* Left Side End*/}
@@ -142,61 +144,63 @@ export default function Main() {
             <div className="mt-[32px] border-b-[3px] border-[#F5F5F5] w-full"></div>
           </div>
 
-          <div className="grow">
-            <div className="mt-[31px] mx-[28px]">
-              <div className="flex justify-between">
-                <div className="font-Inter font-semibold text-[12px]">
-                  SERVER CHANNEL
-                </div>
-                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                    i
+          <div className="flex flex-col grow justify-between overflow-y-auto height-panel" style={{ scrollbarWidth: "thin" }}>
+            <div className="">
+              <div className="mt-[31px] mx-[28px]">
+                <div className="flex justify-between">
+                  <div className="font-Inter font-semibold text-[12px]">
+                    SERVER CHANNEL
+                  </div>
+                  <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                    <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                      i
+                    </div>
                   </div>
                 </div>
+                <div className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] cursor-pointer">
+                  Choose Channel
+                </div>
               </div>
-              <div className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] cursor-pointer">
-                Choose Channel
-              </div>
-            </div>
 
-            <div className="mt-[32px] mx-[28px]">
-              <div className="flex justify-between">
-                <div className="font-Inter font-semibold text-[12px]">
-                  Bot Name
-                </div>
-                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                    i
+              <div className="mt-[32px] mx-[28px]">
+                <div className="flex justify-between">
+                  <div className="font-Inter font-semibold text-[12px]">
+                    Bot Name
+                  </div>
+                  <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                    <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                      i
+                    </div>
                   </div>
                 </div>
+                <input
+                  className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
+                  placeholder="Bot name"
+                />
               </div>
-              <input
-                className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
-                placeholder="Bot name"
-              />
-            </div>
 
-            <div className="mt-[32px] mx-[28px]">
-              <div className="flex justify-between">
-                <div className="font-Inter font-semibold text-[12px]">
-                  Message
-                </div>
-                <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
-                  <div className="font-Inter font-bold text-[#979797] text-[8px]">
-                    i
+              <div className="mt-[32px] mx-[28px]">
+                <div className="flex justify-between">
+                  <div className="font-Inter font-semibold text-[12px]">
+                    Message
+                  </div>
+                  <div className="h-4 w-4 rounded-full bg-[#F5F5F5] border-[1px] border-[#EDEDED] cursor-pointer flex items-center justify-center">
+                    <div className="font-Inter font-bold text-[#979797] text-[8px]">
+                      i
+                    </div>
                   </div>
                 </div>
+                <textarea
+                  id="textareaResizeNone"
+                  className="mt-[16px] pt-[15px] font-Inter font-medium text-[15px] rounded-[11px] h-[127px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
+                  placeholder="Message.."
+                />
               </div>
-              <textarea
-                id="textareaResizeNone"
-                className="mt-[16px] pt-[15px] font-Inter font-medium text-[15px] rounded-[11px] h-[127px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
-                placeholder="Message.."
-              />
             </div>
-          </div>
-          <div className="flex space-x-[7px] mb-4 mx-8">
-            <div className="bg-[#156FF8] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">TEST</div>
-            <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">SAVE</div>
+            <div className="flex space-x-[7px]  mx-8">
+              <div className="bg-cock-purple h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">TEST</div>
+              <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">SAVE</div>
+            </div>
           </div>
         </div>
         {/* right Side End*/}

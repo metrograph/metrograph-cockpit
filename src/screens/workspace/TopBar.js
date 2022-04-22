@@ -5,7 +5,7 @@ import cloud from "../../assets/icons/cloud.svg";
 
 export default function TopBar() {
   return (
-    <div className="bg-cock-purple-dark h-[120px] w-full flex items-center">
+    <div className="bg-black h-[120px] w-full flex items-center">
       <div className="w-[384px]  flex  justify-between items-center">
         <div className="h-[20px] w-[1px] " />
         <img src={logo} className="w-[167px] mx-2" />
@@ -18,7 +18,7 @@ export default function TopBar() {
           </div>
           <img src={arrowdown} className="w-[13px] h-auto" />
         </div>
-        <div className="bg-cock-blue w-[87px] h-[46px] grid place-items-center rounded-lg cursor-pointer">
+        <div className="bg-cock-purple w-[87px] h-[46px] grid place-items-center rounded-lg cursor-pointer">
           <div className="text-white font-Inter font-bold">SAVE</div>
         </div>
         <div className="flex space-x-2">

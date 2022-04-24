@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import TopBar from "./TopBar";
 import loopIcon from "../../assets/icons/loop.svg";
@@ -14,9 +14,100 @@ import { ReactComponent as ClipperIcon } from "../../assets/icons/cliper.svg";
 import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
 import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
 
-import "../../assets/css/App.css"
+import "../../assets/css/App.css";
 
 export default function Main() {
+  const [selectedPanel, setSelectedPanel] = useState("basic");
+  function Panel(props) {
+    switch (props.panel_name) {
+      case "basic":
+        return (
+          <div
+            className="flex flex-col  overflow-y-auto height-panel text-[#545454]"
+            style={{ scrollbarWidth: "thin" }}
+          >
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ActionIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px] ">Action</div>
+              </div>
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <DelayIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Delay</div>
+              </div>
+            </div>
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+              <div className="w-1/2 flex flex-col justify-center items-center strokeArea cursor-pointer">
+                <BranchIcon className="mb-[36px] hover:stroke-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Branch Condition</div>
+              </div>
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <LoopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Loop</div>
+              </div>
+            </div>
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ScriptIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px] ">Script</div>
+              </div>
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <StopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Stop</div>
+              </div>
+            </div>
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ToggleIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Toggle</div>
+              </div>
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ClipperIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px]">Call Endpoint</div>
+              </div>
+            </div>
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <OutIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter  text-[11px] ">Action</div>
+              </div>
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+                <ParamsIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+                <div className="font-Inter text-[11px]">Parameters</div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "triggers":
+        return (
+          <div className="bg-red-300 h-max flex py-20 justify-center  text-xl">
+            TRIGGERS
+          </div>
+        );
+      case "connectors":
+        return (
+          <div className="bg-blue-300 h-max flex py-20 pt-20 justify-center text-xl">
+            CONNECTORS
+          </div>
+        );
+      case "apps":
+        return (
+          <div className="bg-green-300 h-max flex py-20 pt-20 justify-center text-xl">
+            APPS
+          </div>
+        );
+
+      default:
+        return <div></div>;
+    }
+  }
+
   return (
     <div className="flex flex-col h-screen ">
       <TopBar />
@@ -36,100 +127,51 @@ export default function Main() {
           <div className=" relative mt-[35px] ">
             <div className="top-[30px] -z-10 absolute border-b-[3px] border-[#F5F5F5] w-full"></div>
             <div className="flex flex-wrap justify-between ">
-              <div className="border-b-[3px] border-black px-4 leading-[30px]  cursor-pointer font-bold text-[13px] font-IBM-Plex-Sans">
+              <div
+                onClick={() => setSelectedPanel("basic")}
+                className={
+                  selectedPanel == "basic"
+                    ? "border-b-[3px] border-black px-4 leading-[30px]  cursor-default font-bold text-[13px] font-IBM-Plex-Sans"
+                    : "border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans hover:bg-cock-gray"
+                }
+              >
                 BASIC
               </div>
-              <div className="border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans">
+              <div
+                onClick={() => setSelectedPanel("triggers")}
+                className={
+                  selectedPanel == "triggers"
+                    ? "border-b-[3px] border-black px-4 leading-[30px]  cursor-default font-bold text-[13px] font-IBM-Plex-Sans"
+                    : "border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans hover:bg-cock-gray"
+                }
+              >
                 TRIGGERS
               </div>
-              <div className="border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans">
+              <div
+                onClick={() => setSelectedPanel("connectors")}
+                className={
+                  selectedPanel == "connectors"
+                    ? "border-b-[3px] border-black px-4 leading-[30px]  cursor-default font-bold text-[13px] font-IBM-Plex-Sans"
+                    : "border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans hover:bg-cock-gray"
+                }
+              >
                 CONNECTORS
               </div>
-              <div className="border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans">
+              <div
+                onClick={() => setSelectedPanel("apps")}
+                className={
+                  selectedPanel == "apps"
+                    ? "border-b-[3px] border-black px-4 leading-[30px]  cursor-default font-bold text-[13px] font-IBM-Plex-Sans"
+                    : "border-b-[3px] border-black border-transparent text-[#C8C8C8] px-4 leading-[30px] cursor-pointer font-semibold text-[13px] font-IBM-Plex-Sans hover:bg-cock-gray"
+                }
+              >
                 APPS
               </div>
             </div>
           </div>
           {/* Navigation tab end*/}
-
           {/* Panel */}
-          <div className="flex flex-col  overflow-y-auto height-panel text-[#545454]" style={{ scrollbarWidth: "thin" }}>
-            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ActionIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter text-[11px] ">
-                  Action
-                </div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <DelayIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Delay
-                </div>
-              </div>
-            </div>
-            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center strokeArea cursor-pointer">
-                <BranchIcon className="mb-[36px] hover:stroke-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Branch Condition
-                </div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <LoopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Loop
-                </div>
-              </div>
-            </div>
-            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ScriptIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter text-[11px] ">
-                  Script
-                </div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <StopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Stop
-                </div>
-              </div>
-            </div>
-            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ToggleIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Toggle
-                </div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ClipperIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px]">
-                  Call Endpoint
-                </div>
-              </div>
-            </div>
-            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <OutIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">
-                  Action
-                </div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ParamsIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter text-[11px]">
-                  Parameters
-                </div>
-              </div>
-            </div>
-          </div>
+          <Panel panel_name={selectedPanel} />
           {/* Panel End*/}
         </div>
 
@@ -144,7 +186,10 @@ export default function Main() {
             <div className="mt-[32px] border-b-[3px] border-[#F5F5F5] w-full"></div>
           </div>
 
-          <div className="flex flex-col grow justify-between overflow-y-auto height-panel" style={{ scrollbarWidth: "thin" }}>
+          <div
+            className="flex flex-col grow justify-between overflow-y-auto height-panel"
+            style={{ scrollbarWidth: "thin" }}
+          >
             <div className="">
               <div className="mt-[31px] mx-[28px]">
                 <div className="flex justify-between">
@@ -198,8 +243,12 @@ export default function Main() {
               </div>
             </div>
             <div className="flex space-x-[7px]  mx-8">
-              <div className="bg-cock-purple h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">TEST</div>
-              <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">SAVE</div>
+              <div className="bg-cock-purple h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
+                TEST
+              </div>
+              <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
+                SAVE
+              </div>
             </div>
           </div>
         </div>

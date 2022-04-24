@@ -20,6 +20,7 @@ module.exports = {
         "cock-board": "#F5F5F5",
         "cock-dark-400": "#322741",
         "cock-border-light": "#F9F9F9",
+        "cock-gray": "#F5F5F5",
       },
       fontFamily: {
         Inter: ["Inter", "sans-serif"],

@@ -208,14 +208,14 @@ export default function Main() {
               </div>
               <ArrowDown height="8px" width="13px" fill="black" />
               {is_listOpen && (
-                <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg px-4 cursor-pointer absolute z-10 top-12 py-4 right-0">
+                <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg  cursor-pointer absolute z-10 top-12 py-4 right-0">
                   {optionList.map((element) => (
                     <div
                       onClick={() => {
                         setSelectedOtion(element.value);
                         setIs_listOpen(!is_listOpen);
                       }}
-                      className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2"
+                      className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                     >
                       {element.value}
                     </div>
@@ -251,14 +251,14 @@ export default function Main() {
                   </div>
                   <ArrowDown height="8px" width="13px" fill="black" />
                   {is_listbOpen && (
-                    <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg px-4 cursor-pointer absolute top-12 py-4 right-0">
+                    <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                       {optionListb.map((element) => (
                         <div
                           onClick={() => {
                             setSelectedOtionb(element.value);
                             setIs_listbOpenb(!is_listbOpen);
                           }}
-                          className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2"
+                          className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                         >
                           {element.value}
                         </div>

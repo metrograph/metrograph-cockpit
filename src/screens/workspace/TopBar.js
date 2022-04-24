@@ -43,14 +43,14 @@ export default function TopBar() {
             <img src={arrowdown} className="w-[13px] h-auto" />
           </div>
           {is_listOpen && (
-            <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg px-4 cursor-pointer absolute top-12 py-4">
+            <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg  cursor-pointer absolute top-12 py-4">
               {optionList.map((element) => (
                 <div
                   onClick={() => {
                     setSelectedOtion(element);
                     setIs_listOpen(!is_listOpen);
                   }}
-                  className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2"
+                  className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                 >
                   {element.value}
                 </div>
@@ -87,20 +87,20 @@ export default function TopBar() {
           </div>
 
           {is_listSetOpen && (
-            <div className="absolute z-20 w-[180px] top-16 right-0 py-4 flex flex-col space-y-2 bg-cock-dark rounded-lg px-4 cursor-pointer">
-              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2">
+            <div className="absolute z-20 w-[180px] top-16 right-0 py-4 flex flex-col space-y-2 bg-cock-dark rounded-lg cursor-pointer">
+              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                 Hello
               </div>
-              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2">
+              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                 Hello
               </div>
-              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2">
+              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                 Hello
               </div>
-              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2">
+              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                 Hello
               </div>
-              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2">
+              <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                 Hello
               </div>
             </div>

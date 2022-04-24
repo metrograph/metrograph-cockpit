@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 import loopIcon from "../../assets/icons/loop.svg";
 
+import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { ReactComponent as ActionIcon } from "../../assets/icons/action.svg";
 import { ReactComponent as LoopIcon } from "../../assets/icons/loopi.svg";
 import { ReactComponent as DelayIcon } from "../../assets/icons/delay.svg";
@@ -17,6 +18,24 @@ import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
 import "../../assets/css/App.css";
 
 export default function Main() {
+  const [is_listOpen, setIs_listOpen] = useState(false);
+
+  const [optionList, setOptionList] = useState([
+    { key: 2, value: "Discrod Server A" },
+    { key: 3, value: "Discrod Server B" },
+    { key: 4, value: "Discrod Server C" },
+  ]);
+  const [selectedOption, setSelectedOtion] = useState("Choose Discrod Server");
+
+  const [is_listbOpen, setIs_listbOpenb] = useState(false);
+
+  const [optionListb, setOptionListb] = useState([
+    { key: 2, value: "Channel Server A" },
+    { key: 3, value: "Channel Server B" },
+    { key: 4, value: "Channel Server C" },
+  ]);
+  const [selectedOptionb, setSelectedOtionb] = useState("Choose Channel");
+
   const [selectedPanel, setSelectedPanel] = useState("basic");
   function Panel(props) {
     switch (props.panel_name) {
@@ -109,7 +128,7 @@ export default function Main() {
   }
 
   return (
-    <div className="flex flex-col h-screen ">
+    <div className="flex flex-col h-screen noselect">
       <TopBar />
       <div className="flex grow">
         {/* Left Side */}
@@ -180,8 +199,29 @@ export default function Main() {
         {/* right Side */}
         <div className="w-[384px] flex flex-col">
           <div>
-            <div className="mt-[28px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center mx-[28px] px-[19px] cursor-pointer">
-              Choose Discrod Server
+            <div
+              onClick={() => setIs_listOpen(!is_listOpen)}
+              className="mt-[28px]  rounded-[11px] h-[46px] bg-[#F5F5F5] flex justify-between items-center mx-[28px] px-[19px] cursor-pointer relative"
+            >
+              <div className="font-Inter font-medium text-[15px]">
+                {selectedOption}
+              </div>
+              <ArrowDown height="8px" width="13px" fill="black" />
+              {is_listOpen && (
+                <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg px-4 cursor-pointer absolute z-10 top-12 py-4 right-0">
+                  {optionList.map((element) => (
+                    <div
+                      onClick={() => {
+                        setSelectedOtion(element.value);
+                        setIs_listOpen(!is_listOpen);
+                      }}
+                      className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2"
+                    >
+                      {element.value}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="mt-[32px] border-b-[3px] border-[#F5F5F5] w-full"></div>
           </div>
@@ -202,8 +242,29 @@ export default function Main() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] cursor-pointer">
-                  Choose Channel
+                <div
+                  onClick={() => setIs_listbOpenb(!is_listbOpen)}
+                  className="mt-[28px]  rounded-[11px] h-[46px] bg-[#F5F5F5] flex justify-between items-center  px-[19px] cursor-pointer relative"
+                >
+                  <div className="font-Inter font-medium text-[15px]">
+                    {selectedOptionb}
+                  </div>
+                  <ArrowDown height="8px" width="13px" fill="black" />
+                  {is_listbOpen && (
+                    <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg px-4 cursor-pointer absolute top-12 py-4 right-0">
+                      {optionListb.map((element) => (
+                        <div
+                          onClick={() => {
+                            setSelectedOtionb(element.value);
+                            setIs_listbOpenb(!is_listbOpen);
+                          }}
+                          className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2"
+                        >
+                          {element.value}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -243,10 +304,10 @@ export default function Main() {
               </div>
             </div>
             <div className="flex space-x-[7px]  mx-8">
-              <div className="bg-cock-purple h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
+              <div className="hover:bg-purple-600 bg-cock-purple h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
                 TEST
               </div>
-              <div className="bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
+              <div className="hover:bg-green-400 bg-[#7ECA9C] h-[46px] w-[160px] font-Inter font-bold text-[13px] text-white rounded-[11px] flex justify-center items-center cursor-pointer">
                 SAVE
               </div>
             </div>

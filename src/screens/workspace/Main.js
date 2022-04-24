@@ -14,6 +14,7 @@ import { ReactComponent as ToggleIcon } from "../../assets/icons/toggle.svg";
 import { ReactComponent as ClipperIcon } from "../../assets/icons/cliper.svg";
 import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
 import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 
 import "../../assets/css/App.css";
 
@@ -215,9 +216,14 @@ export default function Main() {
                         setSelectedOtion(element.value);
                         setIs_listOpen(!is_listOpen);
                       }}
-                      className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                      className="flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                     >
-                      {element.value}
+                      <div>{element.value}</div>
+                      {element.value == selectedOption ? (
+                        <BsFillCheckCircleFill fill="#A9ECC3" />
+                      ) : (
+                        <div></div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -258,9 +264,14 @@ export default function Main() {
                             setSelectedOtionb(element.value);
                             setIs_listbOpenb(!is_listbOpen);
                           }}
-                          className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                          className="flex justify-between items-center text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                         >
-                          {element.value}
+                          <div>{element.value}</div>
+                          {element.value == selectedOptionb ? (
+                            <BsFillCheckCircleFill fill="#A9ECC3" />
+                          ) : (
+                            <div></div>
+                          )}
                         </div>
                       ))}
                     </div>

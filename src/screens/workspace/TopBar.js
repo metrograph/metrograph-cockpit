@@ -1,8 +1,9 @@
+import { useState } from "react";
+import { BsFillCheckCircleFill } from "react-icons/bs";
 import logo from "../../assets/logo.svg";
 import avatar from "../../assets/avatar/avatar-2.png";
 import arrowdown from "../../assets/icons/arrow-down.svg";
 import cloud from "../../assets/icons/cloud.svg";
-import { useState } from "react";
 
 export default function TopBar() {
   const [is_listOpen, setIs_listOpen] = useState(false);
@@ -13,7 +14,7 @@ export default function TopBar() {
     { key: 1, value: "Deploy Docker Workflow B" },
     { key: 1, value: "Deploy Docker Workflow C" },
   ]);
-  const [selectedOption, setSelectedOtion] = useState(optionList[0]);
+  const [selectedOption, setSelectedOption] = useState(optionList[0]);
 
   const [is_listSetOpen, setIs_listSetOpen] = useState(false);
 
@@ -24,6 +25,7 @@ export default function TopBar() {
     { key: 1, value: "Deploy Docker Workflow C" },
   ]);
   const [selectedOptionSet, setSelectedOtionSet] = useState(optionListSet[0]);
+
   return (
     <div className="bg-black h-[120px] w-full flex items-center">
       <div className="w-[384px]  flex  justify-between items-center">
@@ -47,12 +49,17 @@ export default function TopBar() {
               {optionList.map((element) => (
                 <div
                   onClick={() => {
-                    setSelectedOtion(element);
+                    setSelectedOption(element);
                     setIs_listOpen(!is_listOpen);
                   }}
-                  className="text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                  className="flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
                 >
-                  {element.value}
+                  <div>{element.value}</div>
+                  {element.value == selectedOption.value ? (
+                    <BsFillCheckCircleFill fill="#A9ECC3" />
+                  ) : (
+                    ""
+                  )}
                 </div>
               ))}
             </div>

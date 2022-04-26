@@ -216,11 +216,15 @@ export default function Main() {
                         setSelectedOtion(element.value);
                         setIs_listOpen(!is_listOpen);
                       }}
-                      className="flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                      className={
+                        element.value == selectedOption
+                          ? "flex items-center justify-between text-white text-md font-Inter bg-cock-dark-400  py-2 px-4"
+                          : "flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                      }
                     >
                       <div>{element.value}</div>
                       {element.value == selectedOption ? (
-                        <BsFillCheckCircleFill fill="#A9ECC3" />
+                        <BsFillCheckCircleFill fill="#156FF8" />
                       ) : (
                         <div></div>
                       )}
@@ -264,11 +268,15 @@ export default function Main() {
                             setSelectedOtionb(element.value);
                             setIs_listbOpenb(!is_listbOpen);
                           }}
-                          className="flex justify-between items-center text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                          className={
+                            element.value == selectedOptionb
+                              ? "flex items-center justify-between text-white text-md font-Inter bg-cock-dark-400  py-2 px-4"
+                              : "flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                          }
                         >
                           <div>{element.value}</div>
                           {element.value == selectedOptionb ? (
-                            <BsFillCheckCircleFill fill="#A9ECC3" />
+                            <BsFillCheckCircleFill fill="#156FF8" />
                           ) : (
                             <div></div>
                           )}

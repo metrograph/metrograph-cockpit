@@ -45,18 +45,22 @@ export default function TopBar() {
             <img src={arrowdown} className="w-[13px] h-auto" />
           </div>
           {is_listOpen && (
-            <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg  cursor-pointer absolute top-12 py-4">
+            <div className="flex flex-col space-y-2 bg-cock-dark w-[327px]  rounded-lg  cursor-pointer absolute top-12 py-4 z-10">
               {optionList.map((element) => (
                 <div
                   onClick={() => {
                     setSelectedOption(element);
                     setIs_listOpen(!is_listOpen);
                   }}
-                  className="flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                  className={
+                    element.value == selectedOption.value
+                      ? "flex items-center justify-between text-white text-md font-Inter bg-cock-dark-400  py-2 px-4"
+                      : "flex items-center justify-between text-white text-md font-Inter hover:bg-cock-dark-400 py-2 px-4"
+                  }
                 >
                   <div>{element.value}</div>
                   {element.value == selectedOption.value ? (
-                    <BsFillCheckCircleFill fill="#A9ECC3" />
+                    <BsFillCheckCircleFill fill="#156FF8" />
                   ) : (
                     ""
                   )}

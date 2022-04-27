@@ -12,6 +12,7 @@ const AccountSettings = lazy(() => import("./screens/AccountSettings"));
 const NotFound = lazy(() => import("./screens/NotFound"));
 const Workspace = lazy(() => import("./screens/workspace/Main"));
 const CreateAction = lazy(() => import("./screens/dev/CreateAction"));
+const EditAction = lazy(() => import("./screens/dev/EditAction"));
 export default function App() {
   return (
     <Router>
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/" element={<Login />} />
             <Route path="/createjob" element={<CreateJob />} />
             <Route path="/create-action" element={<CreateAction />} />
+            <Route path="/edit-action" element={<EditAction />} />
             <Route path="/workspace" element={<Workspace />} />
             <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />

@@ -312,18 +312,18 @@ export default function CreateAction() {
               }
             />
 
-            <div className="text-white font-IBM-Plex-Sans font-bold text-[11px]">
+            <div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
               ENABLE ACTION URL
             </div>
-            <img src={i_icon} alt="" width="12px" />
+            <img src={i_icon} alt="11px" width="11px" />
           </div>
           <div className="flex items-center space-x-[10px]">
-            <div className="bg-[#7ECA9C] h-[13px] w-[27px] grid place-content-center">
-              <div className=" text-[7px] font-IBM-Plex-Sans font-bold text-white">
+            <div className="bg-[#7ECA9C] h-[17px] w-[39px] grid place-content-center">
+              <div className=" text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 LIVE
               </div>
             </div>
-            <div className="text-[#AC62FF] font-IBM-Plex-Sans font-bold text-[12px] cursor-pointer">
+            <div className="text-[#AC62FF] font-IBM-Plex-Sans font-medium text-[14px] cursor-pointer">
               http://metrpgraph.coolcompany.io/task/hf34j1lrhl1hflk14tkgh/run
             </div>
           </div>
@@ -335,44 +335,44 @@ export default function CreateAction() {
             SCHEDULE TASK
           </div>
           <div className="flex mt-[10px]">
-            <div className=" w-[106px] h-[40px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer">
-              <div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
+            <div className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-[88px]">
+              <div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
                 ADD SCHEDULE
               </div>
             </div>
-            <div className="ml-[98px] w-[210px] h-[40px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
-              <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+            <div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+              <div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
                 EVERY
               </div>
-              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
-                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+                <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                   MONDAY
                 </div>
               </div>
-              <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
                 AT
               </div>
-              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
+              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
                 <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                   08:00
                 </div>
               </div>
             </div>
 
-            <div className="ml-[15px] w-[210px] h-[40px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
-              <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+            <div className="ml-[41px] w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+              <div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
                 EVERY
               </div>
-              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
-                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+                <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                   HOUR
                 </div>
               </div>
               <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 AT
               </div>
-              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
-                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[63px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+                <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                   30:00
                 </div>
               </div>

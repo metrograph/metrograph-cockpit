@@ -48,7 +48,12 @@ export default function CreateAction() {
 
   //Version end
 
-  const [urlCheckBox, setUrlCheckBox] = useState(false);
+  const [title, setTitle] = useState("Send Joke to Discord");
+  const [description, setDescription] = useState(
+    "A task to send a random joke to Discord"
+  );
+
+  const [urlCheckBox, setUrlCheckBox] = useState(true);
 
   return (
     <div className="bg-black h-screen noselect flex justify-center">
@@ -178,7 +183,8 @@ export default function CreateAction() {
                       type="text"
                       className="w-full h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                       placeholder="Action name.."
-                      value="Send Joke to Discord"
+                      onChange={(e) => setTitle(e.target.value)}
+                      value={title}
                     />
                     <div className="bg-[#7ECA9C] w-[12px] h-[12px] rounded-full absolute  right-[16px]" />
                   </div>
@@ -186,14 +192,15 @@ export default function CreateAction() {
 
                 <div className="space-y-[10px] w-1/4">
                   <div className="text-white font-IBM-Plex-Sans font-bold text-[11px]">
-                    description
+                    DESCRIPTION
                   </div>
                   <div className="relative flex items-center">
                     <input
                       type="text"
                       className="w-full h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium px-[20px] text-white"
                       placeholder="Description.."
-                      value="A task to send a random joke to Discord"
+                      onChange={(e) => setDescription(e.target.value)}
+                      value={description}
                     />
                     <div className="bg-[#7ECA9C] w-[12px] h-[12px] rounded-full absolute  right-[16px]" />
                   </div>
@@ -296,35 +303,27 @@ export default function CreateAction() {
         {/*URL Section*/}
         <div className="flex space-x-[40px]  mt-[40px] items-center">
           <div className="flex space-x-2 w-[165px] justify-between items-center">
-            {urlCheckBox ? (
-              <div
-                onClick={() => setUrlCheckBox(!urlCheckBox)}
-                className="w-[16px] h-[16px] rounded-[5px] bg-[#7900FF] border-2 border-[#272727] cursor-pointer"
-              />
-            ) : (
-              <div
-                onClick={() => setUrlCheckBox(!urlCheckBox)}
-                className="grid place-content-center w-[16px] h-[16px] rounded-[5px]  border-2 border-[#272727] cursor-pointer"
-              >
-                <BsFillCheckCircleFill
-                  style={{ height: "10px", width: "10px" }}
-                  fill="#7ECA9C"
-                />
-              </div>
-            )}
+            <div
+              onClick={() => setUrlCheckBox(!urlCheckBox)}
+              className={
+                urlCheckBox
+                  ? "w-[16px] h-[16px] rounded-[5px] bg-[#7900FF] border-2 border-[#272727] cursor-pointer"
+                  : "w-[16px] h-[16px] rounded-[5px] border-2 border-[#272727] cursor-pointer"
+              }
+            />
 
             <div className="text-white font-IBM-Plex-Sans font-bold text-[11px]">
               ENABLE ACTION URL
             </div>
-            <img src={i_icon} alt="" />
+            <img src={i_icon} alt="" width="12px" />
           </div>
-          <div className="flex space-x-[10px]">
+          <div className="flex items-center space-x-[10px]">
             <div className="bg-[#7ECA9C] h-[13px] w-[27px] grid place-content-center">
               <div className=" text-[7px] font-IBM-Plex-Sans font-bold text-white">
-                Live
+                LIVE
               </div>
             </div>
-            <div className="text-[#AC62FF] font-IBM-Plex-Sans font-bold text-[11px] cursor-pointer">
+            <div className="text-[#AC62FF] font-IBM-Plex-Sans font-bold text-[12px] cursor-pointer">
               http://metrpgraph.coolcompany.io/task/hf34j1lrhl1hflk14tkgh/run
             </div>
           </div>
@@ -336,44 +335,44 @@ export default function CreateAction() {
             SCHEDULE TASK
           </div>
           <div className="flex mt-[10px]">
-            <div className=" w-[106px] h-[35px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer">
+            <div className=" w-[106px] h-[40px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer">
               <div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
                 ADD SCHEDULE
               </div>
             </div>
-            <div className="ml-[98px] w-[192px] h-[35px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
+            <div className="ml-[98px] w-[210px] h-[40px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
               <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 EVERY
               </div>
-              <div className="w-[41px] h-[17px] bg-[#7ECA9C] grid place-content-center rounded-[8.5px]">
-                <div className="text-[7px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
+                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
                   MONDAY
                 </div>
               </div>
               <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 AT
               </div>
-              <div className="w-[41px] h-[17px] bg-[#7ECA9C] grid place-content-center rounded-[8.5px]">
-                <div className="text-[7px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
+                <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                   08:00
                 </div>
               </div>
             </div>
 
-            <div className="ml-[15px] w-[192px] h-[35px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
+            <div className="ml-[15px] w-[210px] h-[40px] border-2 border-[#3F3F3F] rounded-[9px] flex justify-evenly px-2 items-center">
               <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 EVERY
               </div>
-              <div className="w-[41px] h-[17px] bg-[#7ECA9C] grid place-content-center rounded-[8.5px]">
-                <div className="text-[7px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
+                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
                   HOUR
                 </div>
               </div>
               <div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
                 AT
               </div>
-              <div className="w-[41px] h-[17px] bg-[#7ECA9C] grid place-content-center rounded-[8.5px]">
-                <div className="text-[7px] font-IBM-Plex-Sans font-bold text-white">
+              <div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-xl">
+                <div className="text-[9px] font-IBM-Plex-Sans font-bold text-white">
                   30:00
                 </div>
               </div>

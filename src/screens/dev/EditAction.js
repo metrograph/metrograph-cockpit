@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { render } from "react-dom";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/snippets/python";
 import { ReactComponent as ActionIcon } from "../../assets/topbar/action.svg";
 import { ReactComponent as DashboardIcon } from "../../assets/topbar/dashboard.svg";
 import { ReactComponent as ApiIcon } from "../../assets/topbar/api.svg";
@@ -6,12 +12,8 @@ import { ReactComponent as ApplicationIcon } from "../../assets/topbar/apps.svg"
 import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { python } from "@codemirror/lang-python";
 import pythonIcon from "../../assets/python.svg";
 
-import { oneDark } from "./Mytheme";
 import i_icon from "../../assets/icons/i.svg";
 
 import logo from "../../assets/logo.svg";
@@ -413,15 +415,24 @@ export default function CreateAction() {
                 </div>
               </div>
               <div>
-                <CodeMirror
-                  theme={oneDark}
-                  value="print('Hello, world!')"
-                  height="376px"
-                  extensions={[python()]}
-                  onChange={(value, viewUpdate) => {
-                    console.log("value:", value);
+                <AceEditor
+                  showPrintMargin={false}
+                  height="374px"
+                  fontSize="14px"
+                  width="100%"
+                  mode="python"
+                  theme="monokai"
+                  onChange={(value) => console.log(value)}
+                  name="ace_firts"
+                  editorProps={{ $blockScrolling: true }}
+                  setOptions={{
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true,
+                    enableSnippets: true,
+                    showLineNumbers: true,
                   }}
                 />
+                ,
               </div>
             </div>
           </div>

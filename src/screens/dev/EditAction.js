@@ -63,9 +63,17 @@ export default function CreateAction() {
 
   const [urlCheckBox, setUrlCheckBox] = useState(true);
 
+  function handleClick(e) {
+    if (e.type === "click") {
+      console.log("Left click");
+    } else if (e.type === "contextmenu") {
+      console.log("Right click");
+    }
+  }
+
   return (
-    <div className="bg-black min-h-screen noselect flex justify-center pb-24">
-      <div className="max-w-[1614px] w-full">
+    <div className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
+      <div className="max-w-[1662px] w-full">
         {/* Top bar start */}
         <div className="">
           <div className="flex justify-between items-center pt-[43px]">
@@ -394,7 +402,11 @@ export default function CreateAction() {
           </div>
           <div className="flex h-[427px] bg-[#202020] ">
             <div className="bg-[#202020] w-1/5">
-              <div className="mt-[30px] flex items-center ml-[42px] space-x-[7px] cursor-pointer">
+              <div
+                onClick={handleClick}
+                onContextMenu={handleClick}
+                className="mt-[30px] flex items-center ml-[42px] space-x-[7px] cursor-pointer"
+              >
                 <ArrowDown />
                 <div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
                   FILES
@@ -432,13 +444,29 @@ export default function CreateAction() {
                     showLineNumbers: true,
                   }}
                 />
-                ,
               </div>
             </div>
           </div>
           <div className="border-b-[3px] border-[#343434] w-full" />
           <div className="bg-[#202020] h-[246px] flex w-full">
-            <div className="w-1/5 border-r-[3px] border-[#343434] "></div>
+            <div className="w-1/5 border-r-[3px] border-[#343434] px-[19px]">
+              <div className="mt-[19px]  flex space-x-[11px]">
+                <div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
+                  EVENT
+                </div>
+                <img src={i_icon} alt="" />
+              </div>
+              <div className="bg-[#1A1A1A] h-[128px] w-full rounded-[13px] mt-[12px] text-white text-[10px] pt-2 px-4">
+                {"{  username : hamza }"}
+              </div>
+              <div className="mt-[15px] grid place-content-end">
+                <div className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px]">
+                  <div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
+                    Run
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="w-2/5 border-r-[3px] border-[#343434] "></div>
             <div className="w-2/5"></div>
           </div>

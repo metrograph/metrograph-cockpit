@@ -6,6 +6,12 @@ import { ReactComponent as ApplicationIcon } from "../../assets/topbar/apps.svg"
 import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
+import CodeMirror from "@uiw/react-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+import pythonIcon from "../../assets/python.svg";
+
+import { oneDark } from "./Mytheme";
 import i_icon from "../../assets/icons/i.svg";
 
 import logo from "../../assets/logo.svg";
@@ -56,8 +62,8 @@ export default function CreateAction() {
   const [urlCheckBox, setUrlCheckBox] = useState(true);
 
   return (
-    <div className="bg-black h-screen noselect flex justify-center">
-      <div className="max-w-[1614px] w-full ">
+    <div className="bg-black min-h-screen noselect flex justify-center pb-24">
+      <div className="max-w-[1614px] w-full">
         {/* Top bar start */}
         <div className="">
           <div className="flex justify-between items-center pt-[43px]">
@@ -377,6 +383,53 @@ export default function CreateAction() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col mt-12 bg-black">
+          <div className=" font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
+            ACTION CODE
+          </div>
+          <div className="flex h-[427px] bg-[#202020] ">
+            <div className="bg-[#202020] w-1/5">
+              <div className="mt-[30px] flex items-center ml-[42px] space-x-[7px] cursor-pointer">
+                <ArrowDown />
+                <div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
+                  FILES
+                </div>
+              </div>
+              <div className="flex items-center space-x-[9px] ml-[49px] mt-[15px] cursor-pointer">
+                <img src={pythonIcon} className="w-[13px] h-[13px]" alt="" />
+                <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
+                  main.py
+                </div>
+              </div>
+            </div>
+            <div className="w-4/5">
+              <div className="bg-[#202020] w-[171px] h-[53px] flex items-center justify-center space-x-[9px] border-b-4 border-[#7900FF]">
+                <img src={pythonIcon} className="w-[14px] h-[14px]" alt="" />
+                <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
+                  main.py
+                </div>
+              </div>
+              <div>
+                <CodeMirror
+                  theme={oneDark}
+                  value="print('Hello, world!')"
+                  height="376px"
+                  extensions={[python()]}
+                  onChange={(value, viewUpdate) => {
+                    console.log("value:", value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="border-b-[3px] border-[#343434] w-full" />
+          <div className="bg-[#202020] h-[246px] flex w-full">
+            <div className="w-1/5 border-r-[3px] border-[#343434] "></div>
+            <div className="w-2/5 border-r-[3px] border-[#343434] "></div>
+            <div className="w-2/5"></div>
           </div>
         </div>
       </div>

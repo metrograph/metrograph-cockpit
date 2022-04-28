@@ -2,6 +2,7 @@ import { useState } from "react";
 import { render } from "react-dom";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
+import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
@@ -62,6 +63,8 @@ export default function CreateAction() {
   );
 
   const [urlCheckBox, setUrlCheckBox] = useState(true);
+  let dt = { username: "ehamza", password: "123" };
+  const [output, setOutput] = useState(JSON.stringify(dt, null, "\t"));
 
   function handleClick(e) {
     if (e.type === "click") {
@@ -456,8 +459,26 @@ export default function CreateAction() {
                 </div>
                 <img src={i_icon} alt="" />
               </div>
-              <div className="bg-[#1A1A1A] h-[128px] w-full rounded-[13px] mt-[12px] text-white text-[10px] pt-2 px-4">
-                {"{  username : hamza }"}
+              <div className="bg-[#1A1A1A] h-[128px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
+                <AceEditor
+                  style={{ borderRadius: "13px" }}
+                  showPrintMargin={false}
+                  height="100%"
+                  fontSize="14px"
+                  width="100%"
+                  mode="json"
+                  theme="monokai"
+                  onChange={(value) => setOutput(value)}
+                  value={output}
+                  name="ace_firts"
+                  editorProps={{ $blockScrolling: true }}
+                  setOptions={{
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true,
+                    enableSnippets: true,
+                    showLineNumbers: false,
+                  }}
+                />
               </div>
               <div className="mt-[15px] grid place-content-end">
                 <div className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px]">

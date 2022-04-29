@@ -71,12 +71,15 @@ export default function CreateAction() {
   const [responseIDE, setResponseIDE] = useState("");
   const [panelMenu, setPanelMenu] = useState(false);
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
+  const [test, setTest] = useState("NOTHING")
+
   function handleClick(e) {
     if (e.type === "click") {
       setPanelMenu(false);
     } else if (e.type === "contextmenu") {
       console.log(e.clientX, e.clientY);
-      setMouseRadar({ x: mouse.x, y: mouse.x });
+
+      setMouseRadar({ x: mouse.x, y: mouse.y });
 
       setPanelMenu(!panelMenu);
     }
@@ -86,7 +89,7 @@ export default function CreateAction() {
     enterDelay: 100,
     leaveDelay: 100,
   });
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <div className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
@@ -431,11 +434,15 @@ export default function CreateAction() {
               >
                 <div className="mt-[30px] flex items-center ml-[42px] space-x-[7px] ">
                   <ArrowDown />
-                  <div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
-                    FILES X{mouseRadar.x} Y{mouseRadar.y}
+                  <div
+                    onContextMenu={() => setTest("FILES")}
+                    className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
+                    FILES {test}
                   </div>
                 </div>
-                <div className="flex items-center space-x-[9px] ml-[49px] mt-[15px] cursor-pointer">
+                <div
+                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setTest("main") }}
+                  className="flex items-center space-x-[9px] ml-[49px] mt-[15px] cursor-pointer">
                   <img src={pythonIcon} className="w-[13px] h-[13px]" alt="" />
                   <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
                     main.py
@@ -445,7 +452,7 @@ export default function CreateAction() {
               {panelMenu && (
                 <div
                   className="bg-[#191919] w-[187px] h-[89px] rounded-[9px] flex flex-col justify-center  border-1 border-[#292929] space-y-[1px]"
-                  style={{ position: "absolute", top: mouse.y, left: mouse.x }}
+                  style={{ position: "absolute", top: mouseRadar.y, left: mouseRadar.x, zIndex: 6 }}
                 >
                   <div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
                     CREATE FOLDER

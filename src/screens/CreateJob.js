@@ -27,8 +27,10 @@ export default function CreateJob() {
   const navigate = useNavigate();
 
   const runtimeList = [{ key: 1, name: "python", versions: ["3.9.10"] }];
-  const runtimeVersionList = runtimeList[0].versions
-  const [selectedRuntime, setSelectedRuntime] = useState(runtimeList[0].versions[0]);
+  const runtimeVersionList = runtimeList[0].versions;
+  const [selectedRuntime, setSelectedRuntime] = useState(
+    runtimeList[0].versions[0]
+  );
 
   const [file, setFile] = useState({
     name: " Attach your Code here",
@@ -96,9 +98,30 @@ export default function CreateJob() {
           };
           dispatch({ type: "addedJob", payload: payload });
           dispatch({ type: "setAlert", payload: payloadAlert });
-        });
+          return navigate(-1);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            let payloadAlert = {
+              is_hide: false,
+              type: "error",
+              title: "Unauthorized access",
+              description:
+                "Unauthorized access is denied due to invalid credentials",
+            };
+            dispatch({ type: "setAlert", payload: payloadAlert });
 
-      return navigate(-1);
+            return console.log("error");
+          } else {
+            let payloadAlert = {
+              is_hide: false,
+              type: "error",
+              title: "Network Error",
+              description: "Sorry, we encountered a network error.",
+            };
+            dispatch({ type: "setAlert", payload: payloadAlert });
+          }
+        });
     }
   }
 
@@ -114,12 +137,7 @@ export default function CreateJob() {
       }
     }
 
-
-
-
     loadLocalStorage();
-
-
   }, [navigate, dispatch]);
 
   return (
@@ -263,7 +281,11 @@ export default function CreateJob() {
                 />
               </div>
               {/* Listbox start */}
-              <Listbox as="div" value={selectedRuntime} onChange={setSelectedRuntime}>
+              <Listbox
+                as="div"
+                value={selectedRuntime}
+                onChange={setSelectedRuntime}
+              >
                 {({ open }) => (
                   <>
                     <div className="mt-8 relative">
@@ -309,25 +331,28 @@ export default function CreateJob() {
                               <Listbox.Option key={fruit} value={fruit}>
                                 {({ selected, active }) => (
                                   <div
-                                    className={`${active
-                                      ? " text-white bg-purple-600"
-                                      : "text-white"
-                                      } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
+                                    className={`${
+                                      active
+                                        ? " text-white bg-purple-600"
+                                        : "text-white"
+                                    } text-sm cursor-default select-none relative py-2 pl-10 pr-4`}
                                   >
                                     <span
-                                      className={`${selected
-                                        ? " font-semibold"
-                                        : "font-normal"
-                                        }`}
+                                      className={`${
+                                        selected
+                                          ? " font-semibold"
+                                          : "font-normal"
+                                      }`}
                                     >
                                       {fruit}
                                     </span>
                                     {selected && (
                                       <span
-                                        className={`${active
-                                          ? "text-white"
-                                          : "text-purple-600"
-                                          } absolute inset-y-0 left-0 flex items-center pl-2`}
+                                        className={`${
+                                          active
+                                            ? "text-white"
+                                            : "text-purple-600"
+                                        } absolute inset-y-0 left-0 flex items-center pl-2`}
                                       >
                                         <svg
                                           className="h-5 w-5"

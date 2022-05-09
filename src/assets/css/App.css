@@ -1,3 +1,14 @@
+::-webkit-scrollbar {
+  background-color: transparent;
+
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #D9D9D9;
+  border-radius: 20px;
+}
+
 .App {
   text-align: center;
 }
@@ -7,11 +18,26 @@
   pointer-events: none;
 }
 
+.roundedArea:hover>svg *,
+.roundedArea:hover {
+  background-color: #F5F5F5;
+  color: black;
+  fill: black;
+}
+
+.strokeArea:hover>svg *,
+.strokeArea:hover {
+  background-color: #F5F5F5;
+  color: black;
+  stroke: black;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
+
 
 .App-header {
   background-color: #282c34;
@@ -32,6 +58,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

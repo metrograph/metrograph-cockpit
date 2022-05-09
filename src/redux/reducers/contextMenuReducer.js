@@ -1,4 +1,4 @@
-const jobReducer = (
+const contextMenuReducer = (
   state = { is_hide: true, type: null },
   { type, payload }
 ) => {
@@ -15,4 +15,4 @@ const jobReducer = (
   }
 };
 
-export default jobReducer;
+export default contextMenuReducer;

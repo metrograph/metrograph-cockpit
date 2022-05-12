@@ -23,14 +23,9 @@ class ActionCodeBuilder {
 
   static delete(data,uid){
     for (let index = 0; index < data.children.length; index++) 
-      if (data.children[index].uid === uid) {
-       data.children.splice(index,1)
-      }
-      else if (data.children[index] instanceof Folder && ActionCodeBuilder.delete(data.children[index], uid))
-      ActionCodeBuilder.delete(data.children[index], uid);
+      if (data.children[index].uid === uid) data.children.splice(index,1)
+      else if (data.children[index] instanceof Folder && ActionCodeBuilder.delete(data.children[index], uid)) ActionCodeBuilder.delete(data.children[index], uid);
   }
-
- 
 }
 export default ActionCodeBuilder;
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
@@ -10,37 +11,48 @@ import "ace-builds/src-noconflict/snippets/python";
 import pythonIcon from "../../assets/python.svg";
 import folderIcon from "../../assets/icons/folder.svg";
 import useMouse from "@react-hook/mouse-position";
+import File from "./File";
+import Folder from "./Folder";
+import ActionCodeBuilder from "./ActionCodeBuilder";
 
 import i_icon from "../../assets/icons/i.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 
 function CFileTree(props) {
-  return props.project.map((element) => {
-    if (element.type === "folder") {
-      return (
-        <div
-          className=""
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log("CFileTree");
-          }}
-        >
-          <CFolder
-            folder={element}
-            children={element.children}
-            showChildreen={false}
-            refState={props.refState}
-          />
-        </div>
-      );
-    } else if (element.type === "file") {
-      return (
-        <CFile file={element} is_input={false} refState={props.refState} />
-      );
+  if (props.file_explorer_state.children) {
+    let children = props.file_explorer_state.children;
+    if (children.length) {
+      return children.map((element) => {
+        if (element instanceof Folder) {
+          return (
+            <div
+              className=""
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("CFileTree");
+              }}
+            >
+              <CFolder
+                folder={element}
+                children={element.children}
+                showChildreen={false}
+                refState={props.refState}
+                is_input={false}
+              />
+            </div>
+          );
+        } else if (element instanceof File) {
+          return (
+            <CFile file={element} is_input={false} refState={props.refState} />
+          );
+        }
+      });
     }
-  });
+  } else return <div></div>;
 }
 function CFile(props) {
+  const dispatch = useDispatch();
+  const mystate = useSelector((state) => state);
   const [inputValue, setInputValue] = useState(props.file.name);
   const [is_input, setIs_input] = useState(props.is_input);
   const [panelMenu, setPanelMenu] = useState(false);
@@ -52,8 +64,7 @@ function CFile(props) {
   });
   function handleClick(e) {
     if (e.type === "click") {
-      console.log("Right Click @ file");
-      setPanelMenu(false);
+    setPanelMenu(false);
     } else if (e.type === "contextmenu") {
       console.log("Left Click @ file");
 
@@ -65,10 +76,18 @@ function CFile(props) {
   function handlKeyDown(e) {
     if (e.keyCode === 13) {
       setIs_input(false);
+      ActionCodeBuilder.rename(mystate.file_explorer, props.file.uid,inputValue);
+      dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
     } else if (e.keyCode === 27) {
       setInputValue(props.file.name);
       setIs_input(false);
     }
+  }
+  function handleDelete(){
+    ActionCodeBuilder.delete(mystate.file_explorer, props.file.uid);
+    dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+    setPanelMenu(false)
+    
   }
   if (is_input) {
     return (
@@ -121,7 +140,7 @@ function CFile(props) {
         </div>
         {panelMenu && (
           <div
-            className="bg-[#191919] w-[187px] py-4 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
+            className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
             style={{
               position: "absolute",
               top: mouseRadar.y,
@@ -135,11 +154,13 @@ function CFile(props) {
                 setIs_input(true);
                 setPanelMenu(false);
               }}
-              className="text-white font-IBM-Plex-Sans py-2 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
+              className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
             >
               RENAME
             </div>
-            <div className="text-white font-IBM-Plex-Sans  py-2 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+            <div 
+            onClick={()=>handleDelete()}
+            className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
               DELETE
             </div>
           </div>
@@ -149,6 +170,9 @@ function CFile(props) {
   }
 }
 function CFolder(props) {
+  const dispatch = useDispatch();
+  const mystate = useSelector((state) => state);
+  const [inputValue, setInputValue] = useState(props.folder.name);
   const [showChildreen, setShowChildreen] = useState(false);
   const [is_input, setIs_input] = useState(props.is_input);
   const [panelMenu, setPanelMenu] = useState(false);
@@ -167,30 +191,121 @@ function CFolder(props) {
 
       setMouseRadar({ x: mouse.x, y: mouse.y });
 
-      setPanelMenu(!panelMenu);
+      setPanelMenu(true);
     }
   }
+  function handlKeyDown(e) {
+    if (e.keyCode === 13) {
+      setIs_input(false);
+      ActionCodeBuilder.rename(mystate.file_explorer, props.folder.uid,inputValue);
+      dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+    } else if (e.keyCode === 27) {
+      setInputValue(props.folder.name);
+      setIs_input(false);
+    }
+  }
+  function handleDelete(){
+    ActionCodeBuilder.delete(mystate.file_explorer, props.folder.uid);
+    dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+    setPanelMenu(false)
+    
+  }
+
+ 
   return (
     <div className="">
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowChildreen(!showChildreen);
-        }}
-        className="flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#292828]"
-      >
-        <img
-          src={props.folder.icon}
-          className="w-[13px] h-[13px] z-10"
-          alt=""
-        />
-        <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium z-10">
-          {props.folder.name}
+      {is_input && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setInputValue(props.folder.name);
+            setIs_input(false);
+          }}
+          onKeyDown={(e) => {
+            handlKeyDown(e);
+          }}
+          className="cursor-pointer hover:bg-[#292828]"
+        >
+          <div className="flex items-center space-x-[9px] h-[28px] ">
+            <img
+              src={props.folder.icon}
+              className="w-[13px] h-[13px] z-10"
+              alt=""
+            />
+            <input
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 bg-[#292828] border-[#7900FF] outline-none"
+              autoFocus={true}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
+      )}
+      {!is_input && (
+        <div>
+          <div
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleClick(e);
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowChildreen(!showChildreen);
+              handleClick(e);
+            }}
+            className="flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#292828]"
+          >
+            <img
+              src={props.folder.icon}
+              className="w-[13px] h-[13px] z-10"
+              alt=""
+            />
+            <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium z-10">
+              {inputValue}
+            </div>
+          </div>
+          {panelMenu && (
+            <div
+              className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
+              style={{
+                position: "absolute",
+                top: mouseRadar.y,
+                left: mouseRadar.x,
+                zIndex: 6,
+              }}
+            >
+              <div className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+                CREATE FOLDER
+              </div>
+              <div className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+                CREATE FILE
+              </div>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIs_input(true);
+                  setPanelMenu(false);
+                }}
+                className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
+              >
+                RENAME
+              </div>
+              <div
+              onClick={()=>handleDelete()}
+              className="text-white font-IBM-Plex-Sans  py-1 b font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+                DELETE
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       {showChildreen &&
         props.children.map((element) => {
-          if (element.type === "folder") {
+          if (element instanceof Folder) {
             return (
               <div className="">
                 <div className="ml-6">
@@ -202,7 +317,7 @@ function CFolder(props) {
                 </div>
               </div>
             );
-          } else if (element.type === "file") {
+          } else if (element instanceof File) {
             return (
               <div className="">
                 <div className="ml-6">
@@ -221,57 +336,9 @@ function CFolder(props) {
 }
 
 export default function CodeEditor() {
-  let dtFiles = [
-    {
-      type: "folder",
-      name: "cockpit",
-      icon: folderIcon,
-      path: "/cockpit",
-      children: [
-        {
-          type: "folder",
-          name: "src",
-          icon: folderIcon,
-          path: "/cockpit/src",
-          children: [
-            {
-              type: "folder",
-              icon: folderIcon,
-              name: "screens",
-              path: "/cockpit/src/screens",
-              children: [
-                {
-                  type: "file",
-                  icon: pythonIcon,
-                  name: "App.js",
-                  path: "/cockpit/src/screens/App.js",
-                },
-                {
-                  type: "file",
-                  icon: pythonIcon,
-                  name: "index.css",
-                  path: "/cockpit/src/screens/index.css",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: "file",
-          icon: pythonIcon,
-          name: "index.css",
-          path: "/cockpit/src/screens/index.css",
-        },
-      ],
-    },
-    {
-      type: "file",
-      icon: pythonIcon,
-      name: ".gitignore",
-      path: "/.gitignore",
-    },
-  ];
-  const [data, setData] = useState(dtFiles);
+  const dispatch = useDispatch();
+  const mystate = useSelector((state) => state);
+  const [data, setData] = useState(mystate.file_explorer);
   const [panelMenu, setPanelMenu] = useState(false);
   let dt = { username: "ehamza", password: "123" };
   const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
@@ -280,7 +347,6 @@ export default function CodeEditor() {
 
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
   const ref = React.useRef(null);
-  //const [ref, setRef] = useState(React.useRef(null));
 
   const mouse = useMouse(ref, {
     enterDelay: 100,
@@ -311,6 +377,81 @@ export default function CodeEditor() {
       setPanelMenu(!panelMenu);
     }
   }
+
+  useEffect(() => {
+    let data = {
+      uid: "0",
+      type: "folder",
+      name: "root",
+      icon: null,
+      path: "",
+      children: [
+        {
+          uid: "1",
+          type: "folder",
+          name: "cockpit",
+          icon: folderIcon,
+          path: "/cockpit",
+          children: [
+            {
+              uid: "2",
+              type: "folder",
+              name: "src",
+              icon: folderIcon,
+              path: "/cockpit/src",
+              children: [
+                {
+                  uid: "3",
+                  type: "folder",
+                  icon: folderIcon,
+                  name: "screens",
+                  path: "/cockpit/src/screens",
+                  children: [
+                    {
+                      uid: "4",
+                      type: "file",
+                      icon: pythonIcon,
+                      name: "App.js",
+                      path: "/cockpit/src/screens/App.js",
+                    },
+                    {
+                      uid: "5",
+                      type: "file",
+                      icon: pythonIcon,
+                      name: "index.css",
+                      path: "/cockpit/src/screens/index.css",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              uid: "6",
+              type: "file",
+              icon: pythonIcon,
+              name: "index.css",
+              path: "/cockpit/index.css",
+            },
+          ],
+        },
+        {
+          uid: "7",
+          type: "file",
+          icon: pythonIcon,
+          name: ".gitignore",
+          path: "/.gitignore",
+        },
+      ],
+    };
+    let mydata = ActionCodeBuilder.build(data);
+
+    if (!mystate.file_explorer.children) {
+      dispatch({
+        type: "setFileExplorer",
+        payload: ActionCodeBuilder.build(data),
+      });
+    }
+  }, [mystate.file_explorer.children]);
 
   return (
     <div className="flex flex-col bg-black">
@@ -359,7 +500,7 @@ export default function CodeEditor() {
             <div className="ml-[48px] mt-[15px] ">
               <CFileTree
                 refState={ref}
-                project={data}
+                file_explorer_state={mystate.file_explorer}
                 onClick={onclick}
                 handleClick={() => handleClick}
               />

@@ -26,6 +26,24 @@ class ActionCodeBuilder {
       if (data.children[index].uid === uid) data.children.splice(index,1)
       else if (data.children[index] instanceof Folder) ActionCodeBuilder.delete(data.children[index], uid);
   }
+  static add(tree,node,uid){
+    for (let index = 0; index < tree.children.length; index++) {
+      if (tree.children[index].uid===uid && tree.children[index] instanceof Folder) {
+        if (node instanceof File) tree.children[index].addChild(new File(node.uid, node.name, node.icon))
+        else if (node instanceof Folder) tree.children[index].addChild(new Folder(node.uid, node.name, node.icon))
+      }
+      else if (tree.children[index] instanceof Folder) ActionCodeBuilder.add(tree.children[index],node,uid)
+    }
+  }
+  static replace(tree,uid,newNode){
+    for (let index = 0; index < tree.children.length; index++) 
+      if (tree.children[index].uid === uid)
+      {
+        let node = tree.children[index]
+        node.replace(newNode)
+      }
+      else if (tree.children[index] instanceof Folder) ActionCodeBuilder.replace(tree.children[index],uid,newNode);
+  }
 }
 export default ActionCodeBuilder;
 

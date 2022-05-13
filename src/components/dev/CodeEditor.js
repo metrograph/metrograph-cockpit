@@ -50,9 +50,11 @@ function CFileTree(props) {
     }
   } else return <div></div>;
 }
+
 function CFile(props) {
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
+  const [is_active,setIs_active]=useState(props.file.uid===mystate.activeElement.codeAction?true:false)
   const [inputValue, setInputValue] = useState(props.file.name);
   const [is_input, setIs_input] = useState(props.file.uid==="-1"?true:false);
   const [panelMenu, setPanelMenu] = useState(false);
@@ -62,71 +64,45 @@ function CFile(props) {
     enterDelay: 100,
     leaveDelay: 100,
   });
+
   function handleClick(e) {
     if (e.type === "click") {
-    setPanelMenu(false);
-    } else if (e.type === "contextmenu") {
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
+      setPanelMenu(false);
+    }
+    else if (e.type === "contextmenu") {
       console.log("Left Click @ file");
-
       setMouseRadar({ x: mouse.x, y: mouse.y });
-
       setPanelMenu(true);
     }
   }
-  function handlKeyDown(e) {
-    if (e.keyCode === 13 && props.file.uid==="-1") {
-      let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),inputValue,pythonIcon)
-      ActionCodeBuilder.replace(mystate.file_explorer, props.file.uid,node);
-      dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-      setIs_input(false);
-    }
-    else {
-      if (e.keyCode === 13) {
-        setIs_input(false);
-        ActionCodeBuilder.rename(mystate.file_explorer, props.file.uid,inputValue);
-        dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-      }
-      else if (e.keyCode === 27) {
-        setInputValue(props.file.name);
-        setIs_input(false);
-      }  
-    }
+
+  function handleRename(){
+    dispatch({type:"activeElementRename", payload:{uid:props.file.uid}})
   }
+
+  function handlKeyDown(e) {
+    if (e.keyCode === 13) {
+      setIs_input(false);
+      ActionCodeBuilder.rename(mystate.file_explorer, props.file.uid,inputValue);
+      dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
+    }
+    else if (e.keyCode === 27) {
+      setInputValue(props.file.name);
+      setIs_input(false);
+    }  
+  }
+
   function handleDelete(){
     ActionCodeBuilder.delete(mystate.file_explorer, props.file.uid);
     dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
     setPanelMenu(false)
     
   }
-  if (is_input && props.file.uid!="-1") {
-    return (
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          setInputValue(props.file.name);
-          setIs_input(false);
-        }}
-        onKeyDown={(e) => {
-          handlKeyDown(e);
-        }}
-        className="cursor-pointer hover:bg-[#292828]"
-      >
-        <div className="flex items-center space-x-[9px] h-[28px] ">
-          <img src={props.file.icon} className="w-[13px] h-[13px]" alt="" />
-          <input
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 bg-[#292828] border-[#7900FF] outline-none"
-            autoFocus={true}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-        </div>
-      </div>
-    );
-  }
-  else if(is_input && props.file.uid==="-1") {
+
+  if (props.file.uid===mystate.activeElement.renameView) {
     return (
       <div
         onClick={(e) => {
@@ -167,7 +143,7 @@ function CFile(props) {
             e.stopPropagation();
             handleClick(e);
           }}
-          className="cursor-pointer hover:bg-[#292828]"
+          className={props.file.uid===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e]":"cursor-pointer hover:bg-[#292828]"}
         >
           <div className="flex items-center space-x-[9px] h-[28px] ">
             <img src={props.file.icon} className="w-[13px] h-[13px]" alt="" />
@@ -189,7 +165,7 @@ function CFile(props) {
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                setIs_input(true);
+                handleRename();
                 setPanelMenu(false);
               }}
               className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
@@ -206,13 +182,14 @@ function CFile(props) {
       </div>
     );
   }
+
 }
+
 function CFolder(props) {
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
   const [inputValue, setInputValue] = useState(props.folder.name);
   const [showChildreen, setShowChildreen] = useState(false);
-  const [is_input, setIs_input] = useState(props.folder.uid==="-1"?true:false);
   const [panelMenu, setPanelMenu] = useState(false);
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 
@@ -222,7 +199,8 @@ function CFolder(props) {
   });
   function handleClick(e) {
     if (e.type === "click") {
-      console.log("Right Click @ file");
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
       setPanelMenu(false);
     } else if (e.type === "contextmenu") {
       console.log("Left Click @ file");
@@ -232,26 +210,22 @@ function CFolder(props) {
       setPanelMenu(true);
     }
   }
+
+  function handleRename(){
+    dispatch({type:"activeElementRename", payload:{uid:props.folder.uid}})
+  }
   function handlKeyDown(e) {
-    if (e.keyCode === 13 && props.folder.uid==="-1") {
-      console.log("rename new")
-      
-      let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),inputValue,folderIcon)
-      ActionCodeBuilder.replace(mystate.file_explorer, props.folder.uid,node);
+    
+    if (e.keyCode === 13) {
+      ActionCodeBuilder.rename(mystate.file_explorer, props.folder.uid,inputValue);
+      dispatch({type:"activeElementRename", payload:{uid:""}})
       dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-      setIs_input(false);
+      
     }
-    else {
-      if (e.keyCode === 13) {
-        setIs_input(false);
-        ActionCodeBuilder.rename(mystate.file_explorer, props.folder.uid,inputValue);
-        dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-      }
-      else if (e.keyCode === 27) {
-        setInputValue(props.folder.name);
-        setIs_input(false);
-      }  
-    }
+    else if (e.keyCode === 27) {
+      setInputValue(props.folder.name);
+      
+    }  
   }
   function handleDelete(){
     ActionCodeBuilder.delete(mystate.file_explorer, props.folder.uid);
@@ -259,29 +233,34 @@ function CFolder(props) {
     setPanelMenu(false)
     
   }
+
   function handleCreateFile() {
-  let node=new File("-1","new file",pythonIcon)
-  ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
-  setPanelMenu(false)
-  setShowChildreen(true)
+    let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
+    ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
+    dispatch({type:"activeElementRename", payload:{uid:node.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    setPanelMenu(false)
+    setShowChildreen(true)
   }
+
   function handleCreateFolder() {
-  let node=new Folder("-1","new folder",folderIcon)
-  ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
-  dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-  setPanelMenu(false)
-  setShowChildreen(true)
+    let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
+    ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
+    dispatch({type:"activeElementRename", payload:{uid:node.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    setPanelMenu(false)
+    setShowChildreen(true)
   }
 
  
   return (
     <div className="">
-      {is_input && props.folder.uid==="-1" && (
+      {props.folder.uid===mystate.activeElement.renameView && (
         <div
           onClick={(e) => {
             e.stopPropagation();
             setInputValue(props.folder.name);
-            setIs_input(false);
+           
           }}
           onKeyDown={(e) => {
             handlKeyDown(e);
@@ -306,37 +285,7 @@ function CFolder(props) {
           </div>
         </div>
       )}
-      {is_input && props.folder.uid!="-1" && (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            setInputValue(props.folder.name);
-            setIs_input(false);
-          }}
-          onKeyDown={(e) => {
-            handlKeyDown(e);
-          }}
-          className="cursor-pointer hover:bg-[#292828]"
-        >
-          <div className="flex items-center space-x-[9px] h-[28px] ">
-            <img
-              src={props.folder.icon}
-              className="w-[13px] h-[13px] z-10"
-              alt=""
-            />
-            <input
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 bg-[#292828] border-[#7900FF] outline-none"
-              autoFocus={true}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-          </div>
-        </div>
-      )}
-      {!is_input && props.folder.uid!="-1" && (
+      {props.folder.uid!=mystate.activeElement.renameView && (
         <div>
           <div
             onContextMenu={(e) => {
@@ -349,7 +298,7 @@ function CFolder(props) {
               setShowChildreen(!showChildreen);
               handleClick(e);
             }}
-            className="flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#292828]"
+            className={props.folder.uid===mystate.activeElement.codeAction?"flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e]":"flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#292828]"}
           >
             <img
               src={props.folder.icon}
@@ -383,7 +332,7 @@ function CFolder(props) {
               <div
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIs_input(true);
+                  handleRename();
                   setPanelMenu(false);
                 }}
                 className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"

@@ -5,12 +5,14 @@ import alertReducer from "./reducers/alertReducer";
 import userReducer from "./reducers/userReducer";
 import contextMenuReducer from "./reducers/contextMenuReducer";
 import fileExplorerReducer from "./reducers/fileExplorerReducer";
+import activeElementReducer from "./reducers/activeElementReducer";
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
   user: userReducer,
   contextMenu: contextMenuReducer,
   file_explorer: fileExplorerReducer,
+  activeElement:activeElementReducer
 });
 
 const store = createStore(

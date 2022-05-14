@@ -27,11 +27,7 @@ class ActionCodeBuilder {
 
 	static add(tree, node, uid){
 		for (let index = 0; index < tree.children.length; index++) {
-			if (tree.children[index].uid===uid && tree.children[index] instanceof Folder) 
-			{
-				tree.children[index].addChild(node)
-				  
-			}
+			if (tree.children[index].uid===uid && tree.children[index] instanceof Folder) tree.children[index].addChild(node)
 			else if (tree.children[index] instanceof Folder) ActionCodeBuilder.add(tree.children[index], node, uid)
 		}
 	}

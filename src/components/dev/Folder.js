@@ -6,7 +6,8 @@ class Folder extends AbstractFile {
     this.children = [];
   }
   addChild(child) {
-    this.children.push(child);
+    if(child instanceof Folder) this.children.unshift(child)
+    else this.children.push(child)
   }
 }
 

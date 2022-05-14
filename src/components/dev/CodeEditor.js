@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
@@ -69,17 +70,20 @@ function CFile(props) {
     if (e.type === "click") {
       dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
-      setPanelMenu(false);
+      dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     }
     else if (e.type === "contextmenu") {
-      console.log("Left Click @ file");
       setMouseRadar({ x: mouse.x, y: mouse.y });
-      setPanelMenu(true);
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+      dispatch({type:"activeElementContextMenu", payload:{uid:props.file.uid}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
     }
   }
 
   function handleRename(){
     dispatch({type:"activeElementRename", payload:{uid:props.file.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
   function handlKeyDown(e) {
@@ -98,7 +102,7 @@ function CFile(props) {
   function handleDelete(){
     ActionCodeBuilder.delete(mystate.file_explorer, props.file.uid);
     dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-    setPanelMenu(false)
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     
   }
 
@@ -115,13 +119,13 @@ function CFile(props) {
         }}
         className="cursor-pointer hover:bg-[#292828]"
       >
-        <div className="flex items-center space-x-[9px] h-[28px] ">
-          <img src={props.file.icon} className="w-[13px] h-[13px]" alt="" />
+        <div className="flex items-center space-x-[4px] h-[28px] ">
+          <img src={require('../../assets/vsicons/'+getIconForFile(inputValue))} className="w-[15px] h-[15px]" alt="" />
           <input
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 bg-[#292828] border-[#7900FF] outline-none"
+            className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 px-2 rounded-md bg-[#292828] border-[#7900FF] outline-none"
             autoFocus={true}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -143,16 +147,16 @@ function CFile(props) {
             e.stopPropagation();
             handleClick(e);
           }}
-          className={props.file.uid===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e]":"cursor-pointer hover:bg-[#292828]"}
+          className={props.file.uid===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}
         >
-          <div className="flex items-center space-x-[9px] h-[28px] ">
-            <img src={props.file.icon} className="w-[13px] h-[13px]" alt="" />
+          <div className="flex items-center space-x-[4px] h-[28px] ">
+            <img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
             <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
               {inputValue}
             </div>
           </div>
         </div>
-        {panelMenu && (
+        {props.file.uid===mystate.activeElement.contextMenu && (
           <div
             className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
             style={{
@@ -166,7 +170,6 @@ function CFile(props) {
               onClick={(e) => {
                 e.stopPropagation();
                 handleRename();
-                setPanelMenu(false);
               }}
               className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
             >
@@ -190,7 +193,6 @@ function CFolder(props) {
   const mystate = useSelector((state) => state);
   const [inputValue, setInputValue] = useState(props.folder.name);
   const [showChildreen, setShowChildreen] = useState(false);
-  const [panelMenu, setPanelMenu] = useState(false);
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 
   const mouse = useMouse(props.refState, {
@@ -199,56 +201,58 @@ function CFolder(props) {
   });
   function handleClick(e) {
     if (e.type === "click") {
+      dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
       dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
-      setPanelMenu(false);
+      dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     } else if (e.type === "contextmenu") {
-      console.log("Left Click @ file");
-
       setMouseRadar({ x: mouse.x, y: mouse.y });
-
-      setPanelMenu(true);
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+      dispatch({type:"activeElementContextMenu", payload:{uid:props.folder.uid}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
     }
   }
 
   function handleRename(){
     dispatch({type:"activeElementRename", payload:{uid:props.folder.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
+
   function handlKeyDown(e) {
-    
     if (e.keyCode === 13) {
       ActionCodeBuilder.rename(mystate.file_explorer, props.folder.uid,inputValue);
-      dispatch({type:"activeElementRename", payload:{uid:""}})
       dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-      
+      dispatch({type:"activeElementRename", payload:{uid:""}})
     }
     else if (e.keyCode === 27) {
       setInputValue(props.folder.name);
-      
     }  
   }
+
   function handleDelete(){
     ActionCodeBuilder.delete(mystate.file_explorer, props.folder.uid);
     dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-    setPanelMenu(false)
-    
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
   function handleCreateFile() {
     let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
     ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
+    if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
     dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
-    setPanelMenu(false)
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     setShowChildreen(true)
   }
 
   function handleCreateFolder() {
     let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
     ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
+    if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
     dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
-    setPanelMenu(false)
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     setShowChildreen(true)
   }
 
@@ -267,17 +271,17 @@ function CFolder(props) {
           }}
           className="cursor-pointer hover:bg-[#292828]"
         >
-          <div className="flex items-center space-x-[9px] h-[28px] ">
-            <img
-              src={props.folder.icon}
-              className="w-[13px] h-[13px] z-10"
+          <div className="flex items-center space-x-[4px] h-[28px] ">
+          <img
+              src={mystate.activeElement.opendFolders.includes(props.folder.uid)?require("../../assets/vsicons/"+getIconForOpenFolder(inputValue)):require("../../assets/vsicons/"+getIconForFolder(inputValue))}
+              className="w-[15px] h-[15px] z-10"
               alt=""
             />
             <input
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 bg-[#292828] border-[#7900FF] outline-none"
+              className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 px-2 rounded-md bg-[#292828] border-[#7900FF] outline-none"
               autoFocus={true}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -298,18 +302,18 @@ function CFolder(props) {
               setShowChildreen(!showChildreen);
               handleClick(e);
             }}
-            className={props.folder.uid===mystate.activeElement.codeAction?"flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e]":"flex items-center space-x-[9px] h-[28px] cursor-pointer hover:bg-[#292828]"}
+            className={props.folder.uid===mystate.activeElement.codeAction?"flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"px-2 rounded-md flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#292828]"}
           >
             <img
-              src={props.folder.icon}
-              className="w-[13px] h-[13px] z-10"
+              src={mystate.activeElement.opendFolders.includes(props.folder.uid)?require("../../assets/vsicons/"+getIconForOpenFolder(props.folder.name)):require("../../assets/vsicons/"+getIconForFolder(props.folder.name))}
+              className="w-[15px] h-[15px] z-10"
               alt=""
             />
             <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium z-10">
               {inputValue}
             </div>
           </div>
-          {panelMenu && (
+          {props.folder.uid===mystate.activeElement.contextMenu && (
             <div
               className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
               style={{
@@ -333,7 +337,6 @@ function CFolder(props) {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRename();
-                  setPanelMenu(false);
                 }}
                 className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
               >
@@ -348,7 +351,7 @@ function CFolder(props) {
           )}
         </div>
       )}
-      {showChildreen &&
+      {mystate.activeElement.opendFolders.includes(props.folder.uid) &&
         props.children.map((element) => {
           if (element instanceof Folder) {
             return (
@@ -398,29 +401,37 @@ export default function CodeEditor() {
     leaveDelay: 100,
   });
 
-  function add_toExplorer() {
-    console.log("File added");
-    setData([
-      ...data,
-      {
-        type: "file",
-        icon: pythonIcon,
-        name: "NEW",
-        path: "/.gitignore",
-      },
-    ]);
-  }
+  
+
   function handleClick(e) {
     if (e.type === "click") {
-      console.log("Right Click");
-      setPanelMenu(false);
-    } else if (e.type === "contextmenu") {
-      console.log("Left Click");
-
-      setMouseRadar({ x: mouse.x, y: mouse.y });
-
-      setPanelMenu(!panelMenu);
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:"-1"}})
+      dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
     }
+    else if (e.type === "contextmenu") {
+      setMouseRadar({ x: mouse.x, y: mouse.y });
+      dispatch({type:"addActiveElementTocodeAction", payload:{uid:"-1"}})
+      dispatch({type:"activeElementContextMenu", payload:{uid:"-1"}})
+      dispatch({type:"activeElementRename", payload:{uid:""}})
+    }
+  }
+  
+  function handleCreateFile() {
+    let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
+    if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
+    else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
+    dispatch({type:"activeElementRename", payload:{uid:node.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+  }
+
+  function handleCreateFolder() {
+    let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
+    ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
+    dispatch({type:"activeElementRename", payload:{uid:node.uid}})
+    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
   useEffect(() => {
@@ -502,21 +513,13 @@ export default function CodeEditor() {
     <div className="flex flex-col bg-black">
       <div className="flex h-[427px] bg-[#202020]">
         {/*Lef panel section*/}
-        <div
-          onContextMenu={(e) => e.preventDefault()}
-          className="bg-[#202020] w-1/5 relative"
-          ref={ref}
-        >
-          <div
-            onClick={handleClick}
-            onContextMenu={handleClick}
-            className="h-full"
-          >
+        <div onContextMenu={(e) => e.preventDefault()} className="bg-[#202020] w-1/5 relative" ref={ref}>
+          <div onClick={handleClick} onContextMenu={handleClick} className="h-full">
             <div className="mt-[30px] flex items-center ml-[42px] space-x-[18px] ">
               <div className="flex items-center space-x-[7px] cursor-pointer">
                 <ArrowDown />
                 <div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
-                  FILES
+                  FILES 
                 </div>
               </div>
               <div className="flex space-x-[6px] items-center">
@@ -531,7 +534,7 @@ export default function CodeEditor() {
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
-                    add_toExplorer();
+                    handleCreateFile();
                   }}
                   title="Create New File"
                   className="bg-[#7ECA9C] hover:bg-black h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer"
@@ -542,7 +545,7 @@ export default function CodeEditor() {
                 </div>
               </div>
             </div>
-            <div className="ml-[48px] mt-[15px] ">
+            <div className="ml-[48px] mt-[15px] mr-2">
               <CFileTree
                 refState={ref}
                 file_explorer_state={mystate.file_explorer}
@@ -551,7 +554,7 @@ export default function CodeEditor() {
               />
             </div>
           </div>
-          {panelMenu && (
+          {mystate.activeElement.contextMenu==="-1" && (
             <div
               className="bg-[#191919] w-[187px] h-[89px] rounded-[9px] flex flex-col justify-center  border-1 border-[#292929] space-y-[1px]"
               style={{
@@ -561,10 +564,10 @@ export default function CodeEditor() {
                 zIndex: 6,
               }}
             >
-              <div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+              <div onClick={(e)=>{e.stopPropagation(); handleCreateFolder()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
                 CREATE FOLDER
               </div>
-              <div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+              <div onClick={(e)=>{e.stopPropagation(); handleCreateFile()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
                 CREATE FILE
               </div>
               <div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
@@ -581,7 +584,7 @@ export default function CodeEditor() {
         </div>
         {/*Lef panel section end*/}
         <div className="w-4/5">
-          <div className="bg-[#202020] w-[171px] h-[53px] flex items-center justify-center space-x-[9px] border-b-4 border-[#7900FF]">
+          <div className="bg-[#202020] w-[171px] h-[53px] flex items-center justify-center space-x-[4px] border-b-4 border-[#7900FF]">
             <img src={pythonIcon} className="w-[14px] h-[14px]" alt="" />
             <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
               main.py

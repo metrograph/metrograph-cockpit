@@ -6,13 +6,15 @@ import userReducer from "./reducers/userReducer";
 import contextMenuReducer from "./reducers/contextMenuReducer";
 import fileExplorerReducer from "./reducers/fileExplorerReducer";
 import activeElementReducer from "./reducers/activeElementReducer";
+import folderReducer from "./reducers/folderReducer";
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
   user: userReducer,
   contextMenu: contextMenuReducer,
   file_explorer: fileExplorerReducer,
-  activeElement:activeElementReducer
+  activeElement:activeElementReducer,
+  folder:folderReducer
 });
 
 const store = createStore(

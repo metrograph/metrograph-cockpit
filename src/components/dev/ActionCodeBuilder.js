@@ -14,14 +14,11 @@ class ActionCodeBuilder {
 	
 	static rename(data, uid, name) {
 		for (let index = 0; index < data.children.length; index++) 
-		if (data.children[index].uid === uid) {
-			let node= data.children[index]
-			node.rename(name)
-		}
+		if (data.children[index].uid === uid) data.children[index].rename(name)
 		else if (data.children[index] instanceof Folder && ActionCodeBuilder.rename(data.children[index], uid, name))
 		ActionCodeBuilder.rename(data.children[index], uid, name);
 	}
-	
+
 	static delete(data, uid){
 		for (let index = 0; index < data.children.length; index++) 
 		if (data.children[index].uid === uid) data.children.splice(index,1)
@@ -33,10 +30,14 @@ class ActionCodeBuilder {
 			if (tree.children[index].uid===uid && tree.children[index] instanceof Folder) 
 			{
 				tree.children[index].addChild(node)
-				return node 
+				  
 			}
 			else if (tree.children[index] instanceof Folder) ActionCodeBuilder.add(tree.children[index], node, uid)
 		}
+	}
+
+	static addToRoot(tree, node){
+		tree.addChild(node)
 	}
 
 	static replace(tree, uid, newNode){

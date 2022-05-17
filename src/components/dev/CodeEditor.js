@@ -331,6 +331,31 @@ function CFolder(props) {
   );
 }
 
+function FileTab(props){
+	const dispatch = useDispatch(); 
+	function handleCloseTab(){
+		dispatch({type:"codeEditorDumpSelectedFile",payload:{}})
+	  }
+	  
+	if (props.codeEditor.selectedFile.name!="") {
+		return (
+			<div className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF]">
+				<div></div>
+				<div className="flex items-center space-x-1">
+					  <img src={require('../../assets/vsicons/'+getIconForFile(props.codeEditor.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+					  <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
+					{props.codeEditor.selectedFile.name}
+					  </div>
+				</div>
+				<div onClick={()=>handleCloseTab()} className="text-white cursor-pointer hover:bg-slate-600 grid place-content-center px-1 rounded-md">
+				  x
+				</div>
+			  </div>
+			)
+	}
+	else return <div className=" bg-[#141414] w-full h-[53px]"/>
+}
+
 export default function CodeEditor() {
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
@@ -379,7 +404,7 @@ export default function CodeEditor() {
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
-  useEffect(() => {
+useEffect(() => {
     let data = {
       uid: "0",
       type: "folder",
@@ -515,19 +540,15 @@ export default function CodeEditor() {
             </div>
           )}
         </div>
-        {/*Lef panel section end*/}
+        {/*Left panel section end*/}
+		
+		{/* File content section */}
         <div className="w-4/5">
           <div className="flex">
-          <div className="bg-[#202020] w-[171px] h-[53px] flex items-center justify-center space-x-[4px] border-b-4 border-[#7900FF]">
-          <img src={require('../../assets/vsicons/'+getIconForFile(mystate.codeEditor.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
-            <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
-              {mystate.codeEditor.selectedFile.name}
-            </div>
+            <FileTab codeEditor={mystate.codeEditor}/>
           </div>
-          
-          </div>
-          <div>
-            <AceEditor
+		  <div>
+            {mystate.codeEditor.selectedFile.name!="" && <AceEditor
               showPrintMargin={false}
               height="374px"
               fontSize="17px"
@@ -544,9 +565,11 @@ export default function CodeEditor() {
                 enableSnippets: true,
                 showLineNumbers: true,
               }}
-            />
+            />}
+			{mystate.codeEditor.selectedFile.name==="" && <div className="bg-[#141414] w-full h-[374px]"></div>}
           </div>
         </div>
+		{/* File content section end*/}
       </div>
       <div className="border-b-[3px] border-[#343434] w-full" />
       <div className="bg-[#202020] h-[246px] flex w-full">

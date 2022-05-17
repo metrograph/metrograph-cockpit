@@ -7,6 +7,11 @@ class AbstractFile {
   rename(name){
     this.name=name
   }
+  replace(node){
+    this.uid=node.uid
+    this.name=node.name
+    this.icon=node.icon
+  }
 }
 
 export default AbstractFile;

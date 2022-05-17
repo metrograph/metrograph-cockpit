@@ -2,12 +2,12 @@ function setActiveElement(payload){
     console.log("element has beeing set!")
     }
     
-function addActiveElementTocodeAction(state, payload){
+function activeElementSelected(state, payload){
     return {...state,codeAction:payload.uid}
     }
 
 function activeElementRename(state, payload){
-    return {...state, renameView: payload.uid}
+    return {...state, renameView:payload.uid}
     }
 
 function activeElementContextMenu(state, payload){
@@ -26,8 +26,8 @@ const activeElementReducer = (state = {codeAction:"",renameView:"",contextMenu:"
     switch (type) {
         case "setActiveElement":
             return setActiveElement(payload)
-        case "addActiveElementTocodeAction":
-            return addActiveElementTocodeAction(state, payload)
+        case "activeElementSelected":
+            return activeElementSelected(state, payload)
         case "activeElementRename":
             return activeElementRename(state, payload)
         case "activeElementContextMenu":

@@ -7,6 +7,7 @@ import contextMenuReducer from "./reducers/contextMenuReducer";
 import fileExplorerReducer from "./reducers/fileExplorerReducer";
 import activeElementReducer from "./reducers/activeElementReducer";
 import folderReducer from "./reducers/folderReducer";
+import codeEditorReducer from "./reducers/codeEditorReducer";
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
@@ -14,7 +15,8 @@ const reducers = combineReducers({
   contextMenu: contextMenuReducer,
   file_explorer: fileExplorerReducer,
   activeElement:activeElementReducer,
-  folder:folderReducer
+  folder:folderReducer,
+  codeEditor:codeEditorReducer
 });
 
 const store = createStore(

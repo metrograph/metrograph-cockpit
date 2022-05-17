@@ -15,50 +15,24 @@ import useMouse from "@react-hook/mouse-position";
 import File from "./File";
 import Folder from "./Folder";
 import ActionCodeBuilder from "./ActionCodeBuilder";
-
 import i_icon from "../../assets/icons/i.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 
 function CFileTree(props) {
   if (props.file_explorer_state.children) {
-    let children = props.file_explorer_state.children;
-    if (children.length) {
-      return children.map((element) => {
-        if (element instanceof Folder) {
-          return (
-            <div
-              className=""
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log("CFileTree");
-              }}
-            >
-              <CFolder
-                folder={element}
-                children={element.children}
-                showChildreen={false}
-                refState={props.refState}
-                is_input={false}
-              />
-            </div>
-          );
-        } else if (element instanceof File) {
-          return (
-            <CFile file={element} is_input={false} refState={props.refState} />
-          );
-        }
+    if (props.file_explorer_state.children) {
+      return props.file_explorer_state.children.map((element) => {
+        if (element instanceof Folder) return <CFolder key={element.uid} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
+        else return <CFile key={element.uid} file={element} is_input={false} refState={props.refState} />
       });
-    }
+    } else return <div></div>
   } else return <div></div>;
 }
 
 function CFile(props) {
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
-  const [is_active,setIs_active]=useState(props.file.uid===mystate.activeElement.codeAction?true:false)
   const [inputValue, setInputValue] = useState(props.file.name);
-  const [is_input, setIs_input] = useState(props.file.uid==="-1"?true:false);
-  const [panelMenu, setPanelMenu] = useState(false);
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 
   const mouse = useMouse(props.refState, {
@@ -68,13 +42,14 @@ function CFile(props) {
 
   function handleClick(e) {
     if (e.type === "click") {
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+      dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
       dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+      dispatch({type:"codeEditorSelectedFile",payload:{file:props.file}})
     }
     else if (e.type === "contextmenu") {
       setMouseRadar({ x: mouse.x, y: mouse.y });
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+      dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
       dispatch({type:"activeElementContextMenu", payload:{uid:props.file.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
     }
@@ -82,20 +57,18 @@ function CFile(props) {
 
   function handleRename(){
     dispatch({type:"activeElementRename", payload:{uid:props.file.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.file.uid}})
+    dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
   function handlKeyDown(e) {
     if (e.keyCode === 13) {
-      setIs_input(false);
       ActionCodeBuilder.rename(mystate.file_explorer, props.file.uid,inputValue);
       dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
       dispatch({type:"activeElementRename", payload:{uid:""}})
     }
     else if (e.keyCode === 27) {
       setInputValue(props.file.name);
-      setIs_input(false);
     }  
   }
 
@@ -103,7 +76,6 @@ function CFile(props) {
     ActionCodeBuilder.delete(mystate.file_explorer, props.file.uid);
     dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-    
   }
 
   if (props.file.uid===mystate.activeElement.renameView) {
@@ -112,7 +84,6 @@ function CFile(props) {
         onClick={(e) => {
           e.stopPropagation();
           setInputValue(props.file.name);
-          setIs_input(false);
         }}
         onKeyDown={(e) => {
           handlKeyDown(e);
@@ -134,19 +105,12 @@ function CFile(props) {
       </div>
     );
   }
-  else if (!is_input && props.file.uid!="-1") {
+  else {
     return (
       <div className="">
         <div
-          onContextMenu={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            handleClick(e);
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClick(e);
-          }}
+          onContextMenu={(e) => {e.stopPropagation(); e.preventDefault(); handleClick(e)}}
+          onClick={(e) => {e.stopPropagation(); handleClick(e)}}
           className={props.file.uid===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}
         >
           <div className="flex items-center space-x-[4px] h-[28px] ">
@@ -166,17 +130,12 @@ function CFile(props) {
               zIndex: 6,
             }}
           >
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRename();
-              }}
+            <div onClick={(e) => {e.stopPropagation(); handleRename()}}
               className="text-white font-IBM-Plex-Sans py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer"
             >
-              RENAME
+            RENAME
             </div>
-            <div 
-            onClick={()=>handleDelete()}
+            <div onClick={()=>handleDelete()}
             className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
               DELETE
             </div>
@@ -194,20 +153,20 @@ function CFolder(props) {
   const [inputValue, setInputValue] = useState(props.folder.name);
   const [showChildreen, setShowChildreen] = useState(false);
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
-
-  const mouse = useMouse(props.refState, {
+  
+ const mouse = useMouse(props.refState, {
     enterDelay: 100,
     leaveDelay: 100,
   });
   function handleClick(e) {
     if (e.type === "click") {
       dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+      dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
       dispatch({type:"activeElementContextMenu", payload:{uid:""}})
     } else if (e.type === "contextmenu") {
       setMouseRadar({ x: mouse.x, y: mouse.y });
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+      dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
       dispatch({type:"activeElementContextMenu", payload:{uid:props.folder.uid}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
     }
@@ -215,7 +174,7 @@ function CFolder(props) {
 
   function handleRename(){
     dispatch({type:"activeElementRename", payload:{uid:props.folder.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:props.folder.uid}})
+    dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
@@ -239,11 +198,12 @@ function CFolder(props) {
   function handleCreateFile() {
     let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
     ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
+    dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
     if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-    setShowChildreen(true)
+    
   }
 
   function handleCreateFolder() {
@@ -251,11 +211,10 @@ function CFolder(props) {
     ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
     if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-    setShowChildreen(true)
+    dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
   }
-
  
   return (
     <div className="">
@@ -310,7 +269,7 @@ function CFolder(props) {
               alt=""
             />
             <div className="text-white font-IBM-Plex-Sans text-[12px] font-medium z-10">
-              {inputValue}
+              {props.folder.name}
             </div>
           </div>
           {props.folder.uid===mystate.activeElement.contextMenu && (
@@ -324,12 +283,12 @@ function CFolder(props) {
               }}
             >
               <div
-              onClick={()=>handleCreateFolder()}
+              onClick={(e)=>{e.stopPropagation(); handleCreateFolder()}}
               className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
                 CREATE FOLDER
               </div>
               <div
-              onClick={()=>handleCreateFile()}
+              onClick={(e)=>{e.stopPropagation(); handleCreateFile()}}
               className="text-white font-IBM-Plex-Sans  py-1 font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
                 CREATE FILE
               </div>
@@ -355,26 +314,15 @@ function CFolder(props) {
         props.children.map((element) => {
           if (element instanceof Folder) {
             return (
-              <div className="">
-                <div className="ml-6">
-                  <CFolder
-                    folder={element}
-                    children={element.children}
-                    refState={props.refState}
-                  />
-                </div>
+              <div className="ml-6">
+              <CFolder key={element.uid} folder={element} children={element.children} refState={props.refState}/>
               </div>
             );
-          } else if (element instanceof File) {
+          }
+          else if (element instanceof File) {
             return (
-              <div className="">
-                <div className="ml-6">
-                  <CFile
-                    file={element}
-                    is_input={false}
-                    refState={props.refState}
-                  />
-                </div>
+              <div className="ml-6">
+                  <CFile key={element.uid} file={element} is_input={false} refState={props.refState}/>
               </div>
             );
           }
@@ -386,8 +334,6 @@ function CFolder(props) {
 export default function CodeEditor() {
   const dispatch = useDispatch();
   const mystate = useSelector((state) => state);
-  const [data, setData] = useState(mystate.file_explorer);
-  const [panelMenu, setPanelMenu] = useState(false);
   let dt = { username: "ehamza", password: "123" };
   const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
   const [outputIDE, setOutputIDE] = useState("");
@@ -401,17 +347,16 @@ export default function CodeEditor() {
     leaveDelay: 100,
   });
 
-  
 
   function handleClick(e) {
     if (e.type === "click") {
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:"-1"}})
+      dispatch({type:"activeElementSelected", payload:{uid:"-1"}})
       dispatch({type:"activeElementContextMenu", payload:{uid:""}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
     }
     else if (e.type === "contextmenu") {
       setMouseRadar({ x: mouse.x, y: mouse.y });
-      dispatch({type:"addActiveElementTocodeAction", payload:{uid:"-1"}})
+      dispatch({type:"activeElementSelected", payload:{uid:"-1"}})
       dispatch({type:"activeElementContextMenu", payload:{uid:"-1"}})
       dispatch({type:"activeElementRename", payload:{uid:""}})
     }
@@ -422,7 +367,7 @@ export default function CodeEditor() {
     if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
     else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
@@ -430,7 +375,7 @@ export default function CodeEditor() {
     let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
     ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
     dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-    dispatch({type:"addActiveElementTocodeAction", payload:{uid:node.uid}}) 
+    dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
     dispatch({type:"activeElementContextMenu", payload:{uid:""}})
   }
 
@@ -499,9 +444,11 @@ export default function CodeEditor() {
         },
       ],
     };
+   
     let mydata = ActionCodeBuilder.build(data);
-
+    console.log(mystate.file_explorer)
     if (!mystate.file_explorer.children) {
+      
       dispatch({
         type: "setFileExplorer",
         payload: ActionCodeBuilder.build(data),
@@ -531,27 +478,13 @@ export default function CodeEditor() {
                     +
                   </div>
                 </div>
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCreateFile();
-                  }}
-                  title="Create New File"
-                  className="bg-[#7ECA9C] hover:bg-black h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer"
-                >
-                  <div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">
-                    +
-                  </div>
+                <div onClick={(e) => {e.stopPropagation(); handleCreateFile()}} title="Create New File" className="bg-[#7ECA9C] hover:bg-black h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer">
+                <div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">+</div>
                 </div>
               </div>
             </div>
             <div className="ml-[48px] mt-[15px] mr-2">
-              <CFileTree
-                refState={ref}
-                file_explorer_state={mystate.file_explorer}
-                onClick={onclick}
-                handleClick={() => handleClick}
-              />
+              <CFileTree refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
             </div>
           </div>
           {mystate.activeElement.contextMenu==="-1" && (
@@ -584,11 +517,14 @@ export default function CodeEditor() {
         </div>
         {/*Lef panel section end*/}
         <div className="w-4/5">
+          <div className="flex">
           <div className="bg-[#202020] w-[171px] h-[53px] flex items-center justify-center space-x-[4px] border-b-4 border-[#7900FF]">
-            <img src={pythonIcon} className="w-[14px] h-[14px]" alt="" />
+          <img src={require('../../assets/vsicons/'+getIconForFile(mystate.codeEditor.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
             <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
-              main.py
+              {mystate.codeEditor.selectedFile.name}
             </div>
+          </div>
+          
           </div>
           <div>
             <AceEditor
@@ -599,6 +535,7 @@ export default function CodeEditor() {
               mode="python"
               theme="tomorrow_night"
               onChange={(value) => console.log(value)}
+              value={mystate.codeEditor.selectedFile.content}
               name="ace_firts"
               editorProps={{ $blockScrolling: true }}
               setOptions={{

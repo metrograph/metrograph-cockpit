@@ -46,7 +46,8 @@ function CFile(props) {
       dispatch({type:"activeElementRename", payload:{uid:""}})
       dispatch({type:"activeElementContextMenu", payload:{uid:""}})
       dispatch({type:"codeEditorSelectedFile",payload:{file:props.file}})
-    }
+	  dispatch({type:"codeEditorOpenedFiles",payload:{file:props.file}})
+	}
     else if (e.type === "contextmenu") {
       setMouseRadar({ x: mouse.x, y: mouse.y });
       dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
@@ -331,29 +332,61 @@ function CFolder(props) {
   );
 }
 
-function FileTab(props){
+function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
+	const mystate = useSelector((state) => state);
 	function handleCloseTab(){
-		dispatch({type:"codeEditorDumpSelectedFile",payload:{}})
+		dispatch({type:"codeEditorCloseAndOpenLastOpenedFile",payload:{uid:props.selectedFile.uid}})
 	  }
+	function handleClickTab(){
+		dispatch({type:"codeEditorSelectedFile",payload:{file:props.selectedFile}})
+	}
 	  
-	if (props.codeEditor.selectedFile.name!="") {
-		return (
-			<div className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF]">
-				<div></div>
-				<div className="flex items-center space-x-1">
-					  <img src={require('../../assets/vsicons/'+getIconForFile(props.codeEditor.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
-					  <div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
-					{props.codeEditor.selectedFile.name}
-					  </div>
-				</div>
-				<div onClick={()=>handleCloseTab()} className="text-white cursor-pointer hover:bg-slate-600 grid place-content-center px-1 rounded-md">
-				  x
-				</div>
+	if(mystate.codeEditor.selectedFile.uid===props.selectedFile.uid)
+	return (
+		<div
+			
+			className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF]">
+			<div></div>
+			<div className="flex items-center space-x-1">
+			  <img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+			  <div onClick={()=>handleClickTab()} className="text-white font-IBM-Plex-Sans text-[14px] font-medium cursor-pointer">
+			{props.selectedFile.name}
 			  </div>
-			)
+		</div>
+		<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className="text-white cursor-pointer hover:bg-[#292828] grid place-content-center px-1 rounded-md">
+		  x
+		</div>
+		  </div>
+	  )
+	else return (
+		<div className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px]">
+			<div></div>
+			<div className="flex items-center space-x-1">
+			  <img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+			  <div onClick={()=>handleClickTab()} className="cursor-pointer text-white font-IBM-Plex-Sans text-[14px] font-medium">
+			{props.selectedFile.name}
+			  </div>
+		</div>
+		<div onClick={()=>handleCloseTab()} className="text-white cursor-pointer hover:bg-[#292828] grid place-content-center px-1 rounded-md">
+		  x
+		</div>
+		  </div>
+	  )
+}
+
+function CodeEditorTabList(props){
+	const dispatch = useDispatch(); 
+	if (props.openedFiles) {
+		return props.openedFiles.map(element=>{
+			return (
+				<div key={element.uid}>
+					<CodeEditorTabs selectedFile={element}/>
+				</div>)
+		})
 	}
 	else return <div className=" bg-[#141414] w-full h-[53px]"/>
+	
 }
 
 export default function CodeEditor() {
@@ -545,7 +578,7 @@ useEffect(() => {
 		{/* File content section */}
         <div className="w-4/5">
           <div className="flex">
-            <FileTab codeEditor={mystate.codeEditor}/>
+            <CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles}/>
           </div>
 		  <div>
             {mystate.codeEditor.selectedFile.name!="" && <AceEditor

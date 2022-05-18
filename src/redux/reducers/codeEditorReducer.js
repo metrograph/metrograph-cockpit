@@ -18,9 +18,35 @@ function codeEditorSelectedFile(state, payload){
 	return state
 }
 
-function codeEditorDumpSelectedFile(state){
+function SelectedFile(state, file){
+	getContentFromApi(state,url_2)
+	state.selectedFile={uid :file.uid, name: file.name, content :file.content}
+	return state
+}
+
+function dumpSelectedFile(state){
 	state.selectedFile={uid :"", name :"",content :""}
 	return state
+}
+
+function removeFileFromOpenedFiles(state, payload){
+	return state.openedFiles.filter(e=>e.uid!=payload.uid)
+}
+
+function codeEditorOpenedFiles(state, payload){
+	if (state.openedFiles.some(e=>e.uid===payload.file.uid)) return state
+	else state.openedFiles.push({uid:payload.file.uid, name:payload.file.name})
+    return state
+}
+
+function selectLastFile(state){
+	if(state.openedFiles.length) return SelectedFile(state, state.openedFiles[state.openedFiles.length-1])
+	else return state
+}
+function closeAndOpenLastFile(state, payload){
+	state.openedFiles= removeFileFromOpenedFiles(state, { uid: payload.uid})
+	if(state.selectedFile.uid===payload.uid) state=dumpSelectedFile(state)
+	return selectLastFile(state)
 }
 
 const codeEditorReducer = (state = {selectedFile:{uid :"", name :"",content :""},openedFiles:[]}, { type, payload }) => {
@@ -30,7 +56,11 @@ const codeEditorReducer = (state = {selectedFile:{uid :"", name :"",content :""}
 		case "codeEditorSelectedFile":
 			return codeEditorSelectedFile(state, payload)
 		case "codeEditorDumpSelectedFile":
-			return codeEditorDumpSelectedFile(state)
+			return dumpSelectedFile(state)
+		case "codeEditorOpenedFiles":
+				return codeEditorOpenedFiles(state,payload)
+		case "codeEditorCloseAndOpenLastOpenedFile":
+				return closeAndOpenLastFile(state, payload)
         default:
         	return state
     }

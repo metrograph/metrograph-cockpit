@@ -29,6 +29,11 @@ function dumpSelectedFile(state){
 	return state
 }
 
+function updateContentFile(state,payload){
+	state.selectedFile.content=payload.content
+	return state
+}
+
 function removeFileFromOpenedFiles(state, payload){
 	return state.openedFiles.filter(e=>e.uid!=payload.uid)
 }
@@ -43,6 +48,7 @@ function selectLastFile(state){
 	if(state.openedFiles.length) return SelectedFile(state, state.openedFiles[state.openedFiles.length-1])
 	else return state
 }
+
 function closeAndOpenLastFile(state, payload){
 	state.openedFiles= removeFileFromOpenedFiles(state, { uid: payload.uid})
 	if(state.selectedFile.uid===payload.uid) state=dumpSelectedFile(state)
@@ -61,6 +67,9 @@ const codeEditorReducer = (state = {selectedFile:{uid :"", name :"",content :""}
 				return codeEditorOpenedFiles(state,payload)
 		case "codeEditorCloseAndOpenLastOpenedFile":
 				return closeAndOpenLastFile(state, payload)
+		case "codeEditorUpdateContentFile":
+				return updateContentFile(state, payload)
+				
         default:
         	return state
     }

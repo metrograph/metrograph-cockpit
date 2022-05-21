@@ -43,10 +43,10 @@ function CFile(props) {
 	function handleClick(e) {
 		if (e.type === "click") {
 			dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-			dispatch({type:"codeEditorSelectedFile",payload:{file:props.file}})
-			dispatch({type:"codeEditorOpenedFiles",payload:{file:props.file}})
+			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{uid:""}})
+			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
+			dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.file}})
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
@@ -201,6 +201,7 @@ function CFolder(props) {
 		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
 		dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
 	}
+
 				
 	return (
 		<div className="">
@@ -291,14 +292,14 @@ function CFolder(props) {
 				props.children.map((element) => {
 					if (element instanceof Folder) {
 						return (
-							<div className="ml-6">
+							<div className="ml-6" key={element.uid}>
 							<CFolder key={element.uid} folder={element} children={element.children} refState={props.refState}/>
 							</div>
 							);
 						}
 					else if (element instanceof File) {
 						return (
-							<div className="ml-6">
+							<div className="ml-6" key={element.uid}>
 							<CFile key={element.uid} file={element} is_input={false} refState={props.refState}/>
 							</div>
 							);
@@ -312,10 +313,11 @@ function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
 	const mystate = useSelector((state) => state);
 	function handleCloseTab(){
-		dispatch({type:"codeEditorCloseAndOpenLastOpenedFile",payload:{uid:props.selectedFile.uid}})
+		dispatch({type:"code_editor/CLOSE_FILE",payload:{uid:props.selectedFile.uid}})
+		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.selectedFile}})
 	}
 	function handleClickTab(){
-		dispatch({type:"codeEditorSelectedFile",payload:{file:props.selectedFile}})
+		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile}})
 	}
 	
 	if(mystate.codeEditor.selectedFile.uid===props.selectedFile.uid)
@@ -373,13 +375,26 @@ export default function CodeEditor() {
 	const [responseIDE, setResponseIDE] = useState("");
 	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 	const ref = React.useRef(null);
+	const [timer,setTimer]=useState(null)
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
 		leaveDelay: 100,
 	});
 	
+
+
+	function handleChange(content,uid){
+		clearTimeout(timer);
+		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, uid:uid}})
+		let mytime = setTimeout(() => {
+    	dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, uid:uid}})
+		}, 500);
+		setTimer(mytime)	
+	}
+		
 	
+
 	function handleClick(e) {
 		if (e.type === "click") {
 			dispatch({type:"activeElementSelected", payload:{uid:"-1"}})
@@ -478,7 +493,7 @@ export default function CodeEditor() {
 		};
 			
 		let mydata = ActionCodeBuilder.build(data);
-		console.log(mystate.file_explorer)
+	
 		if (!mystate.file_explorer.children) {
 			dispatch({
 				type: "setFileExplorer",
@@ -552,18 +567,19 @@ export default function CodeEditor() {
 					<div className="flex overflow-hidden overflow-x-auto">
 						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles}/>
 					</div>
-					<div onClick={e=>console.log("code editor")}>
-						{mystate.codeEditor.selectedFile.name!="" &&
+					<div onClick={e=>e.stopPropagation()}>
+						{mystate.codeEditor.selectedFile.content!=null &&
 						<AceEditor
+							key={mystate.codeEditor.selectedFile.uid}
 							showPrintMargin={false}
 							height="374px"
 							fontSize="17px"
 							width="100%"
 							mode="python"
 							theme="tomorrow_night"
-							onChange={(value) =>dispatch({type:"codeEditorUpdateContentFile",payload:{content:value}})}
+							onChange={(value)=>handleChange(value,mystate.codeEditor.selectedFile.uid)}
 							value={mystate.codeEditor.selectedFile.content}
-							name="ace_firts"
+							name="code_editor"
 							editorProps={{ $blockScrolling: true }}
 							setOptions={{
 								enableBasicAutocompletion: true,
@@ -572,7 +588,7 @@ export default function CodeEditor() {
 								showLineNumbers: true,
 							}}/>
 						}
-						{mystate.codeEditor.selectedFile.name==="" && <div className="bg-[#141414] w-full h-[427px]"></div>}
+						{mystate.codeEditor.selectedFile.name===null &&  <div className="bg-[#141414] w-full h-[427px]"></div>}
 					</div>
 				</div>
 				{/* File content section end*/}

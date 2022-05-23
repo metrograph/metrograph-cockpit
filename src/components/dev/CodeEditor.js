@@ -9,6 +9,7 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
+import closeIcon from "../../assets/icons/close.svg"
 import pythonIcon from "../../assets/python.svg";
 import folderIcon from "../../assets/icons/folder.svg";
 import useMouse from "@react-hook/mouse-position";
@@ -322,30 +323,30 @@ function CodeEditorTabs(props){
 	
 	if(mystate.codeEditor.selectedFile.uid===props.selectedFile.uid)
 		return (
-			<div className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF]">
+			<div onClick={()=>handleClickTab()} className="px-4 bg-[#171717] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF] cursor-pointer">
 				<div></div>
 				<div className="flex items-center space-x-1">
 					<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
-					<div onClick={()=>handleClickTab()} className="text-white font-IBM-Plex-Sans text-[14px] font-medium cursor-pointer">
+					<div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
 					{props.selectedFile.name}
 					</div>
 				</div>
-				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className="text-white cursor-pointer hover:bg-[#292828] grid place-content-center px-1 rounded-md">
-				x
+				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
+				<img src={closeIcon} className="h-2 w-2"/>
 				</div>
 			</div>
 			)
 		else return (
-			<div className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px]">
+			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
 				<div></div>
 				<div className="flex items-center space-x-1">
 					<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
-					<div onClick={()=>handleClickTab()} className="cursor-pointer text-white font-IBM-Plex-Sans text-[14px] font-medium">
+					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
 					{props.selectedFile.name}
 					</div>
 				</div>
-				<div onClick={()=>handleCloseTab()} className="text-white cursor-pointer hover:bg-[#292828] grid place-content-center px-1 rounded-md">
-				x
+				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
+				<img src={closeIcon} className="h-2 w-2"/>
 				</div>
 			</div>
 			)
@@ -507,31 +508,31 @@ export default function CodeEditor() {
 			<div className="flex h-[427px] bg-[#202020]">
 				{/*Lef panel section*/}
 				<div onContextMenu={(e) => e.preventDefault()} className="bg-[#202020] w-1/5 relative" ref={ref}>
-					<div onClick={handleClick} onContextMenu={handleClick} className="h-full">
-					<div className="mt-[30px] flex items-center ml-[42px] space-x-[18px] ">
-					<div className="flex items-center space-x-[7px] cursor-pointer">
-					<ArrowDown />
-					<div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
-					FILES 
-					</div>
-					</div>
-					<div className="flex space-x-[6px] items-center">
-					<div
-					title="Upload File"
-					className="bg-[#7900FF] h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer"
-					>
-					<div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">
-					+
-					</div>
-					</div>
-					<div onClick={(e) => {e.stopPropagation(); handleCreateFile()}} title="Create New File" className="bg-[#7ECA9C] hover:bg-black h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer">
-					<div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">+</div>
-					</div>
-					</div>
-					</div>
-					<div className="ml-[48px] mt-[15px] mr-2">
-					<CFileTree refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
-					</div>
+					<div onClick={handleClick} onContextMenu={handleClick} className="h-full flex flex-col">
+						<div className="mt-[30px] flex items-center ml-[42px] space-x-[18px] ">
+							<div className="flex items-center space-x-[7px] cursor-pointer">
+								<ArrowDown />
+								<div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
+								FILES 
+								</div>
+							</div>
+							<div className="flex space-x-[6px] items-center">
+								<div
+								title="Upload File"
+								className="bg-[#7900FF] h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer"
+								>
+									<div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">
+									+
+									</div>
+								</div>
+								<div onClick={(e) => {e.stopPropagation(); handleCreateFile()}} title="Create New File" className="bg-[#7ECA9C] hover:bg-black h-[18px] w-[26px] rounded-[6px] grid place-content-center cursor-pointer">
+									<div className="text-[14px] font-bold font-IBM-Plex-Sans text-white">+</div>
+								</div>
+							</div>
+						</div>
+						<div className="ml-[48px] mt-[15px] mr-2 grow overflow-hidden overflow-y-auto pb-2">
+						<CFileTree refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
+						</div>
 					</div>
 					{mystate.activeElement.contextMenu==="-1" && (
 						<div

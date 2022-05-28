@@ -2,6 +2,7 @@ import axios from "axios"
 let url="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/YmsxCEYE"
 let url_2="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/j68BdHAm"
 
+
 function getContentFromApi(state,url_2){
 	axios.get(url_2).then(function (response) {
 	return state.selectedFile.content=response.data.contents
@@ -11,10 +12,10 @@ function getContentFromApi(state,url_2){
 }
 
 function codeEditorselectedFile(state, payload){
-	if (state.openedFiles.some(e=>e.uid===payload.file.uid)){
+	if (state.openedFiles.some(e=>e.path===payload.file.path)){
 		state.openedFiles.forEach(element => {
-			if(element.uid===payload.file.uid) {
-				state.selectedFile={uid :payload.file.uid, name: payload.file.name, content :element.content}
+			if(element.path===payload.file.path) {
+				state.selectedFile={path :payload.file.path, name: payload.file.name, content :element.content}
 				console.log(element.content)
 				return state
 			}
@@ -24,31 +25,31 @@ function codeEditorselectedFile(state, payload){
 	}
 	else {
 		getContentFromApi(state,url_2)
-		state.selectedFile={uid :payload.file.uid, name: payload.file.name, content :payload.file.content}
+		state.selectedFile={path :payload.file.path, name: payload.file.name, content :payload.file.content}
 		return state
 	}
 }
 
 function selectedFile(state, file){
 	getContentFromApi(state,url_2)
-	state.selectedFile={uid :file.uid, name: file.name, content :file.content}
+	state.selectedFile={path :file.path, name: file.name, content :file.content}
 	return state
 }
 
 function dumpselectedFile(state){
-	state.selectedFile={uid :"", name :"",content :null}
+	state.selectedFile={path :"", name :"",content :null}
 	return state
 }
 
 function updateFileContent(state,payload){
 	state.selectedFile.content=payload.content
-	console.log(state.openedFiles.indexOf((e)=>e.uid===state.selectLastFile.uid))
+	console.log(state.openedFiles.indexOf((e)=>e.path===state.selectLastFile.path))
 	return state
 }
 
 function updateOpenedFileContent(state,payload){
 	state.openedFiles.forEach(element => {
-		if(element.uid===payload.uid) {
+		if(element.path===payload.path) {
 			element.content=payload.content
 			return state
 		}
@@ -57,16 +58,16 @@ function updateOpenedFileContent(state,payload){
 }
 
 function removeFileFromOpenedFiles(state, payload){
-	return state.openedFiles.filter(e=>e.uid!=payload.uid)
+	return state.openedFiles.filter(e=>e.path!=payload.path)
 }
 
 function loadFileContent(state, payload){
-	if (state.openedFiles.some(e=>e.uid===payload.file.uid)){
+	if (state.openedFiles.some(e=>e.path===payload.file.path)){
 		state.openedFiles.forEach(element => {
-			if(element.uid===payload.file.uid) {
+			if(element.path===payload.file.path) {
 				if(element.content===null){
 					axios.get(url_2).then(function (response) {
-						state.selectedFile={uid:payload.file.uid, name:payload.file.name, content:response.data.contents}
+						state.selectedFile={path:payload.file.path, name:payload.file.name, content:response.data.contents}
 						element.content=response.data.contents
 						return state
 						}).catch(e=>{
@@ -74,7 +75,7 @@ function loadFileContent(state, payload){
 						}) 
 				}
 				else if(element.content){
-						state.selectedFile={uid:element.uid, name:element.name, content:element.content}
+						state.selectedFile={path:element.path, name:element.name, content:element.content}
 				}
 			}
 		});
@@ -83,8 +84,8 @@ function loadFileContent(state, payload){
 }
 
 function openFile(state, payload){
-	if (state.openedFiles.some(e=>e.uid===payload.file.uid)) return state
-	else state.openedFiles.push({uid:payload.file.uid, name:payload.file.name,content:null})
+	if (state.openedFiles.some(e=>e.path===payload.file.path)) return state
+	else state.openedFiles.push({path:payload.file.path, name:payload.file.name,content:null})
     return state
 }
 
@@ -97,12 +98,12 @@ function loadLastFileContent(state){
 }
 
 function closeAndOpenLastFile(state, payload){
-	state.openedFiles= removeFileFromOpenedFiles(state, { uid: payload.uid})
-	if(state.selectedFile.uid===payload.uid) state=dumpselectedFile(state)
+	state.openedFiles= removeFileFromOpenedFiles(state, { path: payload.path})
+	if(state.selectedFile.path===payload.path) state=dumpselectedFile(state)
 	return state
 }
 
-const codeEditorReducer = (state = {selectedFile:{uid :"", name :"",content :null},openedFiles:[]}, { type, payload }) => {
+const codeEditorReducer = (state = {selectedFile:{path :"", name :"",content :null},openedFiles:[]}, { type, payload }) => {
 	switch (type) {
 		case "code_editor/SET":
         	return payload

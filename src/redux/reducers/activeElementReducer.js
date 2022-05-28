@@ -3,22 +3,22 @@ function setActiveElement(payload){
     }
     
 function activeElementSelected(state, payload){
-    return {...state,codeAction:payload.uid}
+    return {...state,codeAction:payload.path}
     }
 
 function activeElementRename(state, payload){
-    return {...state, renameView:payload.uid}
+    return {...state, renameView:payload.path}
     }
 
 function activeElementContextMenu(state, payload){
-    return {...state,contextMenu:payload.uid}
+    return {...state,contextMenu:payload.path}
     }
 
 function OpendFolders(state, payload){
-    let index = state.opendFolders.indexOf(payload.uid);
+    let index = state.opendFolders.indexOf(payload.path);
     console.log(index)
     if (index !== -1) state.opendFolders.splice(index, 1);
-    else state.opendFolders.push(payload.uid)
+    else state.opendFolders.push(payload.path)
     return state
     }
      

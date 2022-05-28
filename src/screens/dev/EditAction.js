@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import CodeEditor from "../../components/dev/CodeEditor";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
@@ -14,6 +16,7 @@ import { ReactComponent as ApplicationIcon } from "../../assets/topbar/apps.svg"
 import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
+import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import useMouse from "@react-hook/mouse-position";
 
 import i_icon from "../../assets/icons/i.svg";
@@ -22,9 +25,25 @@ import logo from "../../assets/logo.svg";
 import arrowdown from "../../assets/icons/arrow-down.svg";
 import avatar from "../../assets/avatar/avatar-2.png";
 
-export default function CreateAction() {
-  const [is_listSetOpen, setIs_listSetOpen] = useState(false);
+let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
+let hostname="http://195.201.146.87:80/v1"
 
+function Alert(props){
+  const dispatch = useDispatch();
+  function handleCloseAlert(){
+    dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+  }
+  return (
+    <div className="h-[64px] lg:w-[993px] bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
+      <div className="text-black font-[12px]">{props.title}</div>
+      <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+    </div>)
+}
+
+export default function EditAction() {
+  const dispatch = useDispatch();
+	const mystate = useSelector((state) => state);
+  const [is_listSetOpen, setIs_listSetOpen] = useState(false);
   const [optionListSet, setOptionListSet] = useState([
     { key: 1, value: "Deploy Docker Workflow" },
     { key: 1, value: "Deploy Docker Workflow A" },
@@ -58,10 +77,8 @@ export default function CreateAction() {
 
   //Version end
 
-  const [title, setTitle] = useState("Send Joke to Discord");
-  const [description, setDescription] = useState(
-    "A task to send a random joke to Discord"
-  );
+  const [title, setTitle] = useState();
+  const [description, setDescription] = useState();
 
   const [urlCheckBox, setUrlCheckBox] = useState(true);
 
@@ -70,13 +87,30 @@ export default function CreateAction() {
     enterDelay: 100,
     leaveDelay: 100,
   });
-  useEffect(() => {}, []);
+  useEffect(() => {
+		
+		if (mystate.actionCode.name==="") {
+			axios.get(hostname+"/action/bd1e8474-43b8-47ad-8673-93d92d46ebe5", {headers: { Authorization: token },})
+			.then(response=>{
+				console.log(response.data.payload.ActionCode)
+				let data = response.data.payload.ActionCode;
+				dispatch({type:"action_code/SET",payload:data})
+      }).catch(error=>console.log(error))
+	
+		}
+    if(mystate.actionCode.name!=""){
+      setTitle(mystate.actionCode.name)
+        setDescription(mystate.actionCode.description)
+        setSelectedOtionb(mystate.actionCode.runtime)
+        setSelectedoptionlistversion(mystate.actionCode.runtime_version)
+    }
+	}, [mystate.actionCode.name]);
 
   return (
     <div className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
       <div className="max-w-[1662px] w-full">
         {/* Top bar start */}
-        <div className="">
+        <div className="relative">
           <div className="flex justify-between items-center pt-[43px]">
             <div className="text-white w-[147px]">
               <img src={logo} className="h-[34px] w-[147px]" alt="" />
@@ -169,6 +203,9 @@ export default function CreateAction() {
               </div>
             </div>
           </div>
+          {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
+        <Alert title="Action created with sucess"/>
+        </div>}
         </div>
         {/* Top bar end */}
 
@@ -177,7 +214,7 @@ export default function CreateAction() {
           <div className="w-full">
             <div className="flex justify-between">
               <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
-                Send Joke to Discord v2
+                {title}
               </div>
               <div className="justify-end flex space-x-[6px] pt-[30px]">
                 <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
@@ -214,7 +251,7 @@ export default function CreateAction() {
                   <div className="relative flex items-center">
                     <input
                       type="text"
-                      className="w-full h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium px-[20px] text-white"
+                      className="w-full h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium px-[20px] pr-8 text-white"
                       placeholder="Description.."
                       onChange={(e) => setDescription(e.target.value)}
                       value={description}

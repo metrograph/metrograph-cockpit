@@ -9,6 +9,7 @@ import activeElementReducer from "./reducers/activeElementReducer";
 import folderReducer from "./reducers/folderReducer";
 import codeEditorReducer from "./reducers/codeEditorReducer";
 import actionCodeReducer from "./reducers/actionCodeReducer"
+import actionReducer from "./reducers/actionReducer"
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
@@ -18,7 +19,8 @@ const reducers = combineReducers({
   activeElement:activeElementReducer,
   folder:folderReducer,
   codeEditor:codeEditorReducer,
-  actionCode:actionCodeReducer
+  actionCode:actionCodeReducer,
+  actions:actionReducer
 });
 
 const store = createStore(

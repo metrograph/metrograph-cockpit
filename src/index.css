@@ -13,6 +13,11 @@ body {
   height: 100%;
 }
 
+.fadeIn{
+ 
+  animation: fadeIn 400ms linear;
+ }
+
 .pattern {
   background-image: url("./assets/pattern/pattern.svg");
   position: fixed;

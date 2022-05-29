@@ -90,7 +90,7 @@ export default function EditAction() {
     leaveDelay: 100,
   });
   useEffect(() => {
-		
+		window.scrollTo(0, 0);
 		if (mystate.actionCode.name==="") {
 			axios.get(hostname+"/action/"+action_uuid, {headers: { Authorization: token },})
 			.then(response=>{

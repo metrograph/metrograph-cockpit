@@ -455,6 +455,7 @@ export default function CodeEditor() {
 	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 	const ref = React.useRef(null);
 	const [timer,setTimer]=useState(null)
+	const [loading, setLoading]=useState(true)
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
@@ -479,8 +480,6 @@ export default function CodeEditor() {
 		setTimer(mytime)	
 	}
 		
-	
-
 	function handleClick(e) {
 		if (e.type === "click") {
 			dispatch({type:"activeElementSelected", payload:{path:"-1"}})
@@ -534,12 +533,13 @@ export default function CodeEditor() {
 	}
 
 	useEffect(() => {
-		
-		if (!mystate.file_explorer.children) {
+		console.log("loading !"+loading)
+		if (loading) {
 			axios.get(hostname+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: token }})
 			.then(response=>{
 				let data = response.data.payload.ActionCode;
 				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(data)});
+				setLoading(false)
 			}).catch(error=>console.log(error))
 			
 			

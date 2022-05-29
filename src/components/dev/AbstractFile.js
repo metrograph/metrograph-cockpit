@@ -1,6 +1,6 @@
 class AbstractFile {
-  constructor(uid, name, icon) {
-    this.uid = uid;
+  constructor(path, name, icon) {
+    this.path = path;
     this.name = name;
     this.icon = icon;
   }
@@ -8,7 +8,7 @@ class AbstractFile {
     this.name=name
   }
   replace(node){
-    this.uid=node.uid
+    this.path=node.path
     this.name=node.name
     this.icon=node.icon
   }

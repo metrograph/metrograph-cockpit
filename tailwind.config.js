@@ -26,6 +26,7 @@ module.exports = {
         Inter: ["Inter", "sans-serif"],
         Rajdhani: ["Rajdhani", "sans-serif"],
         "IBM-Plex-Sans": ["'IBM Plex Sans'", "sans-serif"],
+        "IBM-Plex-Mono": ["'IBM Plex Mono'", "sans-serif"],
       },
     },
   },

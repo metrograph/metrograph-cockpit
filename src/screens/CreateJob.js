@@ -78,8 +78,7 @@ export default function CreateJob() {
         Authorization: token,
       };
 
-      axios
-        .post("http://157.90.233.37/v1/task", job, { headers: headers })
+      axios.post("http://157.90.233.37/v1/task", job, { headers: headers })
         .then((res) => {
           console.log(res);
           payloadAlert = {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios"
 import { useDispatch, useSelector } from "react-redux";
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 import AceEditor from "react-ace";
@@ -19,12 +20,15 @@ import ActionCodeBuilder from "./ActionCodeBuilder";
 import i_icon from "../../assets/icons/i.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 
+let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
+let hostname="http://195.201.146.87:80/v1"
+
 function CFileTree(props) {
 	if (props.file_explorer_state.children) {
 		if (props.file_explorer_state.children) {
 			return props.file_explorer_state.children.map((element) => {
-				if (element instanceof Folder) return <CFolder key={element.uid} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
-				else return <CFile key={element.uid} file={element} is_input={false} refState={props.refState} />
+				if (element instanceof Folder) return <CFolder key={element.path} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
+				else return <CFile key={element.path} file={element} is_input={false} refState={props.refState} />
 			});
 		} else return <div></div>
 	} else return <div></div>;
@@ -43,31 +47,49 @@ function CFile(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
-			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{uid:""}})
-			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+
+			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
+			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{path:""}})
+			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{path:""}})
 			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
-			dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.file}})
+
+			axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: token }})
+				.then((res) => {
+					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:mystate.actionCode,data:res.data}})
+			  	}).catch(error=>{
+					console.log(error)	
+				})
+				
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:props.file.uid}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
+			dispatch({type:"activeElementContextMenu", payload:{path:props.file.path}})
+			dispatch({type:"activeElementRename", payload:{path:""}})
 		}
 	}
 	
 	function handleRename(){
-		dispatch({type:"activeElementRename", payload:{uid:props.file.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:props.file.uid}})
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		dispatch({type:"activeElementRename", payload:{path:props.file.path}})
+		dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
+		dispatch({type:"activeElementContextMenu", payload:{path:""}})
 	}
 	
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			ActionCodeBuilder.rename(mystate.file_explorer, props.file.uid,inputValue);
-			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			axios.patch(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: token} })
+        	.then((res) => {
+				ActionCodeBuilder.rename(mystate.file_explorer, props.file.path,inputValue);
+				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+				dispatch({type:"activeElementRename", payload:{path:""}})
+        	})
+			.catch((error) => {
+				if (error.response && error.response.status === 401) {
+					return console.log("error");
+				}else {
+					console.log("Sorry, we encountered a network error.")
+				}
+			});
 		}
 		else if (e.keyCode === 27) {
 			setInputValue(props.file.name);
@@ -75,12 +97,25 @@ function CFile(props) {
 	}
 	
 	function handleDelete(){
-		ActionCodeBuilder.delete(mystate.file_explorer, props.file.uid);
-		dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+
+		axios.delete(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", { headers: {Authorization: token},data:{path:props.file.path} })
+        .then((res) => {
+			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
+			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
+
+		
 	}
 	
-	if (props.file.uid===mystate.activeElement.renameView) {
+	if (props.file.path===mystate.activeElement.renameView) {
 		return (
 			<div
 				onClick={(e) => { e.stopPropagation(); setInputValue(props.file.name)}}
@@ -101,7 +136,7 @@ function CFile(props) {
 				<div className="">
 					<div onContextMenu={(e) => {e.stopPropagation(); e.preventDefault(); handleClick(e)}}
 						onClick={(e) => {e.stopPropagation(); handleClick(e)}}
-						className={props.file.uid===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}>
+						className={props.file.path===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}>
 						<div className="flex items-center space-x-[4px] h-[28px] ">
 						<img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
 						<div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
@@ -109,7 +144,7 @@ function CFile(props) {
 						</div>
 						</div>
 					</div>
-					{props.file.uid===mystate.activeElement.contextMenu && (
+					{props.file.path===mystate.activeElement.contextMenu && (
 							<div className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
 								style={{
 									position: "absolute",
@@ -147,29 +182,40 @@ function CFolder(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
-			dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+			dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementRename", payload:{path:""}})
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
 		} else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:props.folder.uid}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementContextMenu", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementRename", payload:{path:""}})
 		}
 	}	
 				
 	function handleRename(){
-		dispatch({type:"activeElementRename", payload:{uid:props.folder.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:props.folder.uid}})
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		dispatch({type:"activeElementRename", payload:{path:props.folder.path}})
+		dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
+		dispatch({type:"activeElementContextMenu", payload:{path:""}})
 	}
 				
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			ActionCodeBuilder.rename(mystate.file_explorer, props.folder.uid,inputValue);
-			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			axios.patch(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder",{path:props.folder.path, new_name:inputValue} ,{ headers: {Authorization: token} })
+        	.then((res) => {
+				ActionCodeBuilder.rename(mystate.file_explorer, props.folder.path,inputValue);
+				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+				dispatch({type:"activeElementRename", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
+			
 		}
 		else if (e.keyCode === 27) {
 			setInputValue(props.folder.name);
@@ -177,42 +223,72 @@ function CFolder(props) {
 	}
 				
 	function handleDelete(){
-		ActionCodeBuilder.delete(mystate.file_explorer, props.folder.uid);
-		dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		axios.delete(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", { headers: {Authorization: token},data:{path:props.folder.path} })
+        .then((res) => {
+			ActionCodeBuilder.delete(mystate.file_explorer, props.folder.path);
+			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
 	}
 				
 	function handleCreateFile() {
-		let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
-		ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
-		dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-		if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
-		dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		let node=new File(props.folder.path+"/new_file","new_file")
+		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: token} })
+        .then((res) => {
+			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
+			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
 		
 	}
 				
 	function handleCreateFolder() {
-		let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
-		ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.uid);
-		if(!mystate.activeElement.opendFolders.includes(props.folder.uid)) dispatch({type:"activeElementOpendFolders", payload:{uid:props.folder.uid}})
-		dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-		dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+		let node=new Folder(props.folder.path+"/new_folder","new_folder")
+		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: token} })
+        .then((res) => {
+			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
+			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
+			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
+
+		
 	}
 
 				
 	return (
 		<div className="">
-			{props.folder.uid===mystate.activeElement.renameView && (
+			{props.folder.path===mystate.activeElement.renameView && (
 				<div onClick={(e) => { e.stopPropagation(); setInputValue(props.folder.name)}}
 					onKeyDown={(e) => {handlKeyDown(e)}}
 					className="cursor-pointer hover:bg-[#292828]">
 					<div className="flex items-center space-x-[4px] h-[28px] ">
 						<img
-							src={mystate.activeElement.opendFolders.includes(props.folder.uid)?require("../../assets/vsicons/"+getIconForOpenFolder(inputValue)):require("../../assets/vsicons/"+getIconForFolder(inputValue))}
+							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../../assets/vsicons/"+getIconForOpenFolder(inputValue)):require("../../assets/vsicons/"+getIconForFolder(inputValue))}
 							className="w-[15px] h-[15px] z-10"
 							alt=""
 						/>
@@ -228,7 +304,7 @@ function CFolder(props) {
 					</div>
 				</div>
 			)}
-			{props.folder.uid!=mystate.activeElement.renameView && (
+			{props.folder.path!=mystate.activeElement.renameView && (
 				<div>
 					<div
 						onContextMenu={(e) => {
@@ -241,10 +317,10 @@ function CFolder(props) {
 						setShowChildreen(!showChildreen);
 						handleClick(e);
 						}}
-						className={props.folder.uid===mystate.activeElement.codeAction?"flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"px-2 rounded-md flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#292828]"}
+						className={props.folder.path===mystate.activeElement.codeAction?"flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"px-2 rounded-md flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#292828]"}
 						>
 						<img
-							src={mystate.activeElement.opendFolders.includes(props.folder.uid)?require("../../assets/vsicons/"+getIconForOpenFolder(props.folder.name)):require("../../assets/vsicons/"+getIconForFolder(props.folder.name))}
+							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../../assets/vsicons/"+getIconForOpenFolder(props.folder.name)):require("../../assets/vsicons/"+getIconForFolder(props.folder.name))}
 							className="w-[15px] h-[15px] z-10"
 							alt=""
 						/>
@@ -252,7 +328,7 @@ function CFolder(props) {
 							{props.folder.name}
 						</div>
 					</div>
-					{props.folder.uid===mystate.activeElement.contextMenu && (
+					{props.folder.path===mystate.activeElement.contextMenu && (
 						<div
 							className="bg-[#191919] w-[187px] py-1 rounded-[9px] flex flex-col justify-center  border-1 border-[#292929]"
 							style={{
@@ -289,19 +365,19 @@ function CFolder(props) {
 					)}
 				</div>
 			)}
-			{mystate.activeElement.opendFolders.includes(props.folder.uid) &&
+			{mystate.activeElement.opendFolders.includes(props.folder.path) &&
 				props.children.map((element) => {
 					if (element instanceof Folder) {
 						return (
-							<div className="ml-6" key={element.uid}>
-							<CFolder key={element.uid} folder={element} children={element.children} refState={props.refState}/>
+							<div className="ml-6" key={element.path}>
+							<CFolder key={element.path} folder={element} children={element.children} refState={props.refState}/>
 							</div>
 							);
 						}
 					else if (element instanceof File) {
 						return (
-							<div className="ml-6" key={element.uid}>
-							<CFile key={element.uid} file={element} is_input={false} refState={props.refState}/>
+							<div className="ml-6" key={element.path}>
+							<CFile key={element.path} file={element} is_input={false} refState={props.refState}/>
 							</div>
 							);
 						}
@@ -314,14 +390,15 @@ function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
 	const mystate = useSelector((state) => state);
 	function handleCloseTab(){
-		dispatch({type:"code_editor/CLOSE_FILE",payload:{uid:props.selectedFile.uid}})
+		dispatch({type:"code_editor/CLOSE_FILE",payload:{path:props.selectedFile.path}})
 		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.selectedFile}})
 	}
 	function handleClickTab(){
-		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile}})
+		dispatch({type:"activeElementSelected", payload:{path:props.selectedFile.path}})
+		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:mystate.actionCode}})
 	}
 	
-	if(mystate.codeEditor.selectedFile.uid===props.selectedFile.uid)
+	if(mystate.codeEditor.selectedFile.path===props.selectedFile.path)
 		return (
 			<div onClick={()=>handleClickTab()} className="px-4 bg-[#171717] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF] cursor-pointer">
 				<div></div>
@@ -357,7 +434,7 @@ function CodeEditorTabList(props){
 	if (props.openedFiles) {
 		return props.openedFiles.map(element=>{
 			return (
-				<div key={element.uid}>
+				<div key={element.path}>
 					<CodeEditorTabs selectedFile={element}/>
 				</div>
 				)
@@ -370,6 +447,7 @@ function CodeEditorTabList(props){
 export default function CodeEditor() {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
+	const state = useSelector((state) => state.codeEditor);
 	let dt = { username: "ehamza", password: "123" };
 	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
@@ -385,12 +463,19 @@ export default function CodeEditor() {
 	
 
 
-	function handleChange(content,uid){
+	function handleChange(content,path){
 		clearTimeout(timer);
-		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, uid:uid}})
+		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
 		let mytime = setTimeout(() => {
-    	dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, uid:uid}})
-		}, 500);
+		dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
+		axios.put(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: token }})
+		.then((res) => {
+			console.log("file saved")
+			}).catch(error=>{
+			console.log(error)	
+		})
+    	
+		}, 3000);
 		setTimer(mytime)	
 	}
 		
@@ -398,108 +483,66 @@ export default function CodeEditor() {
 
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementSelected", payload:{uid:"-1"}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:""}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			dispatch({type:"activeElementSelected", payload:{path:"-1"}})
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			dispatch({type:"activeElementRename", payload:{path:""}})
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{uid:"-1"}})
-			dispatch({type:"activeElementContextMenu", payload:{uid:"-1"}})
-			dispatch({type:"activeElementRename", payload:{uid:""}})
+			dispatch({type:"activeElementSelected", payload:{path:"-1"}})
+			dispatch({type:"activeElementContextMenu", payload:{path:"-1"}})
+			dispatch({type:"activeElementRename", payload:{path:""}})
 		}
 	}
-
+	
 	function handleCreateFile() {
-		let node=new File(Math.floor(100000 + Math.random() * 900000).toString(),"",pythonIcon)
-		if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
-		else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
-		dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		let node=new File(mystate.file_explorer.path+"/new_file","new_file")
+		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: token} })
+        .then((res) => {
+			if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
+			else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
+			//dispatch({type:"activeElementRename", payload:{path:node.path}})
+			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
 	}
 
 	function handleCreateFolder() {
-		let node=new Folder(Math.floor(100000 + Math.random() * 900000).toString(),"",folderIcon)
-		ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
-		dispatch({type:"activeElementRename", payload:{uid:node.uid}})
-		dispatch({type:"activeElementSelected", payload:{uid:node.uid}}) 
-		dispatch({type:"activeElementContextMenu", payload:{uid:""}})
+		let node=new Folder(mystate.file_explorer.path+"/new_folder","new_folder")
+		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: token} })
+        .then((res) => {
+			ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
+			//dispatch({type:"activeElementRename", payload:{path:node.path}})
+			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
+			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            return console.log("error");
+          } else {
+            console.log("Sorry, we encountered a network error.")
+          }
+        });
+		
 	}
 
 	useEffect(() => {
-		let data = {
-			uid: "0",
-			type: "folder",
-			name: "root",
-			icon: null,
-			path: "",
-			children: [
-				{
-					uid: "1",
-					type: "folder",
-					name: "cockpit",
-					icon: folderIcon,
-					path: "/cockpit",
-					children: [
-						{
-							uid: "2",
-							type: "folder",
-							name: "src",
-							icon: folderIcon,
-							path: "/cockpit/src",
-							children: [
-								{
-									uid: "3",
-									type: "folder",
-									icon: folderIcon,
-									name: "screens",
-									path: "/cockpit/src/screens",
-									children: [
-										{
-											uid: "4",
-											type: "file",
-											icon: pythonIcon,
-											name: "App.js",
-											path: "/cockpit/src/screens/App.js",
-										},
-										{
-											uid: "5",
-											type: "file",
-											icon: pythonIcon,
-											name: "index.css",
-											path: "/cockpit/src/screens/index.css",
-										},
-									],
-								},
-							],
-						},
-						{
-							uid: "6",
-							type: "file",
-							icon: pythonIcon,
-							name: "index.css",
-							path: "/cockpit/index.css",
-						},
-					],
-				},
-				{
-					uid: "7",
-					type: "file",
-					icon: pythonIcon,
-					name: ".gitignore",
-					path: "/.gitignore",
-				},
-			],
-		};
-			
-		let mydata = ActionCodeBuilder.build(data);
-	
+		
 		if (!mystate.file_explorer.children) {
-			dispatch({
-				type: "setFileExplorer",
-				payload: ActionCodeBuilder.build(data),
-			});
+			axios.get(hostname+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: token }})
+			.then(response=>{
+				let data = response.data.payload.ActionCode;
+				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(data)});
+			}).catch(error=>console.log(error))
+			
+			
 		}
 	}, [mystate.file_explorer.children]);
 	
@@ -513,7 +556,7 @@ export default function CodeEditor() {
 							<div className="flex items-center space-x-[7px] cursor-pointer">
 								<ArrowDown />
 								<div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
-								FILES 
+								FILES
 								</div>
 							</div>
 							<div className="flex space-x-[6px] items-center">
@@ -571,14 +614,14 @@ export default function CodeEditor() {
 					<div onClick={e=>e.stopPropagation()}>
 						{mystate.codeEditor.selectedFile.content!=null &&
 						<AceEditor
-							key={mystate.codeEditor.selectedFile.uid}
+							key={mystate.codeEditor.selectedFile.path}
 							showPrintMargin={false}
 							height="374px"
 							fontSize="17px"
 							width="100%"
 							mode="python"
 							theme="tomorrow_night"
-							onChange={(value)=>handleChange(value,mystate.codeEditor.selectedFile.uid)}
+							onChange={(value)=>handleChange(value,mystate.codeEditor.selectedFile.path)}
 							value={mystate.codeEditor.selectedFile.content}
 							name="code_editor"
 							editorProps={{ $blockScrolling: true }}

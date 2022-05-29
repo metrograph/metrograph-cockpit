@@ -1,8 +1,8 @@
 import AbstractFile from "./AbstractFile";
 
 class Folder extends AbstractFile {
-  constructor(uid, name, icon) {
-    super(uid, name, icon);
+  constructor(path, name) {
+    super(path, name);
     this.children = [];
   }
   addChild(child) {

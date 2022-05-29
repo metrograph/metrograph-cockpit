@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import {useParams, useNavigate } from "react-router-dom";
 import CodeEditor from "../../components/dev/CodeEditor";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
@@ -51,7 +52,8 @@ export default function EditAction() {
     { key: 1, value: "Deploy Docker Workflow C" },
   ]);
   const [selectedOptionSet, setSelectedOtionSet] = useState(optionListSet[0]);
-
+  const action_uuid = useParams().uuid;
+  
   //Top bar end
 
   const [is_listbOpen, setIs_listbOpenb] = useState(false);
@@ -90,7 +92,7 @@ export default function EditAction() {
   useEffect(() => {
 		
 		if (mystate.actionCode.name==="") {
-			axios.get(hostname+"/action/bd1e8474-43b8-47ad-8673-93d92d46ebe5", {headers: { Authorization: token },})
+			axios.get(hostname+"/action/"+action_uuid, {headers: { Authorization: token },})
 			.then(response=>{
 				console.log(response.data.payload.ActionCode)
 				let data = response.data.payload.ActionCode;
@@ -204,7 +206,7 @@ export default function EditAction() {
             </div>
           </div>
           {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
-        <Alert title="Action created with sucess"/>
+        <Alert title="Action created created successfully!"/>
         </div>}
         </div>
         {/* Top bar end */}
@@ -437,7 +439,7 @@ export default function EditAction() {
         <div className=" mt-12 font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
           ACTION CODE
         </div>
-        <CodeEditor />
+       {mystate.actionCode.uuid!="" &&  <CodeEditor action_uuid={action_uuid}/>}
       </div>
     </div>
   );

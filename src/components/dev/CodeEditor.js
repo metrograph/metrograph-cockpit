@@ -47,11 +47,19 @@ function CFile(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
+
 			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
 			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{path:""}})
 			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{path:""}})
 			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
-			dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.file}})
+
+			axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: token }})
+				.then((res) => {
+					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:mystate.actionCode,data:res.data}})
+			  	}).catch(error=>{
+					console.log(error)	
+				})
+				
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
@@ -386,7 +394,8 @@ function CodeEditorTabs(props){
 		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.selectedFile}})
 	}
 	function handleClickTab(){
-		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile}})
+		dispatch({type:"activeElementSelected", payload:{path:props.selectedFile.path}})
+		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:mystate.actionCode}})
 	}
 	
 	if(mystate.codeEditor.selectedFile.path===props.selectedFile.path)
@@ -438,6 +447,7 @@ function CodeEditorTabList(props){
 export default function CodeEditor() {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
+	const state = useSelector((state) => state.codeEditor);
 	let dt = { username: "ehamza", password: "123" };
 	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
@@ -457,8 +467,15 @@ export default function CodeEditor() {
 		clearTimeout(timer);
 		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
 		let mytime = setTimeout(() => {
-    	dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
-		}, 500);
+		dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
+		axios.put(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: token }})
+		.then((res) => {
+			console.log("file saved")
+			}).catch(error=>{
+			console.log(error)	
+		})
+    	
+		}, 3000);
 		setTimer(mytime)	
 	}
 		
@@ -517,75 +534,9 @@ export default function CodeEditor() {
 	}
 
 	useEffect(() => {
-		let data = {
-			path: "0",
-			type: "folder",
-			name: "root",
-			icon: null,
-			path: "",
-			children: [
-				{
-					path: "1",
-					type: "folder",
-					name: "cockpit",
-					icon: folderIcon,
-					path: "/cockpit",
-					children: [
-						{
-							path: "2",
-							type: "folder",
-							name: "src",
-							icon: folderIcon,
-							path: "/cockpit/src",
-							children: [
-								{
-									path: "3",
-									type: "folder",
-									icon: folderIcon,
-									name: "screens",
-									path: "/cockpit/src/screens",
-									children: [
-										{
-											path: "4",
-											type: "file",
-											icon: pythonIcon,
-											name: "App.js",
-											path: "/cockpit/src/screens/App.js",
-										},
-										{
-											path: "5",
-											type: "file",
-											icon: pythonIcon,
-											name: "index.css",
-											path: "/cockpit/src/screens/index.css",
-										},
-									],
-								},
-							],
-						},
-						{
-							path: "6",
-							type: "file",
-							icon: pythonIcon,
-							name: "index.css",
-							path: "/cockpit/index.css",
-						},
-					],
-				},
-				{
-					path: "7",
-					type: "file",
-					icon: pythonIcon,
-					name: ".gitignore",
-					path: "/.gitignore",
-				},
-			],
-		};
-			
-		let mydata = ActionCodeBuilder.build(data);
-	
+		
 		if (!mystate.file_explorer.children) {
-			axios.get(hostname+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: token },})
+			axios.get(hostname+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: token }})
 			.then(response=>{
 				let data = response.data.payload.ActionCode;
 				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(data)});
@@ -605,7 +556,7 @@ export default function CodeEditor() {
 							<div className="flex items-center space-x-[7px] cursor-pointer">
 								<ArrowDown />
 								<div className="text-[11px] text-white font-IBM-Plex-Sans font-bold ">
-								FILES 
+								FILES
 								</div>
 							</div>
 							<div className="flex space-x-[6px] items-center">

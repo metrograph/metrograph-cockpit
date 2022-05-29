@@ -36,36 +36,23 @@ export default function CreateAction() {
   const navigate = useNavigate();
   const [is_listSetOpen, setIs_listSetOpen] = useState(false);
 
-  const [optionListSet, setOptionListSet] = useState([
-    { key: 1, value: "Deploy Docker Workflow" },
-    { key: 1, value: "Deploy Docker Workflow A" },
-    { key: 1, value: "Deploy Docker Workflow B" },
-    { key: 1, value: "Deploy Docker Workflow C" },
-  ]);
-  const [selectedOptionSet, setSelectedOtionSet] = useState(optionListSet[0]);
-
+  
   //Top bar end
 
   const [is_listbOpen, setIs_listbOpenb] = useState(false);
 
-  const [optionListb, setOptionListb] = useState([
-    { key: 2, value: "Python" },
-    { key: 3, value: "Nodejs" },
-    { key: 4, value: "PHP" },
-  ]);
-  const [selectedOptionb, setSelectedOtionb] = useState("Language");
+  const [optionListb, setOptionListb] = useState([{ key: 2, value: "python" }]);
+  const [selectedOptionb, setSelectedOtionb] = useState("python");
 
   //Runtime end
 
   const [is_listversionOpen, setIs_listversionOpen] = useState(false);
 
   const [optionlistversion, setOptionlistversion] = useState([
-    { key: 2, value: "10.01" },
-    { key: 3, value: "11.20" },
-    { key: 4, value: "13.03" },
+    { key: 2, value: "3.9.10" }
   ]);
   const [selectedoptionlistversion, setSelectedoptionlistversion] =
-    useState("Version");
+    useState("3.9.10");
 
   //Version end
   
@@ -81,7 +68,7 @@ export default function CreateAction() {
 			    let response=res.data.payload.action
           dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:false, type:""}})
           dispatch({type:"action_code/SET",payload:response})
-          navigate("/edit-action")
+          navigate("/edit-action/"+response.uuid)
 			  })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -193,7 +180,7 @@ export default function CreateAction() {
         </div>
         
        {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
-        <Alert title="Action created with sucess"/>
+        <Alert title="Action created created successfully!"/>
         </div>}
       </div>
 
@@ -226,7 +213,7 @@ export default function CreateAction() {
               <div className="flex justify-between">
                 <div className="space-y-[10px]">
                   <div className="text-white font-IBM-Plex-Sans font-bold text-[11px]">
-                    description
+                    DESCRCIPTION
                   </div>
                   <div className="relative flex items-center">
                     <input

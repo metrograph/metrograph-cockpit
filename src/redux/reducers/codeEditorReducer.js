@@ -1,10 +1,13 @@
 import axios from "axios"
 let url="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/YmsxCEYE"
 let url_2="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/j68BdHAm"
+let hostname="http://195.201.146.87:80/v1/actioncode/"
+let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
 
 
-function getContentFromApi(state,url_2){
-	axios.get(url_2).then(function (response) {
+function getContentFromApi(state,uuid){
+	axios.get(hostname+uuid+"/file").then(function (response) {
+		console.log(response)
 	return state.selectedFile.content=response.data.contents
 	}).catch(e=>{
 	return state.selectedFile.content=null
@@ -66,16 +69,16 @@ function loadFileContent(state, payload){
 		state.openedFiles.forEach(element => {
 			if(element.path===payload.file.path) {
 				if(element.content===null){
-					axios.get(url_2).then(function (response) {
-						state.selectedFile={path:payload.file.path, name:payload.file.name, content:response.data.contents}
-						element.content=response.data.contents
-						return state
-						}).catch(e=>{
-						return state
+					axios.post(hostname+payload.actionCode.uuid+"/file/content",{path:element.path},{headers: { Authorization: token }})
+					.then(function (response) {
+						element.content=response.data
+						state.selectedFile={path:element.path, name:element.name, content:response.data}
+					}).catch(error=>{
+							return state
 						}) 
 				}
-				else if(element.content){
-						state.selectedFile={path:element.path, name:element.name, content:element.content}
+				else if(element.content || element.content===""){
+					state.selectedFile={path:element.path, name:element.name, content:element.content}
 				}
 			}
 		});
@@ -83,10 +86,26 @@ function loadFileContent(state, payload){
 	return state
 }
 
+function loadFileContentApi(state, payload){
+	if (state.openedFiles.some(e=>e.path===payload.file.path)){
+		state.openedFiles.forEach(element => {
+			if(element.path===payload.file.path) {
+				if(element.content===null){
+					element.content=payload.data
+					state.selectedFile={path:element.path, name:element.name, content:payload.data}
+				}
+				else if(element.content || element.content===""){
+					state.selectedFile={path:element.path, name:element.name, content:element.content}
+				}
+			}
+		});
+	}
+	return state
+}
 function openFile(state, payload){
 	if (state.openedFiles.some(e=>e.path===payload.file.path)) return state
 	else state.openedFiles.push({path:payload.file.path, name:payload.file.name,content:null})
-    return state
+	return state
 }
 
 function loadLastFileContent(state){
@@ -121,6 +140,8 @@ const codeEditorReducer = (state = {selectedFile:{path :"", name :"",content :nu
 			return closeAndOpenLastFile(state, payload)
 		case "code_editor/UPDATE_FILE_CONTENT":
 			return updateFileContent(state, payload)
+			case "code_editor/LOAD_FILE_CONTENT_API":
+				return loadFileContentApi(state, payload)
 		case "code_editor/UPDATE_OPENED_FILE_CONTENT":
 			return updateOpenedFileContent(state, payload)
 		default:

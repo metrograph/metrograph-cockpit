@@ -67,34 +67,39 @@ export default function Action(){
     },[mystate.actions])
 
     return (
-        <div className="bg-black min-h-screen pb-20 px-12 fadeIn">
-            <TopBar/>
-            <div className="max-w-[1662px] w-full pt-[104px] pr-4">
-                <div className="w-full">
-                    <div className="flex justify-between">
-                        <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
-                            Actions
-                        </div>
-                        <div onClick={()=>navigate("/create-action")} className="justify-end flex space-x-[6px] pt-[30px]">
-                            <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-green-600">
-                            CREATE ACTION
+        <div className="bg-black min-h-screen">
+            <div className="container mx-auto pb-20">
+                <TopBar/>
+                {/* page title */}
+                <div className="max-w-[1662px] w-full pt-[104px] pr-4">
+                    <div className="w-full">
+                        <div className="flex justify-between">
+                            <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
+                                Actions
+                            </div>
+                            <div onClick={()=>navigate("/create-action")} className="justify-end flex space-x-[6px] pt-[30px]">
+                                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-green-600">
+                                CREATE ACTION
+                                </div>
                             </div>
                         </div>
+                    
                     </div>
-                   
                 </div>
-            </div>
-            <div className="border-b-2 mt-[18px] border-[#2B2B2B] w-full" />
-            {/* Actions list start */}
-            <div className="">
-                {mystate.actions.map((element)=> {
-                    return <ActionRow key={element.uuid} element={element}/>
-                    })}
+                <div className="border-b-2 mt-[18px] border-[#2B2B2B] w-full" />
+                 {/* page end */}
                 
-                <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
-               
+                {/* Actions list start */}
+                <div className="">
+                    {mystate.actions.map((element)=> {
+                        return <ActionRow key={element.uuid} element={element}/>
+                        })}
+                    
+                    <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
+                
+                </div>
+                {/* Actions list end */}
             </div>
-            {/* Actions list end */}
         </div>
     )
 }

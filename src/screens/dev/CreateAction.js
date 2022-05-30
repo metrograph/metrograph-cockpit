@@ -10,6 +10,7 @@ import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.s
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
+import TopBar from "../../components/dev/TopBar"
 
 import logo from "../../assets/logo.svg";
 import arrowdown from "../../assets/icons/arrow-down.svg";
@@ -84,114 +85,31 @@ export default function CreateAction() {
   
 
   return (
-    <div className="bg-black h-screen noselect">
+    <div className="bg-black min-h-screen noselect">
       <div className="container mx-auto relative">
-        <div className="flex justify-between items-center pt-[43px]">
-          <div className="text-white">
-            <img src={logo} className="h-[34px] w-[147px]" alt="" />
-          </div>
-          <div className="flex grow lg:justify-end lg:pr-[187px] text-white space-x-[82px]">
-            <div className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <DashboardIcon fill="white" height="11x" width="9px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  DASHBOARD
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px] opacity-0" />
-            </div>
-            <div className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <ActionIcon fill="white" height="11x" width="5px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  ACTIONS
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px]" />
-            </div>
-
-            <div className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <ApiIcon fill="white" height="11x" width="11px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  APIS
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px] opacity-0" />
-            </div>
-            <div className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <ApplicationIcon fill="white" height="9x" width="9px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  APPLICATIONS
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px] opacity-0" />
-            </div>
-
-            <div className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <WorkflowsIcon fill="white" height="10x" width="10px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  WORKFLOWS
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px] opacity-0" />
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center space-x-4 relative">
-              <img
-                src={avatar}
-                className="h-[38px] w-[38px] rounded-full"
-                alt=""
-              />
-              <div
-                onClick={() => setIs_listSetOpen(!is_listSetOpen)}
-                className="flex space-x-2 cursor-pointer"
-              >
-                <div className="text-white font-IBM-Plex-Sans font-semibold text-[16px]">
-                  Hamza
-                </div>
-                <img src={arrowdown} alt="" />
-              </div>
-
-              {is_listSetOpen && (
-                <div className="absolute z-20 w-[180px] top-16 right-0 py-4 flex flex-col space-y-2 bg-[#1A1A1A] rounded-lg cursor-pointer">
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                    Hello
-                  </div>
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                    Hello
-                  </div>
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                    Hello
-                  </div>
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                    Hello
-                  </div>
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                    Hello
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        
+        <TopBar/>
        {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
         <Alert title="Action created created successfully!"/>
         </div>}
-      </div>
-
       
 
-      <div className="flex mt-[185px] justify-center">
-        <div className="lg:w-[993px] h-20">
-          <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
-            Create an Action
+    {/* page title */}
+    <div className="max-w-[1662px] w-full pt-[104px] pr-4">
+      <div className="w-full">
+          <div className="flex justify-between">
+              <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
+                  Create an Action
+              </div>
           </div>
-          <div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />
+      
+      </div>
+    </div>
+    <div className="border-b-2 mt-[18px] border-[#2B2B2B] w-full" />
+    {/* page title end */}
+
+      <div className="flex mt-20 justify-center">
+        <div className="lg:w-[993px] h-20">
+          
           <div className="flex flex-col space-y-[30px] pr-[46px]">
             <div className="flex justify-between">
               <div className="space-y-[10px]">
@@ -321,7 +239,7 @@ export default function CreateAction() {
               </div>
             </div>
             <div className="justify-end flex space-x-[6px] pt-[30px]">
-              <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
+              <div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
                 CANCEL
               </div>
               <div onClick={()=>handleSubmit()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
@@ -330,6 +248,7 @@ export default function CreateAction() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

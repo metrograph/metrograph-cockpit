@@ -19,6 +19,7 @@ import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import useMouse from "@react-hook/mouse-position";
+import TopBar from "../../components/dev/TopBar"
 
 import i_icon from "../../assets/icons/i.svg";
 
@@ -44,6 +45,7 @@ function Alert(props){
 export default function EditAction() {
   const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
+  const navigate=useNavigate()
   const [is_listSetOpen, setIs_listSetOpen] = useState(false);
   const [optionListSet, setOptionListSet] = useState([
     { key: 1, value: "Deploy Docker Workflow" },
@@ -112,114 +114,22 @@ export default function EditAction() {
     <div className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
       <div className="max-w-[1662px] w-full">
         {/* Top bar start */}
-        <div className="relative">
-          <div className="flex justify-between items-center pt-[43px]">
-            <div className="text-white w-[147px]">
-              <img src={logo} className="h-[34px] w-[147px]" alt="" />
-            </div>
-            <div className="flex lg:grow lg:justify-end lg:pr-[187px] text-white space-x-[82px]">
-              <div className="flex flex-col cursor-pointer">
-                <div className="flex space-x-2">
-                  <DashboardIcon fill="white" height="11x" width="9px" />
-                  <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                    DASHBOARD
-                  </div>
-                </div>
-                <div className="border-b-2 border-white mt-[7px] opacity-0" />
-              </div>
-              <div className="flex flex-col cursor-pointer">
-                <div className="flex space-x-2">
-                  <ActionIcon fill="white" height="11x" width="5px" />
-                  <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                    ACTIONS
-                  </div>
-                </div>
-                <div className="border-b-2 border-white mt-[7px]" />
-              </div>
-
-              <div className="flex flex-col cursor-pointer">
-                <div className="flex space-x-2">
-                  <ApiIcon fill="white" height="11x" width="11px" />
-                  <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                    APIS
-                  </div>
-                </div>
-                <div className="border-b-2 border-white mt-[7px] opacity-0" />
-              </div>
-              <div className="flex flex-col cursor-pointer">
-                <div className="flex space-x-2">
-                  <ApplicationIcon fill="white" height="9x" width="9px" />
-                  <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                    APPLICATIONS
-                  </div>
-                </div>
-                <div className="border-b-2 border-white mt-[7px] opacity-0" />
-              </div>
-
-              <div className="flex flex-col cursor-pointer">
-                <div className="flex space-x-2">
-                  <WorkflowsIcon fill="white" height="10x" width="10px" />
-                  <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                    WORKFLOWS
-                  </div>
-                </div>
-                <div className="border-b-2 border-white mt-[7px] opacity-0" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center space-x-4 relative">
-                <img
-                  src={avatar}
-                  className="h-[38px] w-[38px] rounded-full"
-                  alt=""
-                />
-                <div
-                  onClick={() => setIs_listSetOpen(!is_listSetOpen)}
-                  className="flex space-x-2 cursor-pointer"
-                >
-                  <div className="text-white font-IBM-Plex-Sans font-semibold text-[16px]">
-                    Hamza
-                  </div>
-                  <img src={arrowdown} alt="" />
-                </div>
-
-                {is_listSetOpen && (
-                  <div className="absolute z-20 w-[180px] top-16 right-0 py-4 flex flex-col space-y-2 bg-[#1A1A1A] rounded-lg cursor-pointer">
-                    <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                      Hello
-                    </div>
-                    <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                      Hello
-                    </div>
-                    <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                      Hello
-                    </div>
-                    <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                      Hello
-                    </div>
-                    <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
-                      Hello
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
-        <Alert title="Action created created successfully!"/>
+        <TopBar/>
+       {!mystate.alert.is_hide &&
+        <div className="flex justify-center w-full absolute top-28">
+          <Alert title={mystate.alert.title}/>
         </div>}
-        </div>
         {/* Top bar end */}
 
         {/* Action section start */}
-        <div className="max-w-[1614px] container flex  mt-[185px]">
+        <div className="max-w-[1614px] container flex pt-[104px]">
           <div className="w-full">
             <div className="flex justify-between">
               <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
                 {title}
               </div>
               <div className="justify-end flex space-x-[6px] pt-[30px]">
-                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
+                <div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
                   CANCEL
                 </div>
                 <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">

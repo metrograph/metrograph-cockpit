@@ -462,8 +462,6 @@ export default function CodeEditor() {
 		leaveDelay: 100,
 	});
 	
-
-
 	function handleChange(content,path){
 		clearTimeout(timer);
 		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
@@ -532,6 +530,20 @@ export default function CodeEditor() {
 		
 	}
 
+	function handleRun(){
+		axios.post(hostname+"/action/"+mystate.actionCode.uuid+"/run", {}, {headers: { Authorization: token }})
+				.then((res) => {
+					console.log(res.data.message)
+					dispatch({type:"alert/SET_ALERT",payload:{title:"Action started successfully", is_hide:false, type:""}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
+					
+			  	}).catch(error=>{
+					console.log(error)	
+				})
+	}
+
 	useEffect(() => {
 		console.log("loading !"+loading)
 		if (loading) {
@@ -578,31 +590,31 @@ export default function CodeEditor() {
 						</div>
 					</div>
 					{mystate.activeElement.contextMenu==="-1" && (
-						<div
-						className="bg-[#191919] w-[187px] h-[89px] rounded-[9px] flex flex-col justify-center  border-1 border-[#292929] space-y-[1px]"
-						style={{
-							position: "absolute",
-							top: mouseRadar.y,
-							left: mouseRadar.x,
-							zIndex: 6,
-						}}
-						>
-						<div onClick={(e)=>{e.stopPropagation(); handleCreateFolder()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
-						CREATE FOLDER
-						</div>
-						<div onClick={(e)=>{e.stopPropagation(); handleCreateFile()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
-						CREATE FILE
-						</div>
-						<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
-						UPLOAD FILE
-						</div>
-						<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
-						RENAME
-						</div>
-						<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
-						DELETE
-						</div>
-						</div>
+					<div
+					className="bg-[#191919] w-[187px] h-[89px] rounded-[9px] flex flex-col justify-center  border-1 border-[#292929] space-y-[1px]"
+					style={{
+						position: "absolute",
+						top: mouseRadar.y,
+						left: mouseRadar.x,
+						zIndex: 6,
+					}}
+					>
+					<div onClick={(e)=>{e.stopPropagation(); handleCreateFolder()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+					CREATE FOLDER
+					</div>
+					<div onClick={(e)=>{e.stopPropagation(); handleCreateFile()}} className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+					CREATE FILE
+					</div>
+					<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+					UPLOAD FILE
+					</div>
+					<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+					RENAME
+					</div>
+					<div className="text-white font-IBM-Plex-Sans font-bold text-[9px] hover:bg-[#292929] pl-[13px] cursor-pointer">
+					DELETE
+					</div>
+					</div>
 						)}
 				</div>
 				{/*Left panel section end*/}
@@ -640,104 +652,103 @@ export default function CodeEditor() {
 			<div className="border-b-[3px] border-[#343434] w-full" />
 			<div className="bg-[#202020] h-[246px] flex w-full">
 				<div className="w-1/5 border-r-[3px] border-[#343434] px-[19px]">
-				<div className="mt-[19px]  flex space-x-[11px]">
-				<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
-				EVENT
-				</div>
-				<img src={i_icon} alt="" />
-				</div>
-				<div className="bg-[#1A1A1A] h-[128px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
-				<AceEditor
-				style={{ borderRadius: "13px" }}
-				showPrintMargin={false}
-				height="100%"
-				fontSize="14px"
-				width="100%"
-				mode="json"
-				theme="twilight"
-				onChange={(value) => setEventIDE(value)}
-				value={eventIDE}
-				name="ace_firts"
-				showGutter={false}
-				editorProps={{ $blockScrolling: true }}
-				setOptions={{
-					enableBasicAutocompletion: true,
-					enableLiveAutocompletion: true,
-					enableSnippets: true,
-					showLineNumbers: false,
-				}}
-				/>
-				</div>
-				<div className="mt-[15px] grid place-content-end">
-				<div className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px]">
-				<div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
-				Run
-				</div>
-				</div>
-				</div>
+					<div className="mt-[19px]  flex space-x-[11px]">
+						<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
+						EVENT
+						</div>
+						<img src={i_icon} alt="" />
+					</div>
+					<div className="bg-[#1A1A1A] h-[128px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
+						<AceEditor
+						style={{ borderRadius: "13px" }}
+						showPrintMargin={false}
+						height="100%"
+						fontSize="14px"
+						width="100%"
+						mode="json"
+						theme="twilight"
+						onChange={(value) => setEventIDE(value)}
+						value={eventIDE}
+						name="ace_firts"
+						showGutter={false}
+						editorProps={{ $blockScrolling: true }}
+						setOptions={{
+							enableBasicAutocompletion: true,
+							enableLiveAutocompletion: true,
+							enableSnippets: true,
+							showLineNumbers: false,
+						}}
+						/>
+					</div>
+					<div className="mt-[15px] grid place-content-end">
+						<div onClick={(e)=>{e.stopPropagation(); handleRun()}} className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-purple-600">
+							<div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
+								Run
+							</div>
+						</div>
+					</div>
 				</div>
 				<div className="w-2/5 border-r-[3px] border-[#343434] px-[19px]">
-				<div className="mt-[19px]  flex space-x-[11px]">
-				<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
-				OUTPUT
+					<div className="mt-[19px]  flex space-x-[11px]">
+						<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
+							OUTPUT
+						</div>
+						<img src={i_icon} alt="" />
+					</div>
+					<div className="bg-[#1A1A1A] h-[178px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
+						<AceEditor
+						style={{ borderRadius: "13px" }}
+						showPrintMargin={false}
+						height="100%"
+						fontSize="14px"
+						width="100%"
+						mode="json"
+						theme="twilight"
+						onChange={(value) => setOutputIDE(value)}
+						value={outputIDE}
+						name="ace_firts"
+						showGutter={false}
+						editorProps={{ $blockScrolling: true }}
+						setOptions={{
+							enableBasicAutocompletion: true,
+							enableLiveAutocompletion: true,
+							enableSnippets: true,
+							showLineNumbers: false,
+						}}
+						/>
+					</div>
 				</div>
-				<img src={i_icon} alt="" />
-				</div>
-				<div className="bg-[#1A1A1A] h-[178px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
-				<AceEditor
-				style={{ borderRadius: "13px" }}
-				showPrintMargin={false}
-				height="100%"
-				fontSize="14px"
-				width="100%"
-				mode="json"
-				theme="twilight"
-				onChange={(value) => setOutputIDE(value)}
-				value={outputIDE}
-				name="ace_firts"
-				showGutter={false}
-				editorProps={{ $blockScrolling: true }}
-				setOptions={{
-					enableBasicAutocompletion: true,
-					enableLiveAutocompletion: true,
-					enableSnippets: true,
-					showLineNumbers: false,
-				}}
-				/>
-				</div>
-				</div>
-				
 				<div className="w-2/5 px-[19px]">
-				<div className="mt-[19px]  flex space-x-[11px]">
-				<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
-				RESPONSE
-				</div>
-				<img src={i_icon} alt="" />
-				</div>
-				<div className="bg-[#1A1A1A] h-[178px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
-				<AceEditor
-				style={{ borderRadius: "13px" }}
-				showPrintMargin={false}
-				height="100%"
-				fontSize="14px"
-				width="100%"
-				mode="json"
-				theme="twilight"
-				onChange={(value) => setResponseIDE(value)}
-				value={responseIDE}
-				name="ace_firts"
-				showGutter={false}
-				editorProps={{ $blockScrolling: true }}
-				setOptions={{
-					enableBasicAutocompletion: true,
-					enableLiveAutocompletion: true,
-					enableSnippets: true,
-					showLineNumbers: false,
-				}}
-				/>
-				</div>
+					<div className="mt-[19px]  flex space-x-[11px]">
+						<div className=" font-IBM-Plex-Sans font-bold text-white text-[11px]">
+							RESPONSE
+						</div>
+						<img src={i_icon} alt="" />
+					</div>
+					<div className="bg-[#1A1A1A] h-[178px] w-full rounded-[13px] mt-[12px] text-white text-[10px] relative">
+						<AceEditor
+						style={{ borderRadius: "13px" }}
+						showPrintMargin={false}
+						height="100%"
+						fontSize="14px"
+						width="100%"
+						mode="json"
+						theme="twilight"
+						onChange={(value) => setResponseIDE(value)}
+						value={responseIDE}
+						name="ace_firts"
+						showGutter={false}
+						editorProps={{ $blockScrolling: true }}
+						setOptions={{
+							enableBasicAutocompletion: true,
+							enableLiveAutocompletion: true,
+							enableSnippets: true,
+							showLineNumbers: false,
+						}}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
-				);
+	);
 }

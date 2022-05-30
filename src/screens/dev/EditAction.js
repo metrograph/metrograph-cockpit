@@ -290,7 +290,7 @@ export default function EditAction() {
               </div>
             </div>
             <div className="text-[#AC62FF] font-IBM-Plex-Sans font-medium text-[14px] cursor-pointer">
-              http://metrpgraph.coolcompany.io/task/hf34j1lrhl1hflk14tkgh/run
+              {"http://metrpgraph.io/action/"+mystate.actionCode.uuid}
             </div>
           </div>
         </div>

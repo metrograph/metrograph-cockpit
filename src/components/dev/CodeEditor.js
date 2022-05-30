@@ -47,7 +47,6 @@ function CFile(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
-
 			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
 			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{path:""}})
 			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{path:""}})
@@ -56,7 +55,9 @@ function CFile(props) {
 			axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: token }})
 				.then((res) => {
 					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:mystate.actionCode,data:res.data}})
-			  	}).catch(error=>{
+					// dispatch -alert/SET_ALERT- was added to force the UI to rerender.
+					dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+				}).catch(error=>{
 					console.log(error)	
 				})
 				
@@ -544,6 +545,20 @@ export default function CodeEditor() {
 				})
 	}
 
+	function handleBuild(){
+		axios.post(hostname+"/action/"+mystate.actionCode.uuid+"/image/build", {}, {headers: { Authorization: token }})
+				.then((res) => {
+					console.log(res.data.message)
+					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:""}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
+					
+			  	}).catch(error=>{
+					console.log(error)	
+				})
+	}
+
 	useEffect(() => {
 		console.log("loading !"+loading)
 		if (loading) {
@@ -680,10 +695,15 @@ export default function CodeEditor() {
 						}}
 						/>
 					</div>
-					<div className="mt-[15px] grid place-content-end">
+					<div className="mt-[15px] flex place-content-end space-x-2">
 						<div onClick={(e)=>{e.stopPropagation(); handleRun()}} className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-purple-600">
-							<div className="text-white font-IBM-Plex-Sans font-bold text-[10px]">
+							<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
 								Run
+							</div>
+						</div>
+						<div onClick={(e)=>{e.stopPropagation(); handleBuild()}} className="bg-[#7ECA9C] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-green-400">
+							<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+								Build
 							</div>
 						</div>
 					</div>

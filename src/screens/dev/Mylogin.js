@@ -1,9 +1,12 @@
 import React,{useState} from "react";
+import { useSelector ,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo-light-gray.png"
 
 export default function Login(){
     const navigate = useNavigate();
+    const mystate = useSelector((state)=>state)
+    const dispatch = useDispatch()
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
 
@@ -15,7 +18,7 @@ export default function Login(){
     return (
         <div className="flex ">
             <div className="bg-black h-screen w-[507px] relative">
-                <div className="flex justify-center items-center space-x-[32px] mt-[140px] mx-[87px]">
+                <div className="flex justify-center items-center space-x-[32px] mt-20 mx-[87px]">
                     <img src={logo} className="w-[136px] h-[29px]"/>
                     <div className="border-b border-[#535353] border-[1px] w-full"/>
                 </div>

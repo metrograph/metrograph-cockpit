@@ -67,7 +67,10 @@ export default function CreateAction() {
     axios.post(hostname+"/action", payload, { headers: {Authorization: token} })
         .then((res) => {
 			    let response=res.data.payload.action
-          dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:false, type:""}})
+          dispatch({type:"alert/SET_ALERT",payload:{title:"Action created successfully", is_hide:false, type:""}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
           dispatch({type:"action_code/SET",payload:response})
           navigate("/edit-action/"+response.uuid)
 			  })
@@ -88,8 +91,9 @@ export default function CreateAction() {
     <div className="bg-black min-h-screen noselect">
       <div className="container mx-auto relative">
         <TopBar/>
-       {!mystate.alert.is_hide && <div className="flex justify-center w-full absolute top-28">
-        <Alert title="Action created created successfully!"/>
+       {!mystate.alert.is_hide &&
+        <div className="flex justify-center w-full absolute top-28">
+          <Alert title="Action created created successfully!"/>
         </div>}
       
 

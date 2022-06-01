@@ -10,36 +10,36 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
-import { ReactComponent as ActionIcon } from "../../assets/topbar/action.svg";
-import { ReactComponent as DashboardIcon } from "../../assets/topbar/dashboard.svg";
-import { ReactComponent as ApiIcon } from "../../assets/topbar/api.svg";
-import { ReactComponent as ApplicationIcon } from "../../assets/topbar/apps.svg";
-import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import useMouse from "@react-hook/mouse-position";
 import TopBar from "../../components/dev/TopBar"
-
 import i_icon from "../../assets/icons/i.svg";
+import {config} from "../../config"
 
-import logo from "../../assets/logo.svg";
-import arrowdown from "../../assets/icons/arrow-down.svg";
-import avatar from "../../assets/avatar/avatar-2.png";
-
-let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
-let hostname="http://195.201.146.87:80/v1"
 
 function Alert(props){
   const dispatch = useDispatch();
   function handleCloseAlert(){
     dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
   }
-  return (
-    <div className="h-[64px] lg:w-[993px] bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
-      <div className="text-black font-[12px]">{props.title}</div>
-      <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
-    </div>)
+  if(props.type==="success")
+    {
+      return (
+      <div className="h-[64px]  bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
+        <div className="text-black font-[12px]">{props.title}</div>
+        <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+      </div>)
+    }
+  else if(props.type==="error")
+  {
+    return (
+      <div className="h-[64px]  bg-red-400 w-full rounded-[10px] flex justify-between items-center px-[20px]">
+        <div className="text-black font-[12px]">{props.title}</div>
+        <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+      </div>)
+  }
 }
 
 export default function EditAction() {
@@ -55,26 +55,23 @@ export default function EditAction() {
   ]);
   const [selectedOptionSet, setSelectedOtionSet] = useState(optionListSet[0]);
   const action_uuid = useParams().uuid;
+  let loading=true
   
   //Top bar end
 
   const [is_listbOpen, setIs_listbOpenb] = useState(false);
 
   const [optionListb, setOptionListb] = useState([
-    { key: 2, value: "Python" },
-    { key: 3, value: "Nodejs" },
-    { key: 4, value: "PHP" },
+    { key: 2, value: "python" },
   ]);
-  const [selectedOptionb, setSelectedOtionb] = useState("Python");
+  const [selectedOptionb, setSelectedOtionb] = useState("python");
 
   //Runtime end
 
   const [is_listversionOpen, setIs_listversionOpen] = useState(false);
 
   const [optionlistversion, setOptionlistversion] = useState([
-    { key: 2, value: "10.01" },
-    { key: 3, value: "11.20" },
-    { key: 4, value: "13.03" },
+    { key: 2, value: "3.9.10" }
   ]);
   const [selectedoptionlistversion, setSelectedoptionlistversion] =
     useState("3.9.10");
@@ -91,33 +88,65 @@ export default function EditAction() {
     enterDelay: 100,
     leaveDelay: 100,
   });
+
+  function handleCloseDropDown(){
+    dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+  }
+
+  function handleDropListRuntime(){
+    if(mystate.activeElement.opendDropDown==="runtime") dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    else dispatch({type:"active_element/DROP_DOWN", payload:{key:"runtime"}})
+    dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+  }
+
+  function handleDropListVerion(){
+    if(mystate.activeElement.opendDropDown==="version") dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    else dispatch({type:"active_element/DROP_DOWN", payload:{key:"version"}})
+    dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+  }
+
+
   useEffect(() => {
 		window.scrollTo(0, 0);
-		if (mystate.actionCode.name==="") {
-			axios.get(hostname+"/action/"+action_uuid, {headers: { Authorization: token },})
-			.then(response=>{
-				console.log(response.data.payload.ActionCode)
-				let data = response.data.payload.ActionCode;
-				dispatch({type:"action_code/SET",payload:data})
-      }).catch(error=>console.log(error))
-	
-		}
-    if(mystate.actionCode.name!=""){
-      setTitle(mystate.actionCode.name)
-        setDescription(mystate.actionCode.description)
-        setSelectedOtionb(mystate.actionCode.runtime)
-        setSelectedoptionlistversion(mystate.actionCode.runtime_version)
+    function loadLocalStorage() {
+      const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+      const data = JSON.parse(localstorage);
+      if (JSON.parse(localstorage)) {
+          dispatch({ type: "setUser", payload: data });
+          if(data.user.token)
+          {
+            axios.get(config.METROGRAPH_API+"/action/"+action_uuid, {headers: { Authorization: data.user.token },})
+            .then(response=>{
+              dispatch({type:"action_code/SET",payload:response.data.payload.ActionCode})
+              loading = false
+          }).catch(error=>loading=false)
+          }
+      }
+      else return navigate("/login")
     }
-	}, [mystate.actionCode.name]);
+  loadLocalStorage();
+
+  if(mystate.actionCode.name!=""){
+      setTitle(mystate.actionCode.name)
+      setDescription(mystate.actionCode.description)
+      setSelectedOtionb(mystate.actionCode.runtime)
+      setSelectedoptionlistversion(mystate.actionCode.runtime_version)
+  }
+
+		
+	}, [mystate.actionCode.name,loading]);
+
+ 
 
   return (
-    <div className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
-      <div className="max-w-[1662px] w-full">
+    <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
+      <div className="max-w-[1662px] w-full relative">
         {/* Top bar start */}
         <TopBar/>
        {!mystate.alert.is_hide &&
         <div className="flex justify-center w-full absolute top-28">
-          <Alert title={mystate.alert.title}/>
+          <Alert title={mystate.alert.title} type={mystate.alert.type}/>
         </div>}
         {/* Top bar end */}
 
@@ -178,7 +207,7 @@ export default function EditAction() {
                   </div>
 
                   <div
-                    onClick={() => setIs_listbOpenb(!is_listbOpen)}
+                    onClick={(e) => {e.stopPropagation(); handleDropListRuntime()}}
                     className="w-full mt-[28px]  rounded-[11px] h-[46px] bg-[#1A1A1A] flex justify-between items-center px-[19px] cursor-pointer relative"
                   >
                     <div
@@ -191,7 +220,7 @@ export default function EditAction() {
                       {selectedOptionb}
                     </div>
                     <ArrowDown height="8px" width="13px" fill="white" />
-                    {is_listbOpen && (
+                    {mystate.activeElement.opendDropDown==="runtime" && (
                       <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                         {optionListb.map((element) => (
                           <div
@@ -223,7 +252,7 @@ export default function EditAction() {
                   </div>
 
                   <div
-                    onClick={() => setIs_listversionOpen(!is_listversionOpen)}
+                     onClick={(e) => {e.stopPropagation(); handleDropListVerion()}}
                     className="w-full mt-[28px]  rounded-[11px] h-[46px] bg-[#1A1A1A] flex justify-between items-center  px-[19px] cursor-pointer relative"
                   >
                     <div
@@ -236,7 +265,7 @@ export default function EditAction() {
                       {selectedoptionlistversion}
                     </div>
                     <ArrowDown height="8px" width="13px" fill="white" />
-                    {is_listversionOpen && (
+                    {mystate.activeElement.opendDropDown==="version" && (
                       <div className="flex flex-col space-y-2 bg-[#1A1A1A]   rounded-lg w-full  cursor-pointer absolute top-12 py-4 right-0">
                         {optionlistversion.map((element) => (
                           <div

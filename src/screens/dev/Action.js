@@ -2,10 +2,33 @@ import React,{useEffect, useState} from "react"
 import axios from "axios"
 import { useSelector,useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom";
+import {config} from "../../config"
+import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
+import ModalAction from "../../components/dev/ModalAction";
 import TopBar from "../../components/dev/TopBar"
 
-let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
-let hostname="http://195.201.146.87:80/v1"
+function Alert(props){
+    const dispatch = useDispatch();
+    function handleCloseAlert(){
+      dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+    }
+    if(props.type==="success")
+      {
+        return (
+        <div className="h-[64px]  bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
+          <div className="text-black font-[12px]">{props.title}</div>
+          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+        </div>)
+      }
+    else if(props.type==="error")
+    {
+      return (
+        <div className="h-[64px]  bg-red-400 w-full rounded-[10px] flex justify-between items-center px-[20px]">
+          <div className="text-black font-[12px]">{props.title}</div>
+          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+        </div>)
+    }
+}
 
 function ActionRow(props){
     const dispatch = useDispatch()
@@ -15,6 +38,11 @@ function ActionRow(props){
         dispatch({type:"action_code/SET",payload:props.element})
         navigate("/edit-action/"+props.element.uuid)
     }
+
+    function handleConfirmDelete(){
+        dispatch({type:"modal_action/SET",payload:{is_hide: false, action:props.element}})
+    }
+
     return (
         <div>
             <div className="flex justify-between items-center w-full h-[114px] bg-[#070707] px-4">
@@ -34,10 +62,17 @@ function ActionRow(props){
                     <div className="bg-[#2B2B2B]  rounded-full h-[9px] w-[9px]"></div>
                     <div className="text-white font-medium font-IBM-Plex-Sans text-[10px]">N/A</div>
                 </div>}
+                <div className="flex space-x-4">
+                <div className="">
+                    <div onClick={()=>handleConfirmDelete()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
+                         DELETE
+                    </div>
+                </div>
                 <div className="">
                     <div onClick={()=>handleManage()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
                          MANAGE
                     </div>
+                </div>
                 </div>
             </div>
             
@@ -51,25 +86,47 @@ export default function Action(){
     const mystate =useSelector((state)=>state)
     const dispatch = useDispatch()
     const navigate = useNavigate();
+    let loading=true
+    function handleCloseDropDown(){
+        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+        dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+    }
 
     useEffect(()=>{
         window.scrollTo(0, 0);
-        if (!mystate.actions.length) {
-            
-			axios.get(hostname+"/action", {headers: { Authorization: token }})
-			.then(response=>{
-				console.log(response.data.payload.actions)
-				let data = response.data.payload.actions;
-				dispatch({type:"action/SET",payload:data})
-        }).catch(error=>console.log(error))
-	
-		}
-    },[mystate.actions])
+        dispatch({type:"code_editor/SET", payload:{selectedFile:{path :"", name :"",content :null},openedFiles:[]}})
+        dispatch({type:"setFileExplorer", payload:{}})
+        console.log("Home")
+        function loadLocalStorage() {
+            const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+            const data = JSON.parse(localstorage);
+            if (JSON.parse(localstorage)) {
+                dispatch({ type: "setUser", payload: data });
+                
+                if(data.user.token)
+                {
+                    axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
+                    .then(response=>{
+                        loading=false
+                        dispatch({type:"action/SET",payload:response.data.payload.actions})
+                        
+                }).catch(error=>loading=false)
+                }
+            }
+            else return navigate("/login")
+          }
+        loadLocalStorage();
+       
+    },[loading])
 
     return (
-        <div className="bg-black min-h-screen">
-            <div className="container mx-auto pb-20">
+        <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
+            <div className="container mx-auto pb-20 relative">
                 <TopBar/>
+                {!mystate.alert.is_hide &&
+                <div className="flex justify-center w-full absolute top-28">
+                    <Alert title={mystate.alert.title} type={mystate.alert.type}/>
+                </div>}
                 {/* page title */}
                 <div className="max-w-[1662px] w-full pt-[104px] pr-4">
                     <div className="w-full">
@@ -100,6 +157,9 @@ export default function Action(){
                 </div>
                 {/* Actions list end */}
             </div>
+            {!mystate.modal_action.is_hide && <div className="absolute inset-0 w-full h-screen">
+             <ModalAction action={mystate.modal_action.action}/>
+            </div>}
         </div>
     )
 }

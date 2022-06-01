@@ -1,7 +1,33 @@
-import React,{useState} from "react";
+import axios from "axios";
+import React, {useState, useEffect} from "react";
 import { useSelector ,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo-light-gray.png"
+import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
+import { config } from "../../config";
+
+function Alert(props){
+    const dispatch = useDispatch();
+    function handleCloseAlert(){
+      dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+    }
+    if(props.type==="success")
+      {
+        return (
+        <div className="h-[64px]  bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
+          <div className="text-black font-[12px]">{props.title}</div>
+          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+        </div>)
+      }
+    else if(props.type==="error")
+    {
+      return (
+        <div className="h-[64px]  bg-red-400 w-full rounded-[10px] flex justify-between items-center px-[20px]">
+          <div className="text-black font-[12px]">{props.title}</div>
+          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
+        </div>)
+    }
+}
 
 export default function Login(){
     const navigate = useNavigate();
@@ -10,18 +36,47 @@ export default function Login(){
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
 
-    function handleSubmit(){
-        console.log({username: username, password: password})
-        navigate("/home")
-        
+    function login() {
+        axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
+        .then(function (response) {
+            localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
+            dispatch({ type: "setUser", payload: response.data.payload });
+            return navigate("/");
+        })
+        .catch((error) => {
+            if (error.response && error.response.status === 401) {
+                console.log(error.response)
+                dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+              } else {
+                console.log(error.response)
+                dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+              }
+        });
     }
+    
+    useEffect(() => {
+        function loadLocalStorage() {
+          const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+          if (JSON.parse(localstorage)) return navigate("/");
+        }
+        loadLocalStorage();
+      },[]);
+
     return (
         <div className="flex ">
             <div className="bg-black h-screen w-[507px] relative">
-                <div className="flex justify-center items-center space-x-[32px] mt-20 mx-[87px]">
-                    <img src={logo} className="w-[136px] h-[29px]"/>
-                    <div className="border-b border-[#535353] border-[1px] w-full"/>
+                <div className="flex flex-col justify-center items-center mt-20 mx-[87px] relative">
+                    <div className="flex justify-center items-center space-x-[32px] w-full">
+                        <img src={logo} className="w-[136px] h-[29px]"/>
+                        <div className="border-b border-[#535353] border-[1px] w-full"/>
+                    </div>
+
+                    {!mystate.alert.is_hide &&
+                    <div className="flex justify-center w-full absolute top-12">
+                        <Alert title={mystate.alert.title} type={mystate.alert.type}/>
+                    </div>}
                 </div>
+                
                 <div className="bottom-[140px] absolute">
                     <div className="ml-[87px]">
                         <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>
@@ -45,7 +100,7 @@ export default function Login(){
                         />
                     </div>
                     <div className="justify-end flex mt-[27px]  mx-[87px]">
-                        {username && password && <div onClick={()=>handleSubmit()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                        {username && password && <div onClick={()=>login()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
                         LOGIN
                         </div>}
                         {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">

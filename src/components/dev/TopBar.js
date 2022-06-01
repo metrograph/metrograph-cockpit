@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as ActionIcon } from "../../assets/topbar/action.svg";
 import { ReactComponent as DashboardIcon } from "../../assets/topbar/dashboard.svg";
@@ -9,6 +9,7 @@ import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.s
 import logo from "../../assets/logo.svg";
 import arrowdown from "../../assets/icons/arrow-down.svg";
 import avatar from "../../assets/avatar/avatar-2.png";
+import { useDispatch, useSelector } from "react-redux";
 
 
 function TopBarFull(){
@@ -112,11 +113,24 @@ function TopBarFull(){
 )
 }
 
-export default function TopBar(){
-    const navigate = useNavigate()
-    const [is_listSetOpen, setIs_listSetOpen] = useState(false);
-  
 
+export default function TopBar(props){
+    const mystate = useSelector((state)=> state)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+   
+  function handleShowDropList(){
+    if(mystate.activeElement.opendDropDown==="1") dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    else dispatch({type:"active_element/DROP_DOWN", payload:{key:"1"}})
+    dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+  }
+
+  function logout() {
+
+    localStorage.removeItem("METROGRAPH_STORAGE")
+    return navigate("/login")
+  }
+  
     return (
         <div className="relative">
         <div className="flex justify-between items-center pt-[43px]">
@@ -124,15 +138,6 @@ export default function TopBar(){
             <img src={logo} className="h-[34px] w-[147px]" alt="" />
           </div>
           <div className="flex grow lg:justify-end lg:pr-[187px] text-white space-x-[82px]">
-            <div onClick={()=>navigate("/action")} className="flex flex-col cursor-pointer">
-              <div className="flex space-x-2">
-                <ActionIcon fill="white" height="11x" width="5px" />
-                <div className="text-[11px] font-bold font-IBM-Plex-Sans">
-                  ACTIONS
-                </div>
-              </div>
-              <div className="border-b-2 border-white mt-[7px]" />
-            </div>
           </div>
           <div>
             <div className="flex items-center space-x-4 relative">
@@ -142,18 +147,21 @@ export default function TopBar(){
                 alt=""
               />
               <div
-                onClick={() => setIs_listSetOpen(!is_listSetOpen)}
+                onClick={(e) =>{e.stopPropagation(); handleShowDropList()}}
                 className="flex space-x-2 cursor-pointer"
               >
                 <div className="text-white font-IBM-Plex-Sans font-semibold text-[16px]">
-                  Hamza
+                  {mystate.user.username}
                 </div>
                 <img src={arrowdown} alt="" />
               </div>
 
-              {is_listSetOpen && (
-                <div className="absolute z-20 w-[180px] top-12 right-0 py-4 flex flex-col space-y-2 bg-[#1A1A1A] rounded-lg cursor-pointer">
-                  <div className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
+              {mystate.activeElement.opendDropDown==="1" && (
+                <div key="1" className="absolute z-20 w-[180px] top-12 right-0 py-4 flex flex-col space-y-2 bg-[#1A1A1A] rounded-lg cursor-pointer">
+                  <div onClick={()=>navigate("/settings")} className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
+                    Settings
+                  </div>
+                  <div onClick={()=>logout()} className="text-white text-md font-Inter hover:bg-cock-dark-400 p-2 px-4">
                     Logout
                   </div>
                   

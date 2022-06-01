@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"
 import { useDispatch, useSelector } from "react-redux";
+import {useParams, useNavigate } from "react-router-dom";
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
@@ -11,17 +12,15 @@ import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
 import closeIcon from "../../assets/icons/close.svg"
-import pythonIcon from "../../assets/python.svg";
-import folderIcon from "../../assets/icons/folder.svg";
 import useMouse from "@react-hook/mouse-position";
 import File from "./File";
 import Folder from "./Folder";
 import ActionCodeBuilder from "./ActionCodeBuilder";
 import i_icon from "../../assets/icons/i.svg";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
+import {config} from "../../config"
+import ModalFile from "./modalFile";
 
-let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
-let hostname="http://195.201.146.87:80/v1"
 
 function CFileTree(props) {
 	if (props.file_explorer_state.children) {
@@ -52,7 +51,7 @@ function CFile(props) {
 			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{path:""}})
 			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
 
-			axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: token }})
+			axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:mystate.actionCode,data:res.data}})
 					// dispatch -alert/SET_ALERT- was added to force the UI to rerender.
@@ -78,8 +77,9 @@ function CFile(props) {
 	
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			axios.patch(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: token} })
+			axios.patch(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
         	.then((res) => {
+				console.log(res)
 				ActionCodeBuilder.rename(mystate.file_explorer, props.file.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
 				dispatch({type:"activeElementRename", payload:{path:""}})
@@ -98,22 +98,7 @@ function CFile(props) {
 	}
 	
 	function handleDelete(){
-
-		axios.delete(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", { headers: {Authorization: token},data:{path:props.file.path} })
-        .then((res) => {
-			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
-			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            return console.log("error");
-          } else {
-            console.log("Sorry, we encountered a network error.")
-          }
-        });
-
-		
+		dispatch({type:"modal_file/SET",payload:{is_hide: false, file:props.file}})
 	}
 	
 	if (props.file.path===mystate.activeElement.renameView) {
@@ -139,10 +124,10 @@ function CFile(props) {
 						onClick={(e) => {e.stopPropagation(); handleClick(e)}}
 						className={props.file.path===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}>
 						<div className="flex items-center space-x-[4px] h-[28px] ">
-						<img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
-						<div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
-							{inputValue}
-						</div>
+							<img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
+							<div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
+								{inputValue}
+							</div>
 						</div>
 					</div>
 					{props.file.path===mystate.activeElement.contextMenu && (
@@ -203,7 +188,7 @@ function CFolder(props) {
 				
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			axios.patch(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder",{path:props.folder.path, new_name:inputValue} ,{ headers: {Authorization: token} })
+			axios.patch(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder",{path:props.folder.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
         	.then((res) => {
 				ActionCodeBuilder.rename(mystate.file_explorer, props.folder.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -224,24 +209,12 @@ function CFolder(props) {
 	}
 				
 	function handleDelete(){
-		axios.delete(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", { headers: {Authorization: token},data:{path:props.folder.path} })
-        .then((res) => {
-			ActionCodeBuilder.delete(mystate.file_explorer, props.folder.path);
-			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            return console.log("error");
-          } else {
-            console.log("Sorry, we encountered a network error.")
-          }
-        });
+		dispatch({type:"modal_file/SET",payload:{is_hide: false, file:props.folder}})
 	}
 				
 	function handleCreateFile() {
-		let node=new File(props.folder.path+"/new_file","new_file")
-		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: token} })
+		let node=new File(props.folder.path+"new_file","new_file")
+		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -260,8 +233,8 @@ function CFolder(props) {
 	}
 				
 	function handleCreateFolder() {
-		let node=new Folder(props.folder.path+"/new_folder","new_folder")
-		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: token} })
+		let node=new Folder(props.folder.path+"new_folder","new_folder")
+		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
 			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
@@ -449,6 +422,7 @@ export default function CodeEditor() {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
 	const state = useSelector((state) => state.codeEditor);
+	const navigate = useNavigate()
 	let dt = { username: "ehamza", password: "123" };
 	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
@@ -456,7 +430,7 @@ export default function CodeEditor() {
 	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 	const ref = React.useRef(null);
 	const [timer,setTimer]=useState(null)
-	const [loading, setLoading]=useState(true)
+	let loading = true
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
@@ -466,11 +440,12 @@ export default function CodeEditor() {
 	function handleChange(content,path){
 		clearTimeout(timer);
 		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
+		dispatch({type:"file_status/SET",payload:{is_hide:true}})
 		let mytime = setTimeout(() => {
 		dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
-		axios.put(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: token }})
+		axios.put(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
 		.then((res) => {
-			console.log("file saved")
+			dispatch({type:"file_status/SET",payload:{is_hide:false}})
 			}).catch(error=>{
 			console.log(error)	
 		})
@@ -494,8 +469,8 @@ export default function CodeEditor() {
 	}
 	
 	function handleCreateFile() {
-		let node=new File(mystate.file_explorer.path+"/new_file","new_file")
-		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: token} })
+		let node=new File(mystate.file_explorer.path+"new_file","new_file")
+		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
 			else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
@@ -513,8 +488,8 @@ export default function CodeEditor() {
 	}
 
 	function handleCreateFolder() {
-		let node=new Folder(mystate.file_explorer.path+"/new_folder","new_folder")
-		axios.post(hostname+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: token} })
+		let node=new Folder(mystate.file_explorer.path+"new_folder","new_folder")
+		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
 			//dispatch({type:"activeElementRename", payload:{path:node.path}})
@@ -532,49 +507,65 @@ export default function CodeEditor() {
 	}
 
 	function handleRun(){
-		axios.post(hostname+"/action/"+mystate.actionCode.uuid+"/run", {}, {headers: { Authorization: token }})
+		axios.post(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					console.log(res.data.message)
-					dispatch({type:"alert/SET_ALERT",payload:{title:"Action started successfully", is_hide:false, type:""}})
+					dispatch({type:"alert/SET_ALERT",payload:{title:"Action started successfully", is_hide:false, type:"success"}})
 					setTimeout(() => {
 						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
 						}, 3000);
 					
 			  	}).catch(error=>{
+					dispatch({type:"alert/SET_ALERT",payload:{title:error.message, is_hide:false, type:"error"}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
 					console.log(error)	
 				})
 	}
 
 	function handleBuild(){
-		axios.post(hostname+"/action/"+mystate.actionCode.uuid+"/image/build", {}, {headers: { Authorization: token }})
+		axios.post(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					console.log(res.data.message)
 					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:""}})
 					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:"success"}})
 						}, 3000);
 					
 			  	}).catch(error=>{
+					dispatch({type:"alert/SET_ALERT",payload:{title:error.message, is_hide:false, type:"error"}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
 					console.log(error)	
 				})
 	}
 
+	
 	useEffect(() => {
-		console.log("loading !"+loading)
-		if (loading) {
-			axios.get(hostname+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: token }})
+	window.scrollTo(0, 0);
+    function loadLocalStorage() {
+      const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+      const data = JSON.parse(localstorage);
+      if (JSON.parse(localstorage)) {
+        	dispatch({ type: "setUser", payload: data });
+        	if(data.user.token)
+        	{
+			axios.get(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: mystate.user.token}})
 			.then(response=>{
-				let data = response.data.payload.ActionCode;
-				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(data)});
-				setLoading(false)
-			}).catch(error=>console.log(error))
-			
-			
-		}
-	}, [mystate.file_explorer.children]);
+				loading=false
+				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(response.data.payload.ActionCode)});
+			}).catch(error=>loading=false)
+			}
+      }
+      else return navigate("/login")
+    }
+  	loadLocalStorage();
+	},[loading]);
 	
 	return (
-		<div className="flex flex-col bg-black">
+		<div className="flex flex-col bg-black relative">
 			<div className="flex h-[427px] bg-[#202020]">
 				{/*Lef panel section*/}
 				<div onContextMenu={(e) => e.preventDefault()} className="bg-[#202020] w-1/5 relative" ref={ref}>
@@ -638,28 +629,41 @@ export default function CodeEditor() {
 					<div className="flex overflow-hidden overflow-x-auto">
 						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles}/>
 					</div>
-					<div onClick={e=>e.stopPropagation()}>
-						{mystate.codeEditor.selectedFile.content!=null &&
-						<AceEditor
-							key={mystate.codeEditor.selectedFile.path}
-							showPrintMargin={false}
-							height="374px"
-							fontSize="17px"
-							width="100%"
-							mode="python"
-							theme="tomorrow_night"
-							onChange={(value)=>handleChange(value,mystate.codeEditor.selectedFile.path)}
-							value={mystate.codeEditor.selectedFile.content}
-							name="code_editor"
-							editorProps={{ $blockScrolling: true }}
-							setOptions={{
-								enableBasicAutocompletion: true,
-								enableLiveAutocompletion: true,
-								enableSnippets: true,
-								showLineNumbers: true,
+					<div onClick={e=>e.stopPropagation()} className="relative">
+							{mystate.codeEditor.selectedFile.content!=null &&
+							<div>
+								<AceEditor
+								key={mystate.codeEditor.selectedFile.path}
+								showPrintMargin={false}
+								height="374px"
+								fontSize="17px"
+								width="100%"
+								mode="python"
+								theme="tomorrow_night"
+								onChange={(value)=>handleChange(value,mystate.codeEditor.selectedFile.path)}
+								value={mystate.codeEditor.selectedFile.content}
+								name="code_editor"
+								editorProps={{ $blockScrolling: true }}
+								setOptions={{
+									enableBasicAutocompletion: true,
+									enableLiveAutocompletion: true,
+									enableSnippets: true,
+									showLineNumbers: true,
 							}}/>
+							{!mystate.file_status.is_hide && 
+								<div title="File saved" className="absolute right-4 bottom-2 cursor-help h-4 w-4">
+									<div  className=" bg-green-500 text-white font-medium  rounded-full h-2 w-2"/>
+								</div>}
+							{mystate.file_status.is_hide && 
+								<div title="File saved" className="absolute right-4 bottom-2 cursor-help h-4 w-4">
+									<div  className=" bg-white text-white font-medium  rounded-full h-2 w-2"/>
+								</div>}
+							</div>
 						}
+						
+						
 						{mystate.codeEditor.selectedFile.name===null &&  <div className="bg-[#141414] w-full h-[427px]"></div>}
+						
 					</div>
 				</div>
 				{/* File content section end*/}
@@ -769,6 +773,9 @@ export default function CodeEditor() {
 					</div>
 				</div>
 			</div>
+			{!mystate.modal_file.is_hide && <div className="absolute inset-0 z-50 w-full">
+             <ModalFile file={mystate.modal_file.file}/>
+            </div>}
 		</div>
 	);
 }

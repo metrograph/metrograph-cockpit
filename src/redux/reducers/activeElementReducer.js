@@ -21,11 +21,17 @@ function OpendFolders(state, payload){
     else state.opendFolders.push(payload.path)
     return state
     }
+function dropDown(state, payload){
+    state.opendDropDown=payload.key
+    return state
+}
      
-const activeElementReducer = (state = {codeAction:"",renameView:"",contextMenu:"",opendFolders:[]}, { type, payload }) => {
+const activeElementReducer = (state = {codeAction:"", renameView:"", contextMenu:"", opendFolders:[], opendDropDown:""}, { type, payload }) => {
     switch (type) {
         case "setActiveElement":
             return setActiveElement(payload)
+        case "active_element/DROP_DOWN":
+            return dropDown(state, payload)
         case "activeElementSelected":
             return activeElementSelected(state, payload)
         case "activeElementRename":

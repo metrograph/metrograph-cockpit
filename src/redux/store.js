@@ -10,17 +10,23 @@ import folderReducer from "./reducers/folderReducer";
 import codeEditorReducer from "./reducers/codeEditorReducer";
 import actionCodeReducer from "./reducers/actionCodeReducer"
 import actionReducer from "./reducers/actionReducer"
+import modalActionReducer from "./reducers/modalActionReducer";
+import modalFileReducer from "./reducers/modalFileReducer";
+import fileStatusReducer from "./reducers/fileStatusReducer";
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
   user: userReducer,
   contextMenu: contextMenuReducer,
   file_explorer: fileExplorerReducer,
-  activeElement:activeElementReducer,
-  folder:folderReducer,
-  codeEditor:codeEditorReducer,
-  actionCode:actionCodeReducer,
-  actions:actionReducer
+  activeElement: activeElementReducer,
+  folder: folderReducer,
+  codeEditor: codeEditorReducer,
+  actionCode: actionCodeReducer,
+  actions: actionReducer,
+  modal_action: modalActionReducer,
+  modal_file: modalFileReducer,
+  file_status:fileStatusReducer
 });
 
 const store = createStore(

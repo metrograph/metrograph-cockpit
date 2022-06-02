@@ -101,7 +101,7 @@ export default function CreateAction() {
         const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
         const data = JSON.parse(localstorage);
         if (JSON.parse(localstorage)) {
-            dispatch({ type: "setUser", payload: data });
+            dispatch({ type: "user/SET", payload: data });
             
             if(data.user.token)
             {
@@ -277,9 +277,12 @@ export default function CreateAction() {
               <div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
                 CANCEL
               </div>
-              <div onClick={()=>handleSubmit()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+              {(!name || !description) &&<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed opacity-50">
                 CREATE
-              </div>
+              </div>}
+              {(name && description) &&<div onClick={()=>handleSubmit()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                CREATE
+              </div>}
             </div>
           </div>
         </div>

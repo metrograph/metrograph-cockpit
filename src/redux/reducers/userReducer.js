@@ -6,8 +6,8 @@ function setUser(payload) {
 
 const userReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case "setUser":
-      return setUser(payload);
+    case "user/SET":
+        return setUser(payload);
     default:
       return state;
   }

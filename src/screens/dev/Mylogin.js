@@ -40,16 +40,22 @@ export default function Login(){
         axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
         .then(function (response) {
             localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
-            dispatch({ type: "setUser", payload: response.data.payload });
+            dispatch({ type: "user/SET", payload: response.data.payload });
             return navigate("/");
         })
         .catch((error) => {
             if (error.response && error.response.status === 401) {
                 console.log(error.response)
                 dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+                setTimeout(() => {
+                    dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+                    }, 3000);
               } else {
                 console.log(error.response)
                 dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+                setTimeout(() => {
+                    dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+                    }, 3000);
               }
         });
     }

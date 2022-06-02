@@ -94,6 +94,7 @@ export default function Action(){
 
     useEffect(()=>{
         window.scrollTo(0, 0);
+        dispatch({type:"active_element/SET", payload:{}})
         dispatch({type:"code_editor/SET", payload:{selectedFile:{path :"", name :"",content :null},openedFiles:[]}})
         dispatch({type:"setFileExplorer", payload:{}})
         console.log("Home")
@@ -101,9 +102,8 @@ export default function Action(){
             const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
             const data = JSON.parse(localstorage);
             if (JSON.parse(localstorage)) {
-                dispatch({ type: "setUser", payload: data });
-                
-                if(data.user.token)
+                dispatch({ type: "user/SET", payload: data });
+               if(data.user.token)
                 {
                     axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
                     .then(response=>{

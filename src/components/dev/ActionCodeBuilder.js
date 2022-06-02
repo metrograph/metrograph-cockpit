@@ -14,7 +14,7 @@ class ActionCodeBuilder {
 	
 	static rename(data, path, name) {
 		for (let index = 0; index < data.children.length; index++) 
-		if (data.children[index].path === path) data.children[index].rename(name)
+		if (data.children[index].path === path) data.children[index].rename(path,name)
 		else if (data.children[index] instanceof Folder && ActionCodeBuilder.rename(data.children[index], path, name))
 		ActionCodeBuilder.rename(data.children[index], path, name);
 	}

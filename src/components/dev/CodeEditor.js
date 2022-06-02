@@ -46,9 +46,9 @@ function CFile(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
-			if(mystate.activeElement.renameView) dispatch({type:"activeElementRename", payload:{path:""}})
-			if(mystate.activeElement.contextMenu) dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:props.file.path}})
+			if(mystate.activeElement.renameView) dispatch({type:"active_element/RENAME", payload:{path:""}})
+			if(mystate.activeElement.contextMenu) dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
 
 			axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: mystate.user.token }})
@@ -63,26 +63,25 @@ function CFile(props) {
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
-			dispatch({type:"activeElementContextMenu", payload:{path:props.file.path}})
-			dispatch({type:"activeElementRename", payload:{path:""}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:props.file.path}})
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:props.file.path}})
+			dispatch({type:"active_element/RENAME", payload:{path:""}})
 		}
 	}
 	
 	function handleRename(){
-		dispatch({type:"activeElementRename", payload:{path:props.file.path}})
-		dispatch({type:"activeElementSelected", payload:{path:props.file.path}})
-		dispatch({type:"activeElementContextMenu", payload:{path:""}})
+		dispatch({type:"active_element/RENAME", payload:{path:props.file.path}})
+		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.file.path}})
+		dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 	}
 	
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
 			axios.patch(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
         	.then((res) => {
-				console.log(res)
 				ActionCodeBuilder.rename(mystate.file_explorer, props.file.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-				dispatch({type:"activeElementRename", payload:{path:""}})
+				dispatch({type:"active_element/RENAME", payload:{path:""}})
         	})
 			.catch((error) => {
 				if (error.response && error.response.status === 401) {
@@ -168,22 +167,22 @@ function CFolder(props) {
 	
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementRename", payload:{path:""}})
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			dispatch({type:"active_element/OPEN_FOLDER", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/RENAME", payload:{path:""}})
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 		} else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementContextMenu", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementRename", payload:{path:""}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/RENAME", payload:{path:""}})
 		}
 	}	
 				
 	function handleRename(){
-		dispatch({type:"activeElementRename", payload:{path:props.folder.path}})
-		dispatch({type:"activeElementSelected", payload:{path:props.folder.path}})
-		dispatch({type:"activeElementContextMenu", payload:{path:""}})
+		dispatch({type:"active_element/RENAME", payload:{path:props.folder.path}})
+		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.folder.path}})
+		dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 	}
 				
 	function handlKeyDown(e) {
@@ -192,7 +191,7 @@ function CFolder(props) {
         	.then((res) => {
 				ActionCodeBuilder.rename(mystate.file_explorer, props.folder.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-				dispatch({type:"activeElementRename", payload:{path:""}})
+				dispatch({type:"active_element/RENAME", payload:{path:""}})
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -213,14 +212,14 @@ function CFolder(props) {
 	}
 				
 	function handleCreateFile() {
-		let node=new File(props.folder.path+"new_file","new_file")
+		let node=new File(props.folder.path+"/new_file","new_file")
 		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
-			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"active_element/OPEN_FOLDER", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:node.path}}) 
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -233,13 +232,13 @@ function CFolder(props) {
 	}
 				
 	function handleCreateFolder() {
-		let node=new Folder(props.folder.path+"new_folder","new_folder")
+		let node=new Folder(props.folder.path+"/new_folder","new_folder")
 		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
-			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"activeElementOpendFolders", payload:{path:props.folder.path}})
-			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"active_element/OPEN_FOLDER", payload:{path:props.folder.path}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:node.path}}) 
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
         })
         .catch((error) => {
@@ -368,28 +367,30 @@ function CodeEditorTabs(props){
 		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.selectedFile}})
 	}
 	function handleClickTab(){
-		dispatch({type:"activeElementSelected", payload:{path:props.selectedFile.path}})
+		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.selectedFile.path}})
 		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:mystate.actionCode}})
 	}
 	
 	if(mystate.codeEditor.selectedFile.path===props.selectedFile.path)
 		return (
-			<div onClick={()=>handleClickTab()} className="px-4 bg-[#171717] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] border-b-4 border-[#7900FF] cursor-pointer">
-				<div></div>
-				<div className="flex items-center space-x-1">
-					<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
-					<div className="text-white font-IBM-Plex-Sans text-[14px] font-medium">
-					{props.selectedFile.name}
+			<div onClick={()=>handleClickTab()} className="px-2 grid place-content-center bg-[#171717] min-w-[100px] h-[53px] cursor-pointer relative">
+				<div className="flex items-center min-w-[100px] justify-between">
+					<div className="flex items-center space-x-[1px]">
+						<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+						<div className="text-white align-middle font-IBM-Plex-Sans text-[14px] font-medium">
+						{props.selectedFile.name}
+						</div>
+					</div>
+					<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
+						<img src={closeIcon} className="h-2 w-2"/>
 					</div>
 				</div>
-				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-				<img src={closeIcon} className="h-2 w-2"/>
-				</div>
+				<div className="border-b-4 border-[#7900FF] w-full left-0 absolute bottom-0"/>
 			</div>
 			)
 		else return (
-			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] w-[171px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
-				<div></div>
+			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] min-w-[120px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
+				
 				<div className="flex items-center space-x-1">
 					<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
 					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
@@ -456,15 +457,15 @@ export default function CodeEditor() {
 		
 	function handleClick(e) {
 		if (e.type === "click") {
-			dispatch({type:"activeElementSelected", payload:{path:"-1"}})
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
-			dispatch({type:"activeElementRename", payload:{path:""}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:"-1"}})
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
+			dispatch({type:"active_element/RENAME", payload:{path:""}})
 		}
 		else if (e.type === "contextmenu") {
 			setMouseRadar({ x: mouse.x, y: mouse.y });
-			dispatch({type:"activeElementSelected", payload:{path:"-1"}})
-			dispatch({type:"activeElementContextMenu", payload:{path:"-1"}})
-			dispatch({type:"activeElementRename", payload:{path:""}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:"-1"}})
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:"-1"}})
+			dispatch({type:"active_element/RENAME", payload:{path:""}})
 		}
 	}
 	
@@ -474,9 +475,9 @@ export default function CodeEditor() {
         .then((res) => {
 			if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
 			else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
-			//dispatch({type:"activeElementRename", payload:{path:node.path}})
-			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			//dispatch({type:"active_element/RENAME", payload:{path:node.path}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:node.path}}) 
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -492,9 +493,9 @@ export default function CodeEditor() {
 		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
-			//dispatch({type:"activeElementRename", payload:{path:node.path}})
-			dispatch({type:"activeElementSelected", payload:{path:node.path}}) 
-			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+			//dispatch({type:"active_element/RENAME", payload:{path:node.path}})
+			dispatch({type:"active_element/SELECT_FILE", payload:{path:node.path}}) 
+			dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -528,7 +529,7 @@ export default function CodeEditor() {
 		axios.post(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					console.log(res.data.message)
-					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:""}})
+					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:"success"}})
 					setTimeout(() => {
 						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:"success"}})
 						}, 3000);
@@ -549,7 +550,7 @@ export default function CodeEditor() {
       const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
       const data = JSON.parse(localstorage);
       if (JSON.parse(localstorage)) {
-        	dispatch({ type: "setUser", payload: data });
+        	dispatch({ type: "user/SET", payload: data });
         	if(data.user.token)
         	{
 			axios.get(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: mystate.user.token}})

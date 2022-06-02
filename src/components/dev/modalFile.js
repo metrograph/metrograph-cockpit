@@ -18,6 +18,8 @@ export default function ModalFile(props){
 			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
 			dispatch({type:"activeElementContextMenu", payload:{path:""}})
+            dispatch({type:"code_editor/CLOSE_FILE",payload:{path:props.file.path}})
+            dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.file}})
             dispatch({type:"alert/SET_ALERT",payload:{title:response.data.message, is_hide:false, type:"success"}})
                 setTimeout(() => {  dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
                 }, 3000);

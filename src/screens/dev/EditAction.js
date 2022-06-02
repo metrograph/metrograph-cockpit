@@ -113,7 +113,7 @@ export default function EditAction() {
       const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
       const data = JSON.parse(localstorage);
       if (JSON.parse(localstorage)) {
-          dispatch({ type: "setUser", payload: data });
+          dispatch({ type: "user/SET", payload: data });
           if(data.user.token)
           {
             axios.get(config.METROGRAPH_API+"/action/"+action_uuid, {headers: { Authorization: data.user.token },})
@@ -223,7 +223,7 @@ export default function EditAction() {
                     {mystate.activeElement.opendDropDown==="runtime" && (
                       <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                         {optionListb.map((element) => (
-                          <div
+                          <div key={element.key}
                             onClick={() => {
                               setSelectedOtionb(element.value);
                               setIs_listbOpenb(!is_listbOpen);
@@ -268,7 +268,7 @@ export default function EditAction() {
                     {mystate.activeElement.opendDropDown==="version" && (
                       <div className="flex flex-col space-y-2 bg-[#1A1A1A]   rounded-lg w-full  cursor-pointer absolute top-12 py-4 right-0">
                         {optionlistversion.map((element) => (
-                          <div
+                          <div key={element.key}
                             onClick={() => {
                               setSelectedoptionlistversion(element.value);
                               setIs_listversionOpen(!is_listversionOpen);

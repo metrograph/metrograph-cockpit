@@ -96,6 +96,10 @@ export default function EditAction() {
       dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
     })
         .catch((error) => {
+          if(error.response.status===401){
+            localStorage.removeItem("METROGRAPH_STORAGE")
+            return navigate("/login")
+        }
           dispatch({type:"alert/SET_ALERT",payload:{title:error.data.message, is_hide:false, type:"error"}})
 					setTimeout(() => {
 						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})

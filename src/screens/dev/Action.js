@@ -109,9 +109,13 @@ export default function Action(){
                     .then(response=>{
                         loading=false
                         dispatch({type:"action/SET",payload:response.data.payload.actions})
-                        
-                }).catch(error=>loading=false)
-                }
+                    }).catch((error) => {
+                    if(error.response.status===401){
+                        localStorage.removeItem("METROGRAPH_STORAGE")
+                        return navigate("/login")
+                    }
+                  });
+          }
             }
             else return navigate("/login")
           }

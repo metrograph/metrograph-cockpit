@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -25,57 +25,50 @@ export default function Settings() {
   const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
   const navigate = useNavigate();
-  const [is_listSetOpen, setIs_listSetOpen] = useState(false);
+  let loading=true
+  const [password, setPassword]=useState()
+  const [newPassword, setNewPassword]=useState()
+  const [newPasswordCheck, setNewPasswordCheck]=useState()
 
-  
-  //Top bar end
-
-  const [is_listbOpen, setIs_listbOpenb] = useState(false);
-
-  const [optionListb, setOptionListb] = useState([{ key: 2, value: "python" }]);
-  const [selectedOptionb, setSelectedOtionb] = useState("python");
-
-  //Runtime end
-
-  const [is_listversionOpen, setIs_listversionOpen] = useState(false);
-
-  const [optionlistversion, setOptionlistversion] = useState([
-    { key: 2, value: "3.9.10" }
-  ]);
-  const [selectedoptionlistversion, setSelectedoptionlistversion] =
-    useState("3.9.10");
-
-  //Version end
-  
-  const [name, setName]=useState()
-  const [description, setDescription]=useState()
-
-  function handleSubmit(){
-    //let payload={name:name, description:description, runtime:selectedOptionb, runtime_version:selectedoptionlistversion}
-    let payload={name:name, description:description, runtime:"python", runtime_version:"3.9.10"}
-    
-    axios.post(config.METROGRAPH_API+"/action", payload, { headers: {Authorization: config.TOKEN} })
-        .then((res) => {
-          let action=res.data.payload.action
-          dispatch({type:"alert/SET_ALERT",payload:{title:"Action created successfully", is_hide:false, type:"success"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-						}, 3000);
-          dispatch({type:"action/ADD",payload:action})
-          dispatch({type:"action_code/SET",payload:action})
-          navigate("/edit-action/"+action.uuid)
-			  })
+function handleSubmit(){
+    axios.patch(config.METROGRAPH_API+"/auth/account",{username: mystate.user.username, password: password, new_password: newPassword} ,{ headers: {Authorization: mystate.user.token} })
+    .then((res) => {
+      dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
+    })
         .catch((error) => {
           dispatch({type:"alert/SET_ALERT",payload:{title:error.data.message, is_hide:false, type:"error"}})
 					setTimeout(() => {
 						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
 						}, 3000);
         });
+}
 
-    console.log(payload)
-  }
-
-  
+  useEffect(()=>{
+    window.scrollTo(0, 0);
+    dispatch({type:"active_element/SET", payload:{}})
+    dispatch({type:"code_editor/SET", payload:{selectedFile:{path :"", name :"",content :null},openedFiles:[]}})
+    dispatch({type:"setFileExplorer", payload:{}})
+    console.log("Home")
+    function loadLocalStorage() {
+        const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+        const data = JSON.parse(localstorage);
+        if (JSON.parse(localstorage)) {
+            dispatch({ type: "user/SET", payload: data });
+           if(data.user.token)
+            {
+                axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
+                .then(response=>{
+                    loading=false
+                    dispatch({type:"action/SET",payload:response.data.payload.actions})
+                    
+            }).catch(error=>loading=false)
+            }
+        }
+        else return navigate("/login")
+      }
+    loadLocalStorage();
+   
+},[loading])
 
   return (
     <div className="bg-black min-h-screen noselect">
@@ -115,6 +108,8 @@ export default function Settings() {
                     type="password"
                     className="w-[460px] h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                     placeholder="****"
+                    onChange={(e)=>setPassword(e.target.value)}
+                    value={password}
                  />
                   <div className="bg-[#323232] w-[12px] h-[12px] rounded-full absolute  right-[16px]" />
                 </div>
@@ -131,6 +126,8 @@ export default function Settings() {
                         type="password"
                         className="w-[460px] h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                         placeholder="****"
+                        onChange={(e)=>setNewPassword(e.target.value)}
+                        value={newPassword}
                     />
                     <div className="bg-[#323232] w-[12px] h-[12px] rounded-full absolute  right-[16px]" />
                     </div>
@@ -144,6 +141,8 @@ export default function Settings() {
                     type="password"
                     className="w-[460px] h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                     placeholder="****"
+                    onChange={(e)=>setNewPasswordCheck(e.target.value)}
+                    value={newPasswordCheck}
                  />
                   <div className="bg-[#323232] w-[12px] h-[12px] rounded-full absolute  right-[16px]" />
                 </div>
@@ -153,9 +152,13 @@ export default function Settings() {
               <div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
                 CANCEL
               </div>
-              <div onClick={()=>handleSubmit()} className=" opacity-50  text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+              {((!password || !newPassword || !newPasswordCheck) || (newPassword!==newPasswordCheck)) && <div className=" opacity-50  text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
                 SAVE
-              </div>
+              </div>}
+              
+              {(password && newPassword && (newPassword===newPasswordCheck)) && <div onClick={()=>handleSubmit()} className=" text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center hover:bg-purple-600 cursor-pointer">
+                SAVE
+              </div>}
             </div>
           </div>
         </div>

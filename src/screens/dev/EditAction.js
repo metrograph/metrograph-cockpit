@@ -89,6 +89,20 @@ export default function EditAction() {
     leaveDelay: 100,
   });
 
+  function handleSave(){
+    axios.patch(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid,{name: title, description: description, runtime: selectedOptionb, runtime_version: selectedoptionlistversion} ,{ headers: {Authorization: mystate.user.token} })
+    .then((res) => {
+      dispatch({type:"action_code/SET",payload:res.data.payload.action})
+      dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
+    })
+        .catch((error) => {
+          dispatch({type:"alert/SET_ALERT",payload:{title:error.data.message, is_hide:false, type:"error"}})
+					setTimeout(() => {
+						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+						}, 3000);
+        });
+}
+
   function handleCloseDropDown(){
     dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
     dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
@@ -161,9 +175,12 @@ export default function EditAction() {
                 <div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
                   CANCEL
                 </div>
-                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                {(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
                   SAVE
-                </div>
+                </div>}
+                {(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                  SAVE
+                </div>}
               </div>
             </div>
             <div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />

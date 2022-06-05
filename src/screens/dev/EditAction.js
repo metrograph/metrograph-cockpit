@@ -10,6 +10,7 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
+import ModelSchedule from "../../components/dev/ModalSchedule";
 import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
@@ -123,6 +124,10 @@ export default function EditAction() {
     else dispatch({type:"active_element/DROP_DOWN", payload:{key:"version"}})
     dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
   }
+  function handleAddSchedule(){
+    console.log("dispach schedule")
+    dispatch({type:"modal_schedule/SET",payload:{is_hide: false, action:{}}})
+  }  
 
 
   useEffect(() => {
@@ -352,7 +357,7 @@ export default function EditAction() {
           </div>
           <div className="flex mt-[10px]">
             <div className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-[88px]">
-              <div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+              <div onClick={(e)=>{e.stopPropagation();handleAddSchedule()}} className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
                 ADD SCHEDULE
               </div>
             </div>
@@ -395,6 +400,10 @@ export default function EditAction() {
             </div>
           </div>
         </div>
+		{/* SCHEDULE Modal */}
+		{!mystate.model_schedule.is_hide && <div className="absolute inset-0 z-50 w-full">
+			<ModelSchedule file={mystate.modal_file.file}/>
+		</div>}
 
         <div className=" mt-12 font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
           ACTION CODE

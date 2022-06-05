@@ -13,6 +13,7 @@ import actionReducer from "./reducers/actionReducer"
 import modalActionReducer from "./reducers/modalActionReducer";
 import modalFileReducer from "./reducers/modalFileReducer";
 import fileStatusReducer from "./reducers/fileStatusReducer";
+import modalsScheduleReducer from "./reducers/modalsScheduleReducer";
 const reducers = combineReducers({
   jobs: jobReducer,
   alert: alertReducer,
@@ -26,7 +27,8 @@ const reducers = combineReducers({
   actions: actionReducer,
   modal_action: modalActionReducer,
   modal_file: modalFileReducer,
-  file_status:fileStatusReducer
+  file_status: fileStatusReducer,
+  model_schedule: modalsScheduleReducer 
 });
 
 const store = createStore(

@@ -48,7 +48,6 @@ function handleSubmit(){
     dispatch({type:"active_element/SET", payload:{}})
     dispatch({type:"code_editor/SET", payload:{selectedFile:{path :"", name :"",content :null},openedFiles:[]}})
     dispatch({type:"setFileExplorer", payload:{}})
-    console.log("Home")
     function loadLocalStorage() {
         const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
         const data = JSON.parse(localstorage);

@@ -17,6 +17,7 @@ import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import useMouse from "@react-hook/mouse-position";
 import TopBar from "../../components/dev/TopBar"
 import i_icon from "../../assets/icons/i.svg";
+import Modal from 'react-bootstrap/Modal'
 import {config} from "../../config"
 
 
@@ -43,18 +44,23 @@ function Alert(props){
   }
 }
 
+function MyVerticallyCenteredModal(props) {
+  return (
+    <Modal
+      {...props}
+      size="sm"
+      centered
+    >
+      <Modal.Body as={ModelSchedule}/>
+    </Modal>
+  );
+}
+
 export default function EditAction() {
   const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
   const navigate=useNavigate()
   const [is_listSetOpen, setIs_listSetOpen] = useState(false);
-  const [optionListSet, setOptionListSet] = useState([
-    { key: 1, value: "Deploy Docker Workflow" },
-    { key: 1, value: "Deploy Docker Workflow A" },
-    { key: 1, value: "Deploy Docker Workflow B" },
-    { key: 1, value: "Deploy Docker Workflow C" },
-  ]);
-  const [selectedOptionSet, setSelectedOtionSet] = useState(optionListSet[0]);
   const action_uuid = useParams().uuid;
   let loading=true
   
@@ -90,22 +96,26 @@ export default function EditAction() {
     leaveDelay: 100,
   });
 
+  // Schedule Modal
+
+  const [modalVisible, setModalVisible] = useState(false);
+
   function handleSave(){
     axios.patch(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid,{name: title, description: description, runtime: selectedOptionb, runtime_version: selectedoptionlistversion} ,{ headers: {Authorization: mystate.user.token} })
     .then((res) => {
       dispatch({type:"action_code/SET",payload:res.data.payload.action})
       dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
     })
-        .catch((error) => {
-          if(error.response.status===401){
-            localStorage.removeItem("METROGRAPH_STORAGE")
-            return navigate("/login")
-        }
-          dispatch({type:"alert/SET_ALERT",payload:{title:error.data.message, is_hide:false, type:"error"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-						}, 3000);
-        });
+    .catch((error) => {
+      if(error.response.status===401){
+        localStorage.removeItem("METROGRAPH_STORAGE")
+        return navigate("/login")
+    }
+      dispatch({type:"alert/SET_ALERT",payload:{title:error.data.message, is_hide:false, type:"error"}})
+      setTimeout(() => {
+        dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+        }, 3000);
+    });
 }
 
   function handleCloseDropDown(){
@@ -124,11 +134,10 @@ export default function EditAction() {
     else dispatch({type:"active_element/DROP_DOWN", payload:{key:"version"}})
     dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
   }
-  function handleAddSchedule(){
-    console.log("dispach schedule")
-    dispatch({type:"modal_schedule/SET",payload:{is_hide: false, action:{}}})
-  }  
 
+  function handleAddSchedule(){
+    setModalVisible(true)
+  }  
 
   useEffect(() => {
 		window.scrollTo(0, 0);
@@ -163,7 +172,16 @@ export default function EditAction() {
  
 
   return (
+
+    
+
     <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
+      
+      <MyVerticallyCenteredModal
+        show={modalVisible}
+        onHide={() => setModalVisible(false)}
+      />
+      
       <div className="max-w-[1662px] w-full relative">
         {/* Top bar start */}
         <TopBar/>
@@ -356,8 +374,8 @@ export default function EditAction() {
             SCHEDULE TASK
           </div>
           <div className="flex mt-[10px]">
-            <div className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-[88px]">
-              <div onClick={(e)=>{e.stopPropagation();handleAddSchedule()}} className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+            <div onClick={(e)=>{handleAddSchedule()}} className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-[88px]">
+              <div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
                 ADD SCHEDULE
               </div>
             </div>

@@ -60,6 +60,10 @@ export default function Login(){
         });
     }
     
+    function handleEnterKey(event) {
+        if(event.key === 'Enter') login()
+    }
+
     useEffect(() => {
         function loadLocalStorage() {
           const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
@@ -94,6 +98,7 @@ export default function Login(){
                         className="h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                         placeholder="Username"
                         onChange={(e)=>setUsername(e.target.value)}
+                        onKeyPress={(e) => handleEnterKey(e)}
                         value={username}
                         />
 
@@ -102,11 +107,12 @@ export default function Login(){
                         className="mt-[14px] h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
                         placeholder="****"
                         onChange={(e)=>setPassword(e.target.value)}
+                        onKeyPress={(e) => handleEnterKey(e)}
                         value={password}
                         />
                     </div>
                     <div className="justify-end flex mt-[27px]  mx-[87px]">
-                        {username && password && <div onClick={()=>login()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                        {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
                         LOGIN
                         </div>}
                         {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">

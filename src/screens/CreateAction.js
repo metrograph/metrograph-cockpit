@@ -1,13 +1,19 @@
+// React imports
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
-import TopBar from "../../components/dev/TopBar";
-import {config} from "../../config"
 
+// Icons imports
+import { ReactComponent as ArrowDown } from "../assets/icons/arrow-down.svg";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { ReactComponent as CloseIcon } from "../assets/icons/close.svg";
+
+// External components
+import axios from "axios";
+
+// Internal components
+import TopBar from "../components/TopBar";
+import {config} from "../config"
 
 function Alert(props){
   const dispatch = useDispatch();

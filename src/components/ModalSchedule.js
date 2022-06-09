@@ -1,10 +1,12 @@
-import { useDispatch, useSelector } from "react-redux"
-import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import closeIcon from "../../assets/icons/close.svg"
-import axios from "axios"
-import { config } from "../../config"
+// React imports
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux"
+
+// Icons import
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { ReactComponent as ArrowDown } from "../assets/icons/arrow-down.svg";
+import closeIcon from "../assets/icons/close.svg"
+
 
 export default function ModelSchedule(props){
     const mystate = useSelector((state)=>state)

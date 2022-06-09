@@ -1,11 +1,18 @@
-import React,{useEffect, useState} from "react"
-import axios from "axios"
-import { useSelector,useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom";
-import {config} from "../../config"
-import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
-import ModalAction from "../../components/dev/ModalAction";
-import TopBar from "../../components/dev/TopBar"
+// React imports
+import React, {useEffect} from "react"
+import {useSelector, useDispatch} from "react-redux"
+import {useNavigate} from "react-router-dom";
+
+// Icons imports
+import {ReactComponent as CloseIcon} from "../assets/icons/close.svg";
+
+// External components
+import axios from "axios";
+
+// Internal components
+import ModalAction from "../components/ModalAction";
+import TopBar from "../components/TopBar"
+import {config} from "../config"
 
 function Alert(props){
     const dispatch = useDispatch();

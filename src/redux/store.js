@@ -1,6 +1,5 @@
 import { createStore } from "redux";
 import { combineReducers } from "redux";
-import jobReducer from "./reducers/jobReducer";
 import alertReducer from "./reducers/alertReducer";
 import userReducer from "./reducers/userReducer";
 import contextMenuReducer from "./reducers/contextMenuReducer";
@@ -15,7 +14,6 @@ import modalFileReducer from "./reducers/modalFileReducer";
 import fileStatusReducer from "./reducers/fileStatusReducer";
 import modalsScheduleReducer from "./reducers/modalsScheduleReducer";
 const reducers = combineReducers({
-  jobs: jobReducer,
   alert: alertReducer,
   user: userReducer,
   contextMenu: contextMenuReducer,

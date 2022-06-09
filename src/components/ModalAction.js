@@ -1,6 +1,11 @@
+// React imports
 import { useDispatch, useSelector } from "react-redux"
+
+// External components
 import axios from "axios"
-import { config } from "../../config"
+
+// Internal components
+import { config } from "../config"
 
 export default function ModalAction(props){
     const mystate = useSelector((state)=>state)

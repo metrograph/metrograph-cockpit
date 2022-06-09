@@ -1,9 +1,14 @@
-import { useDispatch, useSelector } from "react-redux"
+// React imports
 import axios from "axios"
-import { config } from "../../config"
+import {useDispatch, useSelector} from "react-redux"
+
+// Internal components
 import File from "./File";
 import ActionCodeBuilder from "./ActionCodeBuilder";
-import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
+import {config} from "../config"
+
+// External components
+import {getIconForFile, getIconForFolder} from 'vscode-icons-js';
 
 export default function ModalFile(props){
     const dispatch = useDispatch()
@@ -60,8 +65,8 @@ export default function ModalFile(props){
                 </div>
                 <div className="flex flex-col mt-12 grow">
                     <div className="flex items-center space-x-2">
-                        {props.file instanceof File && <img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[20px] h-[20px]" alt="" />}
-                        {!(props.file instanceof File) && <img src={require('../../assets/vsicons/'+getIconForFolder(props.file.name))} className="w-[20px] h-[20px]" alt="" />}
+                        {props.file instanceof File && <img src={require("../assets/vsicons/"+getIconForFile(props.file.name))} className="w-[20px] h-[20px]" alt="" />}
+                        {!(props.file instanceof File) && <img src={require("../assets/vsicons/"+getIconForFolder(props.file.name))} className="w-[20px] h-[20px]" alt="" />}
                         <div className="text-white font-regular text-[22px] font-IBM-Plex-Sans">{props.file.name}</div>
                     </div>
                     <div className="text-[#7A7A7A] font-regular text-[16px] font-IBM-Plex-Sans">{props.file.path}</div>

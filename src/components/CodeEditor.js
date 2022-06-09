@@ -1,8 +1,10 @@
+// React imports
 import React, { useEffect, useState } from "react";
-import axios from "axios"
 import { useDispatch, useSelector } from "react-redux";
-import {useParams, useNavigate } from "react-router-dom";
-import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
+import {useNavigate } from "react-router-dom";
+import useMouse from "@react-hook/mouse-position";
+
+// Ace editor imports
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
@@ -11,16 +13,22 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
-import closeIcon from "../../assets/icons/close.svg"
-import useMouse from "@react-hook/mouse-position";
+
+// Icons imports
+import closeIcon from "../assets/icons/close.svg"
+import i_icon from "../assets/icons/i.svg";
+import { ReactComponent as ArrowDown } from "../assets/icons/arrow-down.svg";
+
+// Internal components
+import ActionCodeBuilder from "./ActionCodeBuilder";
 import File from "./File";
 import Folder from "./Folder";
-import ActionCodeBuilder from "./ActionCodeBuilder";
-import i_icon from "../../assets/icons/i.svg";
-import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
-import {config} from "../../config"
 import ModalFile from "./modalFile";
+import {config} from "../config";
 
+// External components
+import axios from "axios"
+import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 
 function CFileTree(props) {
 	if (props.file_explorer_state.children) {
@@ -107,7 +115,7 @@ function CFile(props) {
 				onKeyDown={(e) => { handlKeyDown(e)}}
 				className="cursor-pointer hover:bg-[#292828]">
 				<div className="flex items-center space-x-[4px] h-[28px] ">
-					<img src={require('../../assets/vsicons/'+getIconForFile(inputValue))} className="w-[15px] h-[15px]" alt="" />
+					<img src={require("../assets/vsicons/"+getIconForFile(inputValue))} className="w-[15px] h-[15px]" alt="" />
 					<input onClick={(e) => { e.stopPropagation()}} className="text-white font-IBM-Plex-Sans w-full text-[12px] h-full font-medium border-2 px-2 rounded-md bg-[#292828] border-[#7900FF] outline-none"
 						autoFocus={true}
 						value={inputValue}
@@ -123,7 +131,7 @@ function CFile(props) {
 						onClick={(e) => {e.stopPropagation(); handleClick(e)}}
 						className={props.file.path===mystate.activeElement.codeAction?"cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"cursor-pointer hover:bg-[#292828] px-2 rounded-md"}>
 						<div className="flex items-center space-x-[4px] h-[28px] ">
-							<img src={require('../../assets/vsicons/'+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
+							<img src={require("../assets/vsicons/"+getIconForFile(props.file.name))} className="w-[15px] h-[15px]" alt="" />
 							<div className="text-white font-IBM-Plex-Sans text-[12px] font-medium">
 								{inputValue}
 							</div>
@@ -261,7 +269,7 @@ function CFolder(props) {
 					className="cursor-pointer hover:bg-[#292828]">
 					<div className="flex items-center space-x-[4px] h-[28px] ">
 						<img
-							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../../assets/vsicons/"+getIconForOpenFolder(inputValue)):require("../../assets/vsicons/"+getIconForFolder(inputValue))}
+							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../assets/vsicons/"+getIconForOpenFolder(inputValue)):require("../assets/vsicons/"+getIconForFolder(inputValue))}
 							className="w-[15px] h-[15px] z-10"
 							alt=""
 						/>
@@ -293,7 +301,7 @@ function CFolder(props) {
 						className={props.folder.path===mystate.activeElement.codeAction?"flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#171717] bg-[#0f0e0e] px-2 rounded-md":"px-2 rounded-md flex items-center space-x-[4px] h-[28px] cursor-pointer hover:bg-[#292828]"}
 						>
 						<img
-							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../../assets/vsicons/"+getIconForOpenFolder(props.folder.name)):require("../../assets/vsicons/"+getIconForFolder(props.folder.name))}
+							src={mystate.activeElement.opendFolders.includes(props.folder.path)?require("../assets/vsicons/"+getIconForOpenFolder(props.folder.name)):require("../assets/vsicons/"+getIconForFolder(props.folder.name))}
 							className="w-[15px] h-[15px] z-10"
 							alt=""
 						/>
@@ -376,7 +384,7 @@ function CodeEditorTabs(props){
 			<div onClick={()=>handleClickTab()} className="px-2 grid place-content-center bg-[#171717] min-w-[100px] h-[53px] cursor-pointer relative">
 				<div className="flex items-center min-w-[100px] justify-between">
 					<div className="flex items-center space-x-[1px]">
-						<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+						<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
 						<div className="text-white align-middle font-IBM-Plex-Sans text-[14px] font-medium">
 						{props.selectedFile.name}
 						</div>
@@ -392,7 +400,7 @@ function CodeEditorTabs(props){
 			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] min-w-[120px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
 				
 				<div className="flex items-center space-x-1">
-					<img src={require('../../assets/vsicons/'+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+					<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
 					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
 					{props.selectedFile.name}
 					</div>

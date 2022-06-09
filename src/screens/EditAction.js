@@ -1,8 +1,11 @@
+// React imports
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {useParams, useNavigate } from "react-router-dom";
-import CodeEditor from "../../components/dev/CodeEditor";
+import useMouse from "@react-hook/mouse-position";
+
+// Ace editor imports
+import CodeEditor from "../components/CodeEditor";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -10,15 +13,22 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/snippets/python";
-import ModelSchedule from "../../components/dev/ModalSchedule";
-import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
+
+// Icons imports
+import { ReactComponent as ArrowDown } from "../assets/icons/arrow-down.svg";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
-import useMouse from "@react-hook/mouse-position";
-import TopBar from "../../components/dev/TopBar"
-import i_icon from "../../assets/icons/i.svg";
+import { ReactComponent as CloseIcon } from "../assets/icons/close.svg";
+import i_icon from "../assets/icons/i.svg";
+
+// External components
 import Modal from 'react-bootstrap/Modal'
-import {config} from "../../config"
+import axios from "axios";
+
+// Internal components
+import ModelSchedule from "../components/ModalSchedule";
+import TopBar from "../components/TopBar"
+import {config} from "../config"
+
 
 
 function Alert(props){

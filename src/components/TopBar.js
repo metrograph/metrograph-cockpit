@@ -1,15 +1,18 @@
-import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ReactComponent as ActionIcon } from "../../assets/topbar/action.svg";
-import { ReactComponent as DashboardIcon } from "../../assets/topbar/dashboard.svg";
-import { ReactComponent as ApiIcon } from "../../assets/topbar/api.svg";
-import { ReactComponent as ApplicationIcon } from "../../assets/topbar/apps.svg";
-import { ReactComponent as WorkflowsIcon } from "../../assets/topbar/workflows.svg";
-
-import logo from "../../assets/logo.svg";
-import arrowdown from "../../assets/icons/arrow-down.svg";
-import avatar from "../../assets/avatar/avatar-2.png";
+// React imports
+import {useState} from "react";
+import {useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
+// Icons imports
+import {ReactComponent as ActionIcon} from "../assets/topbar/action.svg";
+import {ReactComponent as DashboardIcon} from "../assets/topbar/dashboard.svg";
+import {ReactComponent as ApiIcon} from "../assets/topbar/api.svg";
+import {ReactComponent as ApplicationIcon} from "../assets/topbar/apps.svg";
+import {ReactComponent as WorkflowsIcon} from "../assets/topbar/workflows.svg";
+import logo from "../assets/logo.svg";
+import arrowdown from "../assets/icons/arrow-down.svg";
+import avatar from "../assets/avatar/avatar-2.png";
+
 
 
 function TopBarFull(){

@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {useNavigate } from "react-router-dom";
 import useMouse from "@react-hook/mouse-position";
@@ -285,7 +285,7 @@ function CFolder(props) {
 					</div>
 				</div>
 			)}
-			{props.folder.path!=mystate.activeElement.renameView && (
+			{props.folder.path!==mystate.activeElement.renameView && (
 				<div>
 					<div
 						onContextMenu={(e) => {
@@ -362,6 +362,7 @@ function CFolder(props) {
 							</div>
 							);
 						}
+					else return (<div></div>)
 			})}
 		</div>
 	)
@@ -384,13 +385,13 @@ function CodeEditorTabs(props){
 			<div onClick={()=>handleClickTab()} className="px-2 grid place-content-center bg-[#171717] min-w-[100px] h-[53px] cursor-pointer relative">
 				<div className="flex items-center min-w-[100px] justify-between">
 					<div className="flex items-center space-x-[1px]">
-						<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+						<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="file-icon" />
 						<div className="text-white align-middle font-IBM-Plex-Sans text-[14px] font-medium">
 						{props.selectedFile.name}
 						</div>
 					</div>
 					<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-						<img src={closeIcon} className="h-2 w-2"/>
+						<img src={closeIcon} className="h-2 w-2" alt="close-icon"/>
 					</div>
 				</div>
 				<div className="border-b-4 border-[#7900FF] w-full left-0 absolute bottom-0"/>
@@ -400,20 +401,19 @@ function CodeEditorTabs(props){
 			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] min-w-[120px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
 				
 				<div className="flex items-center space-x-1">
-					<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="" />
+					<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="file-icon" />
 					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
 					{props.selectedFile.name}
 					</div>
 				</div>
 				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-				<img src={closeIcon} className="h-2 w-2"/>
+				<img src={closeIcon} className="h-2 w-2" alt="close-icon"/>
 				</div>
 			</div>
 			)
 }
 		
 function CodeEditorTabList(props){
-	const dispatch = useDispatch(); 
 	if (props.openedFiles) {
 		return props.openedFiles.map(element=>{
 			return (
@@ -430,7 +430,6 @@ function CodeEditorTabList(props){
 export default function CodeEditor() {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
-	const state = useSelector((state) => state.codeEditor);
 	const navigate = useNavigate()
 	let dt = { username: "ehamza", password: "123" };
 	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
@@ -439,7 +438,7 @@ export default function CodeEditor() {
 	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
 	const ref = React.useRef(null);
 	const [timer,setTimer]=useState(null)
-	let loading = true
+	const loading = useRef(true)
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
@@ -563,15 +562,15 @@ export default function CodeEditor() {
         	{
 			axios.get(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: mystate.user.token}})
 			.then(response=>{
-				loading=false
+				loading.current=false
 				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(response.data.payload.ActionCode)});
-			}).catch(error=>loading=false)
+			}).catch(error=>loading.current=false)
 			}
       }
       else return navigate("/login")
     }
   	loadLocalStorage();
-	},[loading]);
+	},[loading, dispatch, navigate]);
 	
 	return (
 		<div className="flex flex-col bg-black relative">
@@ -639,7 +638,7 @@ export default function CodeEditor() {
 						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles}/>
 					</div>
 					<div onClick={e=>e.stopPropagation()} className="relative">
-							{mystate.codeEditor.selectedFile.content!=null &&
+							{mystate.codeEditor.selectedFile.content!==null &&
 							<div>
 								<AceEditor
 								key={mystate.codeEditor.selectedFile.path}

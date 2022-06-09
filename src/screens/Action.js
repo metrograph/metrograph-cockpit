@@ -1,5 +1,5 @@
 // React imports
-import React, {useEffect} from "react"
+import React, {useEffect, useRef} from "react"
 import {useSelector, useDispatch} from "react-redux"
 import {useNavigate} from "react-router-dom";
 
@@ -93,7 +93,7 @@ export default function Action(){
     const mystate =useSelector((state)=>state)
     const dispatch = useDispatch()
     const navigate = useNavigate();
-    let loading=true
+    const loading=useRef(true)
     function handleCloseDropDown(){
         dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
         dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
@@ -113,7 +113,7 @@ export default function Action(){
                 {
                     axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
                     .then(response=>{
-                        loading=false
+                        loading.current=false
                         dispatch({type:"action/SET",payload:response.data.payload.actions})
                     }).catch((error) => {
                     if(error.response.status===401){
@@ -127,7 +127,7 @@ export default function Action(){
           }
         loadLocalStorage();
        
-    },[loading])
+    },[loading, dispatch, navigate])
 
     return (
         <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">

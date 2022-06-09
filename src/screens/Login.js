@@ -70,14 +70,14 @@ export default function Login(){
           if (JSON.parse(localstorage)) return navigate("/");
         }
         loadLocalStorage();
-      },[]);
+      },[navigate]);
 
     return (
         <div className="flex ">
             <div className="bg-black h-screen w-[507px] relative">
                 <div className="flex flex-col justify-center items-center mt-20 mx-[87px] relative">
                     <div className="flex justify-center items-center space-x-[32px] w-full">
-                        <img src={logo} className="w-[136px] h-[29px]"/>
+                        <img src={logo} className="w-[136px] h-[29px]" alt="Metrograph-logo"/>
                         <div className="border-b border-[#535353] border-[1px] w-full"/>
                     </div>
 

@@ -1,38 +1,21 @@
+// React imports
 import axios from "axios";
 import React, {useState, useEffect} from "react";
 import { useSelector ,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+// Internal components
+import Alert from "../components/Alert"
 import logo from "../assets/logo-light-gray.png"
-import { ReactComponent as CloseIcon } from "../assets/icons/close.svg";
 import { config } from "../config";
 
-function Alert(props){
-    const dispatch = useDispatch();
-    function handleCloseAlert(){
-      dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-    }
-    if(props.type==="success")
-      {
-        return (
-        <div className="h-[64px]  bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
-          <div className="text-black font-[12px]">{props.title}</div>
-          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
-        </div>)
-      }
-    else if(props.type==="error")
-    {
-      return (
-        <div className="h-[64px]  bg-red-400 w-full rounded-[10px] flex justify-between items-center px-[20px]">
-          <div className="text-black font-[12px]">{props.title}</div>
-          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
-        </div>)
-    }
-}
 
 export default function Login(){
     const navigate = useNavigate();
     const mystate = useSelector((state)=>state)
     const dispatch = useDispatch()
+    const [alertVisible, setAlertVisible]= useState(false)
+    const [alertData, setAlertData]=useState()
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
 
@@ -45,16 +28,16 @@ export default function Login(){
         })
         .catch((error) => {
             if (error.response && error.response.status === 401) {
-                console.log(error.response)
-                dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+                setAlertData({title:"Invalid credentials",type:"error"})
+                setAlertVisible(true)
                 setTimeout(() => {
-                    dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+                    setAlertVisible(false)
                     }, 3000);
               } else {
-                console.log(error.response)
-                dispatch({type:"alert/SET_ALERT",payload:{title:"Invalid credentials", is_hide:false, type:"error"}})
+                setAlertData({title:"Invalid credentials",type:"error"})
+                setAlertVisible(true)
                 setTimeout(() => {
-                    dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
+                    setAlertVisible(false)
                     }, 3000);
               }
         });
@@ -80,10 +63,11 @@ export default function Login(){
                         <img src={logo} className="w-[136px] h-[29px]" alt="Metrograph-logo"/>
                         <div className="border-b border-[#535353] border-[1px] w-full"/>
                     </div>
-
-                    {!mystate.alert.is_hide &&
-                    <div className="flex justify-center w-full absolute top-12">
-                        <Alert title={mystate.alert.title} type={mystate.alert.type}/>
+                    {alertVisible && <div className="flex justify-center w-full absolute top-12">
+                        <Alert
+                            alertData={alertData}
+                            onHide={() => setAlertVisible(false)}
+                        />
                     </div>}
                 </div>
                 

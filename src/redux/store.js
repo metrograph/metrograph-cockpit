@@ -7,7 +7,6 @@ import fileExplorerReducer from "./reducers/fileExplorerReducer";
 import activeElementReducer from "./reducers/activeElementReducer";
 import folderReducer from "./reducers/folderReducer";
 import codeEditorReducer from "./reducers/codeEditorReducer";
-import actionCodeReducer from "./reducers/actionCodeReducer"
 import actionReducer from "./reducers/actionReducer"
 import modalActionReducer from "./reducers/modalActionReducer";
 import modalFileReducer from "./reducers/modalFileReducer";
@@ -21,7 +20,6 @@ const reducers = combineReducers({
   activeElement: activeElementReducer,
   folder: folderReducer,
   codeEditor: codeEditorReducer,
-  actionCode: actionCodeReducer,
   actions: actionReducer,
   modal_action: modalActionReducer,
   modal_file: modalFileReducer,

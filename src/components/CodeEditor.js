@@ -34,8 +34,8 @@ function CFileTree(props) {
 	if (props.file_explorer_state.children) {
 		if (props.file_explorer_state.children) {
 			return props.file_explorer_state.children.map((element) => {
-				if (element instanceof Folder) return <CFolder key={element.path} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
-				else return <CFile key={element.path} file={element} is_input={false} refState={props.refState} />
+				if (element instanceof Folder) return <CFolder key={element.path} actionCode={props.actionCode} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
+				else return <CFile key={element.path} actionCode={props.actionCode} file={element} is_input={false} refState={props.refState} />
 			});
 		} else return <div></div>
 	} else return <div></div>;
@@ -59,9 +59,9 @@ function CFile(props) {
 			if(mystate.activeElement.contextMenu) dispatch({type:"active_element/CONTEXT_MENU", payload:{path:""}})
 			dispatch({type:"code_editor/OPEN_FILE",payload:{file:props.file}})
 
-			axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: mystate.user.token }})
+			axios.post(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file/content",{path:props.file.path},{headers: { Authorization: mystate.user.token }})
 				.then((res) => {
-					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:mystate.actionCode,data:res.data}})
+					dispatch({type:"code_editor/LOAD_FILE_CONTENT_API",payload:{file:props.file, actionCode:props.actionCode,data:res.data}})
 					// dispatch -alert/SET_ALERT- was added to force the UI to rerender.
 					dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
 				}).catch(error=>{
@@ -85,7 +85,7 @@ function CFile(props) {
 	
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			axios.patch(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
+			axios.patch(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file",{path:props.file.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
         	.then((res) => {
 				ActionCodeBuilder.rename(mystate.file_explorer, props.file.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -195,7 +195,7 @@ function CFolder(props) {
 				
 	function handlKeyDown(e) {
 		if (e.keyCode === 13) {
-			axios.patch(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder",{path:props.folder.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
+			axios.patch(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/folder",{path:props.folder.path, new_name:inputValue} ,{ headers: {Authorization: mystate.user.token} })
         	.then((res) => {
 				ActionCodeBuilder.rename(mystate.file_explorer, props.folder.path,inputValue);
 				dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -221,7 +221,7 @@ function CFolder(props) {
 				
 	function handleCreateFile() {
 		let node=new File(props.folder.path+"/new_file","new_file")
-		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
+		axios.post(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -241,7 +241,7 @@ function CFolder(props) {
 				
 	function handleCreateFolder() {
 		let node=new Folder(props.folder.path+"/new_folder","new_folder")
-		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
+		axios.post(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.add(mystate.file_explorer,node,props.folder.path);
 			if(!mystate.activeElement.opendFolders.includes(props.folder.path)) dispatch({type:"active_element/OPEN_FOLDER", payload:{path:props.folder.path}})
@@ -351,14 +351,14 @@ function CFolder(props) {
 					if (element instanceof Folder) {
 						return (
 							<div className="ml-6" key={element.path}>
-							<CFolder key={element.path} folder={element} children={element.children} refState={props.refState}/>
+							<CFolder key={element.path} actionCode={props.actionCode} folder={element} children={element.children} refState={props.refState}/>
 							</div>
 							);
 						}
 					else if (element instanceof File) {
 						return (
 							<div className="ml-6" key={element.path}>
-							<CFile key={element.path} file={element} is_input={false} refState={props.refState}/>
+							<CFile key={element.path} actionCode={props.actionCode} file={element} is_input={false} refState={props.refState}/>
 							</div>
 							);
 						}
@@ -377,7 +377,7 @@ function CodeEditorTabs(props){
 	}
 	function handleClickTab(){
 		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.selectedFile.path}})
-		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:mystate.actionCode}})
+		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:props.actionCode}})
 	}
 	
 	if(mystate.codeEditor.selectedFile.path===props.selectedFile.path)
@@ -427,7 +427,7 @@ function CodeEditorTabList(props){
 		
 }
 			
-export default function CodeEditor() {
+export default function CodeEditor(props) {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
 	const navigate = useNavigate()
@@ -451,7 +451,7 @@ export default function CodeEditor() {
 		dispatch({type:"file_status/SET",payload:{is_hide:true}})
 		let mytime = setTimeout(() => {
 		dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
-		axios.put(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
+		axios.put(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
 		.then((res) => {
 			dispatch({type:"file_status/SET",payload:{is_hide:false}})
 			}).catch(error=>{
@@ -478,7 +478,7 @@ export default function CodeEditor() {
 	
 	function handleCreateFile() {
 		let node=new File(mystate.file_explorer.path+"new_file","new_file")
-		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
+		axios.post(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			if (mystate.activeElement.codeAction==="-1") ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
 			else ActionCodeBuilder.add(mystate.file_explorer,node,mystate.activeElement.codeAction)
@@ -497,7 +497,7 @@ export default function CodeEditor() {
 
 	function handleCreateFolder() {
 		let node=new Folder(mystate.file_explorer.path+"new_folder","new_folder")
-		axios.post(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
+		axios.post(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/folder", {path:node.path}, { headers: {Authorization: mystate.user.token} })
         .then((res) => {
 			ActionCodeBuilder.addToRoot(mystate.file_explorer,node);
 			//dispatch({type:"active_element/RENAME", payload:{path:node.path}})
@@ -515,7 +515,7 @@ export default function CodeEditor() {
 	}
 
 	function handleRun(){
-		axios.post(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
+		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					console.log(res.data.message)
 					dispatch({type:"alert/SET_ALERT",payload:{title:"Action started successfully", is_hide:false, type:"success"}})
@@ -533,7 +533,7 @@ export default function CodeEditor() {
 	}
 
 	function handleBuild(){
-		axios.post(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
+		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
 				.then((res) => {
 					console.log(res.data.message)
 					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:"success"}})
@@ -560,8 +560,10 @@ export default function CodeEditor() {
         	dispatch({ type: "user/SET", payload: data });
         	if(data.user.token)
         	{
-			axios.get(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid, {headers: { Authorization: mystate.user.token}})
+			
+			axios.get(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid, {headers: { Authorization: data.user.token}})
 			.then(response=>{
+				
 				loading.current=false
 				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(response.data.payload.ActionCode)});
 			}).catch(error=>loading.current=false)
@@ -600,7 +602,7 @@ export default function CodeEditor() {
 							</div>
 						</div>
 						<div className="ml-[48px] mt-[15px] mr-2 grow overflow-hidden overflow-y-auto pb-2">
-						<CFileTree refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
+						<CFileTree actionCode={props.actionCode} refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
 						</div>
 					</div>
 					{mystate.activeElement.contextMenu==="-1" && (

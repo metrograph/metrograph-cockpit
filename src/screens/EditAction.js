@@ -28,6 +28,7 @@ import axios from "axios";
 import ModelSchedule from "../components/ModalSchedule";
 import TopBar from "../components/TopBar"
 import {config} from "../config"
+import { useRef } from "react";
 
 
 
@@ -70,9 +71,8 @@ export default function EditAction() {
   const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
   const navigate=useNavigate()
-  const [is_listSetOpen, setIs_listSetOpen] = useState(false);
-  const action_uuid = useParams().uuid;
-  let loading=true
+  const [actionCode, setActionCode]=useState({uuid:useParams().uuid})
+  const loading=useRef(true)
   
   //Top bar end
 
@@ -111,9 +111,9 @@ export default function EditAction() {
   const [modalVisible, setModalVisible] = useState(false);
 
   function handleSave(){
-    axios.patch(config.METROGRAPH_API+"/action/"+mystate.actionCode.uuid,{name: title, description: description, runtime: selectedOptionb, runtime_version: selectedoptionlistversion} ,{ headers: {Authorization: mystate.user.token} })
+    axios.patch(config.METROGRAPH_API+"/action/"+actionCode.uuid,{name: title, description: description, runtime: selectedOptionb, runtime_version: selectedoptionlistversion} ,{ headers: {Authorization: mystate.user.token} })
     .then((res) => {
-      dispatch({type:"action_code/SET",payload:res.data.payload.action})
+      setActionCode(res.data.payload.action)
       dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
     })
     .catch((error) => {
@@ -158,26 +158,26 @@ export default function EditAction() {
           dispatch({ type: "user/SET", payload: data });
           if(data.user.token)
           {
-            axios.get(config.METROGRAPH_API+"/action/"+action_uuid, {headers: { Authorization: data.user.token },})
+            axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: data.user.token },})
             .then(response=>{
-              dispatch({type:"action_code/SET",payload:response.data.payload.ActionCode})
-              loading = false
-          }).catch(error=>loading=false)
+              setActionCode(response.data.payload.ActionCode)
+              loading.current = false
+          }).catch(error=>loading.current=false)
           }
       }
       else return navigate("/login")
     }
   loadLocalStorage();
 
-  if(mystate.actionCode.name!=""){
-      setTitle(mystate.actionCode.name)
-      setDescription(mystate.actionCode.description)
-      setSelectedOtionb(mystate.actionCode.runtime)
-      setSelectedoptionlistversion(mystate.actionCode.runtime_version)
+  if(actionCode.name!=""){
+      setTitle(actionCode.name)
+      setDescription(actionCode.description)
+      setSelectedOtionb(actionCode.runtime)
+      setSelectedoptionlistversion(actionCode.runtime_version)
   }
 
 		
-	}, [mystate.actionCode.name,loading]);
+	}, [actionCode.name,loading]);
 
  
 
@@ -373,7 +373,7 @@ export default function EditAction() {
               </div>
             </div>
             <div className="text-[#AC62FF] font-IBM-Plex-Sans font-medium text-[14px] cursor-pointer">
-              {"http://metrpgraph.io/action/"+mystate.actionCode.uuid}
+              {"http://metrpgraph.io/action/"+actionCode.uuid}
             </div>
           </div>
         </div>
@@ -436,7 +436,7 @@ export default function EditAction() {
         <div className=" mt-12 font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
           ACTION CODE
         </div>
-       {mystate.actionCode.uuid!="" &&  <CodeEditor action_uuid={action_uuid}/>}
+       {actionCode.uuid!="" &&  <CodeEditor actionCode={actionCode}/>}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 // React imports
-import React, {useEffect, useRef} from "react"
+import React, {useEffect, useRef, useState} from "react"
 import {useSelector, useDispatch} from "react-redux"
 import {useNavigate} from "react-router-dom";
 
@@ -47,7 +47,8 @@ function ActionRow(props){
     }
 
     function handleConfirmDelete(){
-        dispatch({type:"modal_action/SET",payload:{is_hide: false, action:props.element}})
+        props.setActionCode()
+        props.onVisible()
     }
 
     return (
@@ -90,10 +91,14 @@ function ActionRow(props){
 }
 
 export default function Action(){
+
     const mystate =useSelector((state)=>state)
     const dispatch = useDispatch()
     const navigate = useNavigate();
+    const [modalVisible, setModalVisible]= useState(false)
+    const [ActionCode, setActionCode]=useState()
     const loading=useRef(true)
+    
     function handleCloseDropDown(){
         dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
         dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
@@ -113,7 +118,7 @@ export default function Action(){
                 {
                     axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
                     .then(response=>{
-                        loading.current=false
+                        loading.current=false   
                         dispatch({type:"action/SET",payload:response.data.payload.actions})
                     }).catch((error) => {
                     if(error.response.status===401){
@@ -159,7 +164,13 @@ export default function Action(){
                 {/* Actions list start */}
                 <div className="">
                     {mystate.actions.map((element)=> {
-                        return <ActionRow key={element.uuid} element={element}/>
+                        return <ActionRow
+                                    key={element.uuid}
+                                    element={element}
+                                    show={modalVisible}
+                                    onVisible={() => setModalVisible(true)}
+                                    setActionCode={() => setActionCode(element)}
+                                />
                         })}
                     
                     <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
@@ -167,9 +178,12 @@ export default function Action(){
                 </div>
                 {/* Actions list end */}
             </div>
-            {!mystate.modal_action.is_hide && <div className="absolute inset-0 w-full h-screen">
-             <ModalAction action={mystate.modal_action.action}/>
-            </div>}
+            <ModalAction
+                action={ActionCode}
+                show={modalVisible}
+                onHide={() => setModalVisible(false)}
+            />
+            
         </div>
     )
 }

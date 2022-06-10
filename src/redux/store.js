@@ -5,10 +5,8 @@ import userReducer from "./reducers/userReducer";
 import contextMenuReducer from "./reducers/contextMenuReducer";
 import fileExplorerReducer from "./reducers/fileExplorerReducer";
 import activeElementReducer from "./reducers/activeElementReducer";
-import folderReducer from "./reducers/folderReducer";
 import codeEditorReducer from "./reducers/codeEditorReducer";
 import actionReducer from "./reducers/actionReducer"
-import modalActionReducer from "./reducers/modalActionReducer";
 import modalFileReducer from "./reducers/modalFileReducer";
 import fileStatusReducer from "./reducers/fileStatusReducer";
 import modalsScheduleReducer from "./reducers/modalsScheduleReducer";
@@ -18,10 +16,8 @@ const reducers = combineReducers({
   contextMenu: contextMenuReducer,
   file_explorer: fileExplorerReducer,
   activeElement: activeElementReducer,
-  folder: folderReducer,
   codeEditor: codeEditorReducer,
   actions: actionReducer,
-  modal_action: modalActionReducer,
   modal_file: modalFileReducer,
   file_status: fileStatusReducer,
   model_schedule: modalsScheduleReducer 

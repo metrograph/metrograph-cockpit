@@ -1,5 +1,3 @@
-
-
 function setUser(payload) {
   return payload.user;
 }

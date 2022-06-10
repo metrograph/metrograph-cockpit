@@ -1,19 +1,3 @@
-import axios from "axios"
-let url="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/YmsxCEYE"
-let url_2="https://api.allorigins.win/get?charset=ISO-8859-1&url=https://pastebin.com/raw/j68BdHAm"
-let hostname="http://195.201.146.87:80/v1/actioncode/"
-let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoiZWhhbXphIn0sInRpbWUiOiIxNjUzNjY0MjY3LjA1ODAzMSJ9.0cXDjsGeWZ4PEIeiqagcF8B1VsmdMdat3-GZPKId5To"
-
-
-function getContentFromApi(state,uuid){
-	axios.get(hostname+uuid+"/file").then(function (response) {
-		console.log(response)
-	return state.selectedFile.content=response.data.contents
-	}).catch(e=>{
-	return state.selectedFile.content=null
-	}) 
-}
-
 function codeEditorselectedFile(state, payload){
 	if (state.openedFiles.some(e=>e.path===payload.file.path)){
 		state.openedFiles.forEach(element => {
@@ -26,16 +10,6 @@ function codeEditorselectedFile(state, payload){
 		return state
 		
 	}
-	else {
-		getContentFromApi(state,url_2)
-		state.selectedFile={path :payload.file.path, name: payload.file.name, content :payload.file.content}
-		return state
-	}
-}
-
-function selectedFile(state, file){
-	getContentFromApi(state,url_2)
-	state.selectedFile={path :file.path, name: file.name, content :file.content}
 	return state
 }
 
@@ -68,16 +42,7 @@ function loadFileContent(state, payload){
 	if (state.openedFiles.some(e=>e.path===payload.file.path)){
 		state.openedFiles.forEach(element => {
 			if(element.path===payload.file.path) {
-				if(element.content===null){
-					axios.post(hostname+payload.actionCode.uuid+"/file/content",{path:element.path},{headers: { Authorization: token }})
-					.then(function (response) {
-						element.content=response.data
-						state.selectedFile={path:element.path, name:element.name, content:response.data}
-					}).catch(error=>{
-							return state
-						}) 
-				}
-				else if(element.content || element.content===""){
+				if(element.content || element.content===""){
 					state.selectedFile={path:element.path, name:element.name, content:element.content}
 				}
 			}
@@ -102,6 +67,7 @@ function loadFileContentApi(state, payload){
 	}
 	return state
 }
+
 function openFile(state, payload){
 	if (state.openedFiles.some(e=>e.path===payload.file.path)) return state
 	else state.openedFiles.push({path:payload.file.path, name:payload.file.name,content:null})

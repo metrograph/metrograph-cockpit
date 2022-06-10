@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {useParams, useNavigate } from "react-router-dom";
-import useMouse from "@react-hook/mouse-position";
 
 // Ace editor imports
 import CodeEditor from "../components/CodeEditor";
@@ -55,14 +54,19 @@ function Alert(props){
   }
 }
 
-function MyVerticallyCenteredModal(props) {
+function MyModal(props) {
   return (
     <Modal
       {...props}
       size="sm"
       centered
     >
-      <Modal.Body as={ModelSchedule}/>
+      <Modal.Body
+        as={ModelSchedule}
+        action={props.action}
+        show={props.show}
+        onHide={() => props.onHide()}
+        />
     </Modal>
   );
 }
@@ -74,44 +78,20 @@ export default function EditAction() {
   const [actionCode, setActionCode]=useState({uuid:useParams().uuid})
   const loading=useRef(true)
   
-  //Top bar end
-
-  const [is_listbOpen, setIs_listbOpenb] = useState(false);
-
-  const [optionListb, setOptionListb] = useState([
-    { key: 2, value: "python" },
-  ]);
-  const [selectedOptionb, setSelectedOtionb] = useState("python");
-
-  //Runtime end
-
   const [is_listversionOpen, setIs_listversionOpen] = useState(false);
-
-  const [optionlistversion, setOptionlistversion] = useState([
-    { key: 2, value: "3.9.10" }
-  ]);
-  const [selectedoptionlistversion, setSelectedoptionlistversion] =
-    useState("3.9.10");
-
-  //Version end
-
+  
+  const runtimeList=[{ key: 2, value: "python" }]
+  const runtimeVersionList=[{ key: 2, value: "3.9.10" }]
+  
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
-
+  const [runtime, setRuntime] = useState("python");
+  const [runtimeVersion, setRuntimeVersion] = useState("3.9.10");
   const [urlCheckBox, setUrlCheckBox] = useState(true);
-
-  const ref = React.useRef(null);
-  const mouse = useMouse(ref, {
-    enterDelay: 100,
-    leaveDelay: 100,
-  });
-
-  // Schedule Modal
-
   const [modalVisible, setModalVisible] = useState(false);
 
   function handleSave(){
-    axios.patch(config.METROGRAPH_API+"/action/"+actionCode.uuid,{name: title, description: description, runtime: selectedOptionb, runtime_version: selectedoptionlistversion} ,{ headers: {Authorization: mystate.user.token} })
+    axios.patch(config.METROGRAPH_API+"/action/"+actionCode.uuid,{name: title, description: description, runtime: runtime, runtime_version: runtimeVersion} ,{ headers: {Authorization: mystate.user.token} })
     .then((res) => {
       setActionCode(res.data.payload.action)
       dispatch({type:"alert/SET_ALERT",payload:{title:res.data.message, is_hide:false, type:"success"}})
@@ -155,29 +135,31 @@ export default function EditAction() {
       const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
       const data = JSON.parse(localstorage);
       if (JSON.parse(localstorage)) {
-          dispatch({ type: "user/SET", payload: data });
-          if(data.user.token)
-          {
-            axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: data.user.token },})
-            .then(response=>{
-              setActionCode(response.data.payload.ActionCode)
-              loading.current = false
-          }).catch(error=>loading.current=false)
+          if(loading.current){
+            dispatch({ type: "user/SET", payload: data });
+            if(data.user.token)
+            {
+              axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: data.user.token },})
+              .then(response=>{
+                setActionCode(response.data.payload.ActionCode)
+                loading.current = false
+            }).catch(error=>loading.current=false)
+            }
           }
       }
       else return navigate("/login")
     }
   loadLocalStorage();
 
-  if(actionCode.name!=""){
+  if(actionCode.name!==""){
       setTitle(actionCode.name)
       setDescription(actionCode.description)
-      setSelectedOtionb(actionCode.runtime)
-      setSelectedoptionlistversion(actionCode.runtime_version)
+      setRuntime(actionCode.runtime)
+      setRuntimeVersion(actionCode.runtime_version)
   }
 
 		
-	}, [actionCode.name,loading]);
+	}, [actionCode, dispatch, navigate, loading]);
 
  
 
@@ -187,7 +169,7 @@ export default function EditAction() {
 
     <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
       
-      <MyVerticallyCenteredModal
+      <MyModal
         show={modalVisible}
         onHide={() => setModalVisible(false)}
       />
@@ -266,30 +248,27 @@ export default function EditAction() {
                   >
                     <div
                       className={
-                        selectedOptionb !== "Language"
+                        runtime !== "Language"
                           ? "font-Inter font-medium text-[15px] text-white"
                           : "font-Inter font-medium text-[15px] text-[#444444]"
                       }
                     >
-                      {selectedOptionb}
+                      {runtime}
                     </div>
                     <ArrowDown height="8px" width="13px" fill="white" />
                     {mystate.activeElement.opendDropDown==="runtime" && (
                       <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
-                        {optionListb.map((element) => (
-                          <div key={element.key}
-                            onClick={() => {
-                              setSelectedOtionb(element.value);
-                              setIs_listbOpenb(!is_listbOpen);
-                            }}
+                        {runtimeList.map((element) => (
+                          <div
+                            key={element.key}
                             className={
-                              element.value === selectedOptionb
+                              element.value === runtime
                                 ? "flex items-center justify-between text-white text-md font-Inter bg-[#7900FF]   py-2 px-4"
                                 : "flex items-center justify-between text-white text-md font-Inter hover:bg-[#7900FF] py-2 px-4"
                             }
                           >
                             <div>{element.value}</div>
-                            {element.value === selectedOptionb ? (
+                            {element.value === runtime ? (
                               <BsFillCheckCircleFill fill="#156FF8" />
                             ) : (
                               <div></div>
@@ -311,30 +290,30 @@ export default function EditAction() {
                   >
                     <div
                       className={
-                        selectedoptionlistversion !== "Version"
+                        runtimeVersion !== "Version"
                           ? "font-Inter font-medium text-[15px] text-white"
                           : "font-Inter font-medium text-[15px] text-[#444444]"
                       }
                     >
-                      {selectedoptionlistversion}
+                      {runtimeVersion}
                     </div>
                     <ArrowDown height="8px" width="13px" fill="white" />
                     {mystate.activeElement.opendDropDown==="version" && (
                       <div className="flex flex-col space-y-2 bg-[#1A1A1A]   rounded-lg w-full  cursor-pointer absolute top-12 py-4 right-0">
-                        {optionlistversion.map((element) => (
+                        {runtimeVersionList.map((element) => (
                           <div key={element.key}
                             onClick={() => {
-                              setSelectedoptionlistversion(element.value);
+                              setRuntimeVersion(element.value);
                               setIs_listversionOpen(!is_listversionOpen);
                             }}
                             className={
-                              element.value === selectedoptionlistversion
+                              element.value === runtimeVersion
                                 ? "flex items-center justify-between text-white text-md font-Inter bg-[#7900FF]    py-2 px-4"
                                 : "flex items-center justify-between text-white text-md font-Inter hover:bg-[#7900FF]  py-2 px-4"
                             }
                           >
                             <div>{element.value}</div>
-                            {element.value === selectedoptionlistversion ? (
+                            {element.value === runtimeVersion ? (
                               <BsFillCheckCircleFill fill="#156FF8" />
                             ) : (
                               <div></div>
@@ -364,7 +343,7 @@ export default function EditAction() {
             <div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
               ENABLE ACTION URL
             </div>
-            <img src={i_icon} alt="11px" width="11px" />
+            <img src={i_icon} height="11px" width="11px" alt="icon"/>
           </div>
           <div className="flex items-center space-x-[10px]">
             <div className="bg-[#7ECA9C] h-[17px] w-[39px] grid place-content-center">
@@ -428,15 +407,10 @@ export default function EditAction() {
             </div>
           </div>
         </div>
-		{/* SCHEDULE Modal */}
-		{!mystate.model_schedule.is_hide && <div className="absolute inset-0 z-50 w-full">
-			<ModelSchedule file={mystate.modal_file.file}/>
-		</div>}
-
-        <div className=" mt-12 font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
+		    <div className=" mt-12 font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
           ACTION CODE
         </div>
-       {actionCode.uuid!="" &&  <CodeEditor actionCode={actionCode}/>}
+       {actionCode.uuid!=="" &&  <CodeEditor actionCode={actionCode}/>}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {ReactComponent as CloseIcon} from "../assets/icons/close.svg";
 
 // External components
 import axios from "axios";
+import Modal from 'react-bootstrap/Modal'
 
 // Internal components
 import ModalAction from "../components/ModalAction";
@@ -90,6 +91,22 @@ function ActionRow(props){
     )
 }
 
+function MyModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="sm"
+        centered
+      >
+        <Modal.Body
+            as={ModalAction}
+            action={props.action}
+            show={props.show}
+            onHide={() => props.onHide()}/>
+      </Modal>
+    );
+  }
+
 export default function Action(){
 
     const mystate =useSelector((state)=>state)
@@ -136,6 +153,11 @@ export default function Action(){
 
     return (
         <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
+            <MyModal
+                action={ActionCode}
+                show={modalVisible}
+                onHide={() => setModalVisible(false)}
+            />
             <div className="container mx-auto pb-20 relative">
                 <TopBar/>
                 {!mystate.alert.is_hide &&
@@ -178,12 +200,6 @@ export default function Action(){
                 </div>
                 {/* Actions list end */}
             </div>
-            <ModalAction
-                action={ActionCode}
-                show={modalVisible}
-                onHide={() => setModalVisible(false)}
-            />
-            
         </div>
     )
 }

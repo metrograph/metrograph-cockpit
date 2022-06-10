@@ -2,6 +2,9 @@
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
 
+// Icons imports
+import closeIcon from "../assets/icons/close.svg"
+
 // Internal components
 import File from "./File";
 import ActionCodeBuilder from "./ActionCodeBuilder";
@@ -14,11 +17,11 @@ export default function ModalFile(props){
     const dispatch = useDispatch()
     const mystate = useSelector((mystate)=>mystate)
     function handleCancel(){
-        dispatch({type:"modal_file/SET",payload:{is_hide: true, file:{}}})
+        props.onHide()
     }
 
     function handleDeleteFile(){
-        axios.delete(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/file", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
+        axios.delete(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
         .then((response) => {
 			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -39,7 +42,7 @@ export default function ModalFile(props){
         
     }
     function handleDeleteFolder(){
-        axios.delete(config.METROGRAPH_API+"/actioncode/"+mystate.actionCode.uuid+"/folder", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
+        axios.delete(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/folder", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
         .then((response) => {
 			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
@@ -58,9 +61,12 @@ export default function ModalFile(props){
     }
 
     return (
-        <div className="bg-black/60 h-full grid place-content-center">
-            <div className="bg-[#070707] flex flex-col border-2 border-[#2B2B2B] h-[450px] w-[800px] rounded-xl px-12 py-4">
-                <div className="text-white text-[28px] mt-12 font-regular font-IBM-Plex-Sans">
+        <div className="bg-black/60 grid place-content-center">
+            <div className="bg-[#121212] flex flex-col border-2 border-[hsl(0,0%,14%)] h-[454px] w-[650px] rounded-[22px] px-12 py-[47px] relative">
+                <div onClick={()=>handleCancel()} className="absolute top-[28px] right-[30px] cursor-pointer bg-[#262626] hover:bg-gray-400 h-[28px] w-[28px] grid place-content-center rounded-full">
+                    <img src={closeIcon} className="h-[10px] w-[10px]" alt="close_icon"/>
+                </div>
+                <div className="text-white text-[20px] mt-12 font-regular font-IBM-Plex-Sans">
                    {props.file instanceof File?"Are you sure you want to delete this File ?":"Are you sure you want to delete this Folder ?"}
                 </div>
                 <div className="flex flex-col mt-12 grow">

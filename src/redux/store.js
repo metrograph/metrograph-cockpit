@@ -7,9 +7,8 @@ import fileExplorerReducer from "./reducers/fileExplorerReducer";
 import activeElementReducer from "./reducers/activeElementReducer";
 import codeEditorReducer from "./reducers/codeEditorReducer";
 import actionReducer from "./reducers/actionReducer"
-import modalFileReducer from "./reducers/modalFileReducer";
 import fileStatusReducer from "./reducers/fileStatusReducer";
-import modalsScheduleReducer from "./reducers/modalsScheduleReducer";
+
 const reducers = combineReducers({
   alert: alertReducer,
   user: userReducer,
@@ -18,9 +17,7 @@ const reducers = combineReducers({
   activeElement: activeElementReducer,
   codeEditor: codeEditorReducer,
   actions: actionReducer,
-  modal_file: modalFileReducer,
-  file_status: fileStatusReducer,
-  model_schedule: modalsScheduleReducer 
+  file_status: fileStatusReducer
 });
 
 const store = createStore(

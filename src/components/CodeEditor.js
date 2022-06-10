@@ -28,14 +28,32 @@ import {config} from "../config";
 
 // External components
 import axios from "axios"
+import Modal from 'react-bootstrap/Modal'
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 
 function CFileTree(props) {
 	if (props.file_explorer_state.children) {
 		if (props.file_explorer_state.children) {
 			return props.file_explorer_state.children.map((element) => {
-				if (element instanceof Folder) return <CFolder key={element.path} actionCode={props.actionCode} folder={element} children={element.children} showChildreen={false} refState={props.refState} is_input={false}/>
-				else return <CFile key={element.path} actionCode={props.actionCode} file={element} is_input={false} refState={props.refState} />
+				if (element instanceof Folder)
+				return <CFolder
+							key={element.path}
+							show={props.show}
+                			onVisible={() => props.onVisible()}
+							setModalData={(e)=>props.setModalData(e)}
+							actionCode={props.actionCode}
+							folder={element}
+							refState={props.refState}
+							/>
+				else
+				return <CFile
+							key={element.path}
+							show={props.show}
+                			onVisible={() => props.onVisible()}
+							setModalData={(e)=>props.setModalData(e)}
+							actionCode={props.actionCode}
+							file={element}
+							refState={props.refState} />
 			});
 		} else return <div></div>
 	} else return <div></div>;
@@ -105,7 +123,8 @@ function CFile(props) {
 	}
 	
 	function handleDelete(){
-		dispatch({type:"modal_file/SET",payload:{is_hide: false, file:props.file}})
+		props.setModalData(props.file)
+		props.onVisible()
 	}
 	
 	if (props.file.path===mystate.activeElement.renameView) {
@@ -216,7 +235,8 @@ function CFolder(props) {
 	}
 				
 	function handleDelete(){
-		dispatch({type:"modal_file/SET",payload:{is_hide: false, file:props.folder}})
+		props.setModalData(props.folder)
+		props.onVisible()
 	}
 				
 	function handleCreateFile() {
@@ -347,18 +367,34 @@ function CFolder(props) {
 				</div>
 			)}
 			{mystate.activeElement.opendFolders.includes(props.folder.path) &&
-				props.children.map((element) => {
+				props.folder.children.map((element) => {
 					if (element instanceof Folder) {
 						return (
 							<div className="ml-6" key={element.path}>
-							<CFolder key={element.path} actionCode={props.actionCode} folder={element} children={element.children} refState={props.refState}/>
+							<CFolder
+								key={element.path}
+								show={props.show}
+                				onVisible={() => props.onVisible()}
+								setModalData={(e)=>props.setModalData(e)}
+								actionCode={props.actionCode}
+								folder={element}
+								children={element.children}
+								refState={props.refState}/>
 							</div>
 							);
 						}
 					else if (element instanceof File) {
 						return (
 							<div className="ml-6" key={element.path}>
-							<CFile key={element.path} actionCode={props.actionCode} file={element} is_input={false} refState={props.refState}/>
+							<CFile
+								key={element.path}
+								show={props.show}
+                				onVisible={() => props.onVisible()}
+								setModalData={(e)=>props.setModalData(e)}
+								actionCode={props.actionCode}
+								file={element}
+								is_input={false}
+								refState={props.refState}/>
 							</div>
 							);
 						}
@@ -367,7 +403,23 @@ function CFolder(props) {
 		</div>
 	)
 }
-							
+
+function MyModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="sm"
+        centered
+      >
+        <Modal.Body
+            as={ModalFile}
+			file={props.file}
+			actionCode={props.actionCode}
+			show={props.show}
+            onHide={() => props.onHide()}/>
+      </Modal>
+    );
+  }
 function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
 	const mystate = useSelector((state) => state);
@@ -431,6 +483,8 @@ export default function CodeEditor(props) {
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
 	const navigate = useNavigate()
+	const [modalVisible, setModalVisible]= useState(false)
+	const [modaledData, setModalData]= useState()
 	let dt = { username: "ehamza", password: "123" };
 	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
@@ -572,10 +626,16 @@ export default function CodeEditor(props) {
       else return navigate("/login")
     }
   	loadLocalStorage();
-	},[loading, dispatch, navigate]);
+	},[loading, dispatch, navigate, props.actionCode.uuid]);
 	
 	return (
 		<div className="flex flex-col bg-black relative">
+			<MyModal
+				file={modaledData}
+				actionCode={props.actionCode}
+				show={modalVisible}
+                onHide={() => setModalVisible(false)}
+			/>
 			<div className="flex h-[427px] bg-[#202020]">
 				{/*Lef panel section*/}
 				<div onContextMenu={(e) => e.preventDefault()} className="bg-[#202020] w-1/5 relative" ref={ref}>
@@ -602,7 +662,14 @@ export default function CodeEditor(props) {
 							</div>
 						</div>
 						<div className="ml-[48px] mt-[15px] mr-2 grow overflow-hidden overflow-y-auto pb-2">
-						<CFileTree actionCode={props.actionCode} refState={ref} file_explorer_state={mystate.file_explorer} onClick={onclick} handleClick={() => handleClick}/>
+						<CFileTree
+							actionCode={props.actionCode}
+							refState={ref}
+							file_explorer_state={mystate.file_explorer}
+							show={modalVisible}
+							setModalData={(e)=>setModalData(e)}
+                			onVisible={() => setModalVisible(true)}
+						/>
 						</div>
 					</div>
 					{mystate.activeElement.contextMenu==="-1" && (
@@ -783,9 +850,6 @@ export default function CodeEditor(props) {
 					</div>
 				</div>
 			</div>
-			{!mystate.modal_file.is_hide && <div className="absolute inset-0 z-50 w-full">
-             <ModalFile file={mystate.modal_file.file}/>
-            </div>}
 		</div>
 	);
 }

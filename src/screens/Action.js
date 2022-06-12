@@ -4,40 +4,16 @@ import {useSelector, useDispatch} from "react-redux"
 import {useNavigate} from "react-router-dom";
 
 // Icons imports
-import {ReactComponent as CloseIcon} from "../assets/icons/close.svg";
+import Alert from "../components/Alert"
 
 // External components
 import axios from "axios";
 import Modal from 'react-bootstrap/Modal'
 
 // Internal components
-
 import ModalAction from "../components/ModalAction";
 import TopBar from "../components/TopBar"
 import {config} from "../config"
-
-function Alert(props){
-    const dispatch = useDispatch();
-    function handleCloseAlert(){
-      dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-    }
-    if(props.type==="success")
-      {
-        return (
-        <div className="h-[64px]  bg-[#ADEED6] w-full rounded-[10px] flex justify-between items-center px-[20px]">
-          <div className="text-black font-[12px]">{props.title}</div>
-          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
-        </div>)
-      }
-    else if(props.type==="error")
-    {
-      return (
-        <div className="h-[64px]  bg-red-400 w-full rounded-[10px] flex justify-between items-center px-[20px]">
-          <div className="text-black font-[12px]">{props.title}</div>
-          <CloseIcon onClick={()=>handleCloseAlert()} className="h-2 w-2 cursor-pointer" fill="black"/>
-        </div>)
-    }
-}
 
 function ActionRow(props){
     const dispatch = useDispatch()
@@ -101,6 +77,8 @@ function MyModal(props) {
       >
         <Modal.Body
             as={ModalAction}
+            setAlertVisible={(e)=>props.setAlertVisible(e)}
+            setAlertData={(title, type)=>props.setAlertData(title, type)}
             action={props.action}
             show={props.show}
             onHide={() => props.onHide()}/>
@@ -113,6 +91,8 @@ export default function Action(){
     const mystate =useSelector((state)=>state)
     const dispatch = useDispatch()
     const navigate = useNavigate();
+    const [alertVisible, setAlertVisible]= useState(false)
+    const [alertData, setAlertData]=useState()
     const [modalVisible, setModalVisible]= useState(false)
     const [ActionCode, setActionCode]=useState()
     const loading=useRef(true)
@@ -130,7 +110,7 @@ export default function Action(){
         function loadLocalStorage() {
             const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
             const data = JSON.parse(localstorage);
-            if (JSON.parse(localstorage)) {
+            if (data) {
                 dispatch({ type: "user/SET", payload: data });
                if(data.user.token)
                 {
@@ -155,18 +135,22 @@ export default function Action(){
     return (
         <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
             <MyModal
+                setAlertVisible={(e)=>setAlertVisible(e)}
+                setAlertData={(title, type)=>setAlertData(title, type)}
                 action={ActionCode}
                 show={modalVisible}
                 onHide={() => setModalVisible(false)}
             />
-            <div className="container mx-auto pb-20 relative">
+            <div className="mx-20 pb-20 relative">
                 <TopBar/>
-                {!mystate.alert.is_hide &&
-                <div className="flex justify-center w-full absolute top-28">
-                    <Alert title={mystate.alert.title} type={mystate.alert.type}/>
-                </div>}
+                {alertVisible && <div className="flex justify-center w-full absolute top-28">
+                        <Alert
+                            alertData={alertData}
+                            onHide={() => setAlertVisible(false)}
+                        />
+                    </div>}
                 {/* page title */}
-                <div className="max-w-[1662px] w-full pt-[104px] pr-4">
+                <div className="w-full pt-[104px] pr-4">
                     <div className="w-full">
                         <div className="flex justify-between">
                             <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
@@ -195,7 +179,6 @@ export default function Action(){
                                     setActionCode={() => setActionCode(element)}
                                 />
                         })}
-                    
                     <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
                 
                 </div>

@@ -1,7 +1,6 @@
 // React imports
 import axios from "axios";
 import React, {useState, useEffect} from "react";
-import { useSelector ,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 // Internal components
@@ -12,35 +11,26 @@ import { config } from "../config";
 
 export default function Login(){
     const navigate = useNavigate();
-    const mystate = useSelector((state)=>state)
-    const dispatch = useDispatch()
     const [alertVisible, setAlertVisible]= useState(false)
     const [alertData, setAlertData]=useState()
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
 
+    function setAlert(title, type, delay){
+        setAlertData({title:title,type:type})
+        setAlertVisible(true)
+        setTimeout(() => {
+            setAlertVisible(false)
+            }, delay);
+    }
+    
     function login() {
         axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
         .then(function (response) {
             localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
-            dispatch({ type: "user/SET", payload: response.data.payload });
             return navigate("/");
         })
-        .catch((error) => {
-            if (error.response && error.response.status === 401) {
-                setAlertData({title:"Invalid credentials",type:"error"})
-                setAlertVisible(true)
-                setTimeout(() => {
-                    setAlertVisible(false)
-                    }, 3000);
-              } else {
-                setAlertData({title:"Invalid credentials",type:"error"})
-                setAlertVisible(true)
-                setTimeout(() => {
-                    setAlertVisible(false)
-                    }, 3000);
-              }
-        });
+        .catch((error) =>{if (error.response && error.response.status) setAlert("Invalid credentials", "error", 3000)});
     }
     
     function handleEnterKey(event) {

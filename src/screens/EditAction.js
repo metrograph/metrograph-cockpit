@@ -174,7 +174,7 @@ export default function EditAction() {
         onHide={() => setModalVisible(false)}
       />
       
-      <div className="max-w-[1662px] w-full relative">
+      <div className="mx-20 w-full relative">
         {/* Top bar start */}
         <TopBar/>
        {!mystate.alert.is_hide &&
@@ -184,7 +184,7 @@ export default function EditAction() {
         {/* Top bar end */}
 
         {/* Action section start */}
-        <div className="max-w-[1614px] container flex pt-[104px]">
+        <div className="max-w-[1614px]  flex pt-[104px]">
           <div className="w-full">
             <div className="flex justify-between">
               <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">

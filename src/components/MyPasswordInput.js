@@ -1,5 +1,5 @@
 
-export default function MyInput(props){
+export default function MyPasswordInput(props){
     return (
         <div className="w-full">
           {props.title &&
@@ -9,7 +9,7 @@ export default function MyInput(props){
           }
           <div className="relative flex items-center">
             <input
-              type="text"
+              type="password"
               className="w-full h-[46px] bg-[#1A1A1A] rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
               placeholder={props.placeholder}
               onChange={(e)=>props.setValue(e.target.value)}

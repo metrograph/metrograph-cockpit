@@ -11,11 +11,16 @@ import { config } from "../config";
 
 export default function Login(){
     const navigate = useNavigate();
-    const [alertVisible, setAlertVisible]= useState(false)
-    const [alertData, setAlertData]=useState()
+    
+    // Inputs local state
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
 
+    // Alert local state
+    const [alertVisible, setAlertVisible]= useState(false)
+    const [alertData, setAlertData]=useState()
+
+    // Alert trigger function
     function setAlert(title, type, delay){
         setAlertData({title:title,type:type})
         setAlertVisible(true)
@@ -24,6 +29,7 @@ export default function Login(){
             }, delay);
     }
     
+    // Request API to login
     function login() {
         axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
         .then(function (response) {
@@ -33,6 +39,7 @@ export default function Login(){
         .catch((error) =>{if (error.response && error.response.status) setAlert("Invalid credentials", "error", 3000)});
     }
     
+    // Handle Enter on Login button
     function handleEnterKey(event) {
         if(event.key === 'Enter') login()
     }
@@ -60,7 +67,6 @@ export default function Login(){
                         />
                     </div>}
                 </div>
-                
                 <div className="bottom-[140px] absolute">
                     <div className="ml-[87px]">
                         <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>

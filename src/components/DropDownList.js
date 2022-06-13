@@ -8,16 +8,17 @@ import { BsFillCheckCircleFill } from "react-icons/bs";
 export default function DropDpwnList(props){
     const listOptions=props.listOptions
     const [selectedOption, setSelectedOtion] = useState(props.listOptions[0].value);
-    const [listOpen, setListOpen] = useState(false);
-  
+    
     return (
-        <div className="space-y-[10px]">
-            <div className="text-white font-IBM-Plex-Sans font-bold text-[11px]">
-            {props.title}
+        <div className="w-full">
+            {props.title &&
+            <div className="text-white font-IBM-Plex-Sans font-bold text-[11px] mb-[12px]">
+                {props.title}
             </div>
+            }
             <div
-            onClick={(e) => {e.stopPropagation(); setListOpen(!listOpen)}}
-            className="mt-[28px]  rounded-[11px] h-[46px] bg-[#1A1A1A] flex justify-between items-center w-[460px] px-[19px] cursor-pointer relative"
+            onClick={(e) => {e.stopPropagation(); props.toogleList(!props.listOpen)}}
+            className="rounded-[11px] h-[46px] bg-[#1A1A1A] flex justify-between items-center w-full px-[19px] cursor-pointer relative"
             >
             <div
                 className={
@@ -29,14 +30,14 @@ export default function DropDpwnList(props){
                 {selectedOption}
             </div>
             <ArrowDown height="8px" width="13px" fill="white" />
-            {listOpen && (
-                <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-[460px]  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
+            {props.listOpen && (
+                <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                 {listOptions.map((element) => (
                     <div
                     onClick={() => {
                         props.setValue(element.value);
                         setSelectedOtion(element.value);
-                        setListOpen(!listOpen);
+                        props.toogleList(false)
                     }}
                     className={
                         element.value === selectedOption

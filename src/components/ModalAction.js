@@ -14,14 +14,7 @@ export default function ModalAction(props){
     const mystate = useSelector((state)=>state)
     const dispatch = useDispatch()
 
-    function setAlert(title, type, delay){
-        props.setAlertData({title:title,type:type})
-        props.setAlertVisible(true)
-        setTimeout(() => {
-            props.setAlertVisible(false)
-            }, delay);
-    }
-
+    
     function handleCancel(){
         props.onHide()
     }
@@ -29,14 +22,10 @@ export default function ModalAction(props){
     function handleDelete(){
         axios.delete(config.METROGRAPH_API+"/action/"+props.action.uuid, {headers: { Authorization: mystate.user.token }})
 			.then(response=>{
-                console.log(response)
                 dispatch({type:"action/DELETE",payload:{uuid:props.action.uuid}})
                 handleCancel()
-                setAlert(response.data.message, "success", 3000)
-            }).catch(error=>{
-                console.log(error)
-                setAlert(error.data.message, "error", 3000)
-        })
+                props.setAlert(response.data.message, "success", 3000)
+            }).catch(error=>{props.setAlert(error.data.message, "error", 3000)})
     }
 
     if(!props.show) return <></>

@@ -31,6 +31,24 @@ import axios from "axios"
 import Modal from 'react-bootstrap/Modal'
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
 
+function MyModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="sm"
+        centered
+      >
+        <Modal.Body
+            as={ModalFile}
+			setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
+			file={props.file}
+			actionCode={props.actionCode}
+			show={props.show}
+            onHide={() => props.onHide()}/>
+      </Modal>
+    );
+}
+
 function CFileTree(props) {
 	if (props.file_explorer_state.children) {
 		if (props.file_explorer_state.children) {
@@ -404,22 +422,6 @@ function CFolder(props) {
 	)
 }
 
-function MyModal(props) {
-    return (
-      <Modal
-        {...props}
-        size="sm"
-        centered
-      >
-        <Modal.Body
-            as={ModalFile}
-			file={props.file}
-			actionCode={props.actionCode}
-			show={props.show}
-            onHide={() => props.onHide()}/>
-      </Modal>
-    );
-  }
 function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
 	const mystate = useSelector((state) => state);
@@ -484,9 +486,8 @@ export default function CodeEditor(props) {
 	const mystate = useSelector((state) => state);
 	const navigate = useNavigate()
 	const [modalVisible, setModalVisible]= useState(false)
-	const [modaledData, setModalData]= useState()
-	let dt = { username: "ehamza", password: "123" };
-	const [eventIDE, setEventIDE] = useState(JSON.stringify(dt, null, "\t"));
+	const [modaldData, setModalData]= useState()
+	const [eventIDE, setEventIDE] = useState(JSON.stringify({event: "null"}, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
 	const [responseIDE, setResponseIDE] = useState("");
 	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
@@ -570,38 +571,14 @@ export default function CodeEditor(props) {
 
 	function handleRun(){
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
-				.then((res) => {
-					console.log(res.data.message)
-					dispatch({type:"alert/SET_ALERT",payload:{title:"Action started successfully", is_hide:false, type:"success"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-						}, 3000);
-					
-			  	}).catch(error=>{
-					dispatch({type:"alert/SET_ALERT",payload:{title:error.message, is_hide:false, type:"error"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-						}, 3000);
-					console.log(error)	
-				})
+			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
+			.catch(error=>{props.setAlert(error.data.message, "success", 3000)})
 	}
 
 	function handleBuild(){
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
-				.then((res) => {
-					console.log(res.data.message)
-					dispatch({type:"alert/SET_ALERT",payload:{title:"Action image built successfully", is_hide:false, type:"success"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:"success"}})
-						}, 3000);
-					
-			  	}).catch(error=>{
-					dispatch({type:"alert/SET_ALERT",payload:{title:error.message, is_hide:false, type:"error"}})
-					setTimeout(() => {
-						dispatch({type:"alert/SET_ALERT",payload:{title:"", is_hide:true, type:""}})
-						}, 3000);
-					console.log(error)	
-				})
+			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
+			.catch(error=>{props.setAlert(error.data.message, "success", 3000)})
 	}
 
 	
@@ -631,10 +608,11 @@ export default function CodeEditor(props) {
 	return (
 		<div className="flex flex-col bg-black relative">
 			<MyModal
-				file={modaledData}
+				file={modaldData}
 				actionCode={props.actionCode}
 				show={modalVisible}
                 onHide={() => setModalVisible(false)}
+				setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
 			/>
 			<div className="flex h-[427px] bg-[#202020]">
 				{/*Lef panel section*/}

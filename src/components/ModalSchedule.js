@@ -1,36 +1,28 @@
 // React imports
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux"
 
 // Icons import
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { ReactComponent as ArrowDown } from "../assets/icons/arrow-down.svg";
 import closeIcon from "../assets/icons/close.svg"
 
+// Local imports
+import DropDpwnList from "./DropDownList";
 
 export default function ModelSchedule(props){
-    const mystate = useSelector((state)=>state)
-    const dispatch = useDispatch()
-    const daysList = [
+    const dateList = [
         { key: 1, value: "Weeks" },
         { key: 2, value: "Days" },
         { key: 3, value: "Hours" },
-        { key: 4, value: "Minutes" },
-        { key: 5, value: "Seconds" }]
-    const [selectedDay, setSelectedDay] = useState("Days");
+        { key: 4, value: "Minutes" }
+        ]
+    const [selectedDate, setSelectedDate] = useState("Days");
+    const [listOpen, setListOpen] = useState(false);
     
     function handleCancel(){
         props.onHide()
     }
 
-    function handleDropListRuntime(){
-        if(mystate.activeElement.opendDropDown==="day") dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
-        else dispatch({type:"active_element/DROP_DOWN", payload:{key:"day"}})
-        dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
-      }
-
     return (
-        <div className="bg-black/60 grid place-content-center">
+        <div onClick={()=>setListOpen(false)} className="bg-black/60 grid place-content-center">
             <div className="bg-[#121212] flex flex-col border-2 border-[hsl(0,0%,14%)] h-[454px] w-[650px] rounded-[22px] px-12 py-[47px] relative">
                 <div onClick={()=>handleCancel()} className="absolute top-[28px] right-[30px] cursor-pointer bg-[#262626] hover:bg-gray-400 h-[28px] w-[28px] grid place-content-center rounded-full">
                     <img src={closeIcon} className="h-[10px] w-[10px]" alt="close_icon"/>
@@ -43,43 +35,13 @@ export default function ModelSchedule(props){
                     <div className="flex items-center mt-[23px] space-x-2">
                         <input className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
                         <div className="w-[155px]">
-                            <div onClick={(e) => {e.stopPropagation(); handleDropListRuntime()}}
-                                className="w-full   rounded-[11px] h-[46px] bg-[#1A1A1A] flex justify-between items-center px-[19px] cursor-pointer relative">
-                                <div
-                                className={
-                                    selectedDay !== "Language"
-                                    ? "font-Inter font-medium text-[15px] text-white"
-                                    : "font-Inter font-medium text-[15px] text-[#444444]"
-                                }
-                                >
-                                {selectedDay}
-                                </div>
-                                <ArrowDown height="8px" width="13px" fill="white" />
-                                {mystate.activeElement.opendDropDown==="day" && (
-                                <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
-                                    {daysList.map((element) => (
-                                    <div key={element.key}
-                                        onClick={() => {
-                                        setSelectedDay(element.value);
-                                        
-                                        }}
-                                        className={
-                                        element.value === selectedDay
-                                            ? "flex items-center justify-between text-white text-md font-Inter bg-[#7900FF]   py-2 px-4"
-                                            : "flex items-center justify-between text-white text-md font-Inter hover:bg-[#7900FF] py-2 px-4"
-                                        }
-                                    >
-                                        <div>{element.value}</div>
-                                        {element.value === selectedDay ? (
-                                        <BsFillCheckCircleFill fill="#156FF8" />
-                                        ) : (
-                                        <div></div>
-                                        )}
-                                    </div>
-                                    ))}
-                                </div>
-                                )}
-                            </div>
+                        <DropDpwnList
+                            listOptions={dateList}
+                            setValue={(e)=>setSelectedDate(e)}
+                            value={selectedDate}
+                            listOpen={listOpen}
+                            toogleList={(e)=>setListOpen(e)}
+                        />
                         </div>
                         <div className=" font-IBM-Plex-Sans text-[16px] font-regular px-4 text-white">at</div>
                         <input className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />

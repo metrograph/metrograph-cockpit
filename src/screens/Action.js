@@ -77,8 +77,7 @@ function MyModal(props) {
       >
         <Modal.Body
             as={ModalAction}
-            setAlertVisible={(e)=>props.setAlertVisible(e)}
-            setAlertData={(title, type)=>props.setAlertData(title, type)}
+            setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
             action={props.action}
             show={props.show}
             onHide={() => props.onHide()}/>
@@ -87,15 +86,29 @@ function MyModal(props) {
   }
 
 export default function Action(){
-
+    // Global state
     const mystate =useSelector((state)=>state)
     const dispatch = useDispatch()
     const navigate = useNavigate();
+
+    // Alert local state
     const [alertVisible, setAlertVisible]= useState(false)
     const [alertData, setAlertData]=useState()
+    
+    // Modal local state
     const [modalVisible, setModalVisible]= useState(false)
     const [ActionCode, setActionCode]=useState()
+    
     const loading=useRef(true)
+    
+    // Alert trigger function
+	function setAlert(title, type, delay){
+		setAlertData({title:title,type:type})
+		setAlertVisible(true)
+		setTimeout(() => {
+			setAlertVisible(false)
+			}, delay);
+	}
     
     function handleCloseDropDown(){
         dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
@@ -135,8 +148,7 @@ export default function Action(){
     return (
         <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
             <MyModal
-                setAlertVisible={(e)=>setAlertVisible(e)}
-                setAlertData={(title, type)=>setAlertData(title, type)}
+                setAlert={(title, type, delay)=>setAlert(title, type, delay)}
                 action={ActionCode}
                 show={modalVisible}
                 onHide={() => setModalVisible(false)}

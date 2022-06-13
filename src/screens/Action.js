@@ -15,12 +15,27 @@ import ModalAction from "../components/ModalAction";
 import TopBar from "../components/TopBar"
 import {config} from "../config"
 
+function MyModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="sm"
+        centered
+      >
+        <Modal.Body
+            as={ModalAction}
+            setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
+            action={props.action}
+            show={props.show}
+            onHide={() => props.onHide()}/>
+      </Modal>
+    );
+}
+
 function ActionRow(props){
-    const dispatch = useDispatch()
     const navigate = useNavigate();
     
     function handleManage(){
-        dispatch({type:"action_code/SET",payload:props.element})
         navigate("/edit-action/"+props.element.uuid)
     }
 
@@ -32,7 +47,7 @@ function ActionRow(props){
     return (
         <div>
             <div className="flex justify-between items-center w-full h-[114px] bg-[#070707] px-4">
-            <div className="flex flex-col grow">
+            <div onClick={()=>handleManage()} className="flex flex-col grow cursor-pointer">
                 <div className="text-white font-regular text-[20px] font-IBM-Plex-Sans">{props.element.name}</div>
                 <div className="text-[#7A7A7A] font-regular text-[14px] font-IBM-Plex-Sans">{props.element.description}</div>
             </div>
@@ -68,23 +83,6 @@ function ActionRow(props){
     )
 }
 
-function MyModal(props) {
-    return (
-      <Modal
-        {...props}
-        size="sm"
-        centered
-      >
-        <Modal.Body
-            as={ModalAction}
-            setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
-            action={props.action}
-            show={props.show}
-            onHide={() => props.onHide()}/>
-      </Modal>
-    );
-  }
-
 export default function Action(){
     // Global state
     const mystate =useSelector((state)=>state)
@@ -109,7 +107,7 @@ export default function Action(){
 			setAlertVisible(false)
 			}, delay);
 	}
-    
+
     function handleCloseDropDown(){
         dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
         dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})

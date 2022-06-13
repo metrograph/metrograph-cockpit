@@ -29,7 +29,9 @@ import {config} from "../config";
 // External components
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal'
+import Toast from 'react-bootstrap/Toast'
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
+
 
 function MyModal(props) {
     return (
@@ -47,6 +49,16 @@ function MyModal(props) {
             onHide={() => props.onHide()}/>
       </Modal>
     );
+}
+
+function MyToast(props){
+	return (
+		<div className="flex items-center w-full absolute left-14 bottom-2">
+			<div className="text-white font-IBM-Plex-Sans font-semibold text-md bg-green-600 px-2 py-1">
+				{props.message}
+			</div>
+		</div>
+	)
 }
 
 function CFileTree(props) {
@@ -112,7 +124,7 @@ function CFile(props) {
 			dispatch({type:"active_element/RENAME", payload:{path:""}})
 		}
 	}
-	
+
 	function handleRename(){
 		dispatch({type:"active_element/RENAME", payload:{path:props.file.path}})
 		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.file.path}})
@@ -494,6 +506,17 @@ export default function CodeEditor(props) {
 	const ref = React.useRef(null);
 	const [timer,setTimer]=useState(null)
 	const loading = useRef(true)
+
+	const [showToast, setshowToast] = useState(false);
+	const [toastMessage, setToastMessage] = useState();
+	
+	function setToast(message,delay){
+		setToastMessage(message)
+		setshowToast(true)
+		setTimeout(() => {
+			setshowToast(false)
+			}, delay);
+	}
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
@@ -503,17 +526,15 @@ export default function CodeEditor(props) {
 	function handleChange(content,path){
 		clearTimeout(timer);
 		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
-		dispatch({type:"file_status/SET",payload:{is_hide:true}})
 		let mytime = setTimeout(() => {
-		dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
-		axios.put(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
-		.then((res) => {
-			dispatch({type:"file_status/SET",payload:{is_hide:false}})
-			}).catch(error=>{
-			console.log(error)	
-		})
-    	
-		}, 3000);
+			dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
+			axios.put(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
+				.then((res) => {
+					setToast(res.data.message,3000)
+				}).catch(error=>{
+					setToast(error.data.message,3000)
+				})
+			}, 3000);
 		setTimer(mytime)	
 	}
 		
@@ -572,15 +593,14 @@ export default function CodeEditor(props) {
 	function handleRun(){
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
 			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
-			.catch(error=>{props.setAlert(error.data.message, "success", 3000)})
+			.catch(error=>{props.setAlert(error.data.message, "error", 3000)})
 	}
 
 	function handleBuild(){
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
 			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
-			.catch(error=>{props.setAlert(error.data.message, "success", 3000)})
+			.catch(error=>{props.setAlert(error.data.message, "error", 3000)})
 	}
-
 	
 	useEffect(() => {
 	window.scrollTo(0, 0);
@@ -705,18 +725,11 @@ export default function CodeEditor(props) {
 									enableSnippets: true,
 									showLineNumbers: true,
 							}}/>
-							{!mystate.file_status.is_hide && 
-								<div title="File saved" className="absolute right-4 bottom-2 cursor-help h-4 w-4">
-									<div  className=" bg-green-500 text-white font-medium  rounded-full h-2 w-2"/>
-								</div>}
-							{mystate.file_status.is_hide && 
-								<div title="File saved" className="absolute right-4 bottom-2 cursor-help h-4 w-4">
-									<div  className=" bg-white text-white font-medium  rounded-full h-2 w-2"/>
-								</div>}
+							<Toast style={{width:"auto"}} show={showToast} animation={true}>
+								<Toast.Body as={MyToast} message={toastMessage}/>
+							</Toast>
 							</div>
 						}
-						
-						
 						{mystate.codeEditor.selectedFile.name===null &&  <div className="bg-[#141414] w-full h-[427px]"></div>}
 						
 					</div>

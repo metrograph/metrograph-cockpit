@@ -31,11 +31,11 @@ export default function ModalAction(props){
     if(!props.show) return <></>
     else return (
         <div className="bg-black/60 grid place-content-center">
-            <div className="bg-[#121212] flex flex-col border-2 border-[hsl(0,0%,14%)] h-[454px] w-[650px] rounded-[22px] px-12 py-[47px] relative">
+            <div className="bg-[#121212] flex flex-col border-2 border-[hsl(0,0%,14%)] h-96 w-[650px] rounded-[22px] px-12 py-[47px] relative">
                 <div onClick={()=>handleCancel()} className="absolute top-[28px] right-[30px] cursor-pointer bg-[#262626] hover:bg-gray-400 h-[28px] w-[28px] grid place-content-center rounded-full">
                     <img src={closeIcon} className="h-[10px] w-[10px]" alt="close_icon"/>
                 </div>
-                <div className="text-white text-[20px] mt-12 font-regular font-IBM-Plex-Sans">
+                <div className="text-white text-[20px]  font-regular font-IBM-Plex-Sans">
                 Are you sure you want to delete this Action ?
                 </div>
                 <div className="flex flex-col mt-12 grow">

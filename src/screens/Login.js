@@ -36,7 +36,10 @@ export default function Login(){
             localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
             return navigate("/");
         })
-        .catch((error) =>{if (error.response && error.response.status) setAlert("Invalid credentials", "error", 3000)});
+        .catch((error) =>{
+            if (error.response) setAlert("Invalid credentials", "error", 3000)
+            else setAlert(error.message,"error",3000)
+        });
     }
     
     // Handle Enter on Login button

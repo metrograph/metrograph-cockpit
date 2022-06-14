@@ -9,6 +9,7 @@ import Alert from "../components/Alert"
 // External components
 import axios from "axios";
 import Modal from 'react-bootstrap/Modal'
+import Placeholder from 'react-bootstrap/Placeholder'
 
 // Internal components
 import ModalAction from "../components/ModalAction";
@@ -32,11 +33,73 @@ function MyModal(props) {
     );
 }
 
+function ActionRowPlaceholder(){
+    return(
+        <div>
+            <div className="flex justify-between items-center w-full h-[114px] bg-[#070707] px-4">
+                <div className="flex flex-col w-3/5">
+                    <Placeholder  animation="glow">
+                        <Placeholder xs={6} />
+                    </Placeholder>
+                    <Placeholder  animation="glow">
+                        <Placeholder xs={3} /> <Placeholder xs={4} />
+                    </Placeholder>
+                </div>
+                <div className="flex justify-between w-2/5">
+                    <div className="w-2/5">
+                        <Placeholder  animation="glow">
+                            <Placeholder xs={10} style={{height:"40px"}}/>
+                        </Placeholder> 
+                    </div>
+                    <div className="w-1/5 flex justify-center items-center">
+                        <Placeholder  animation="glow">
+                            <Placeholder  style={{height:"20px", width:"20px", borderRadius:"100%"}}/>
+                        </Placeholder> 
+                    </div>
+                    <div className="flex justify-end w-1/2">
+                        <div className="w-[100px]">
+                            <Placeholder  animation="glow">
+                                <Placeholder xs={10} style={{height:"40px"}}/>
+                            </Placeholder> 
+                        </div>
+                        <div className="w-[100px]">
+                            <Placeholder  animation="glow">
+                                <Placeholder xs={10} style={{height:"40px"}}/>
+                            </Placeholder> 
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div className="border-b-[1px] border-[#202020] w-full" />
+        </div>
+    )
+}
+
+function ActionList(props){
+    if(props.loading) return <ActionRowPlaceholder/>    
+    if(props.actionList.length)
+        return(
+            <div className="">
+                {props.actionList.map((element)=> {
+                    return <ActionRow
+                                key={element.uuid}
+                                element={element}
+                                show={props.modalVisible}
+                                onVisible={() => props.setModalVisible(true)}
+                                setActionCode={() => props.setActionCode(element)}
+                                navigate={(e)=>props.navigate(e)}
+                            />
+                    })}
+                <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
+            </div>
+        )
+    else return<div onClick={()=>props.navigate("/create-action")} className="mt-12 mx-4 font-IBM-Plex-Sans text-lg text-white cursor-pointer">Create new Action to manage</div>
+}
+
 function ActionRow(props){
-    const navigate = useNavigate();
-    
     function handleManage(){
-        navigate("/edit-action/"+props.element.uuid)
+        props.navigate("/edit-action/"+props.element.uuid)
     }
 
     function handleConfirmDelete(){
@@ -97,7 +160,7 @@ export default function Action(){
     const [modalVisible, setModalVisible]= useState(false)
     const [ActionCode, setActionCode]=useState()
     
-    const loading=useRef(true)
+    const [loading, setloading]=useState(true)
     
     // Alert trigger function
 	function setAlert(title, type, delay){
@@ -127,8 +190,8 @@ export default function Action(){
                 {
                     axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
                     .then(response=>{
-                        loading.current=false   
                         dispatch({type:"action/SET",payload:response.data.payload.actions})
+                        setloading(false)
                     }).catch((error) => {
                     if(error.response.status===401){
                         localStorage.removeItem("METROGRAPH_STORAGE")
@@ -179,19 +242,14 @@ export default function Action(){
                  {/* page end */}
                 
                 {/* Actions list start */}
-                <div className="">
-                    {mystate.actions.map((element)=> {
-                        return <ActionRow
-                                    key={element.uuid}
-                                    element={element}
-                                    show={modalVisible}
-                                    onVisible={() => setModalVisible(true)}
-                                    setActionCode={() => setActionCode(element)}
-                                />
-                        })}
-                    <div className="border-b-2 mt-2 border-[#2B2B2B] w-full" />
-                
-                </div>
+                <ActionList
+                    actionList={mystate.actions}
+                    show={modalVisible}
+                    onVisible={() => setModalVisible(true)}
+                    setActionCode={(e) => setActionCode(e)}
+                    navigate={(e)=>navigate(e)}
+                    loading={loading}    
+                />
                 {/* Actions list end */}
             </div>
         </div>

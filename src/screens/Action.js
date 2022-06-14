@@ -85,9 +85,9 @@ function ActionList(props){
                     return <ActionRow
                                 key={element.uuid}
                                 element={element}
-                                show={props.modalVisible}
-                                onVisible={() => props.setModalVisible(true)}
-                                setActionCode={() => props.setActionCode(element)}
+                                show={props.show}
+                                onVisible={() => props.onVisible()}
+                                setActionCode={(e) => props.setActionCode(element)}
                                 navigate={(e)=>props.navigate(e)}
                             />
                     })}

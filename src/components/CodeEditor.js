@@ -457,7 +457,8 @@ function CodeEditorTabs(props){
 						</div>
 					</div>
 					<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-						<img src={closeIcon} className="h-2 w-2" alt="close-icon"/>
+						{!props.isUnsavedFile(props.selectedFile.path) && <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
+						{props.isUnsavedFile(props.selectedFile.path) && <div className="h-2 w-2 bg-white rounded-full" />}
 					</div>
 				</div>
 				<div className="border-b-4 border-[#7900FF] w-full left-0 absolute bottom-0"/>
@@ -465,7 +466,6 @@ function CodeEditorTabs(props){
 			)
 		else return (
 			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] min-w-[120px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
-				
 				<div className="flex items-center space-x-1">
 					<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="file-icon" />
 					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
@@ -473,7 +473,8 @@ function CodeEditorTabs(props){
 					</div>
 				</div>
 				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-				<img src={closeIcon} className="h-2 w-2" alt="close-icon"/>
+					{!props.isUnsavedFile(props.selectedFile.path) && <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
+					{props.isUnsavedFile(props.selectedFile.path) && <div className="h-2 w-2 bg-white rounded-full" />}
 				</div>
 			</div>
 			)
@@ -484,7 +485,7 @@ function CodeEditorTabList(props){
 		return props.openedFiles.map(element=>{
 			return (
 				<div key={element.path}>
-					<CodeEditorTabs selectedFile={element}/>
+					<CodeEditorTabs selectedFile={element} isUnsavedFile={(path)=>props.isUnsavedFile(path)}/>
 				</div>
 				)
 			})
@@ -507,6 +508,8 @@ export default function CodeEditor(props) {
 	const [timer,setTimer]=useState(null)
 	const loading = useRef(true)
 
+	const [unsavedFiles, setUnsavedFiles]=useState([])
+
 	const [showToast, setshowToast] = useState(false);
 	const [toastMessage, setToastMessage] = useState();
 	
@@ -517,6 +520,18 @@ export default function CodeEditor(props) {
 			setshowToast(false)
 			}, delay);
 	}
+
+	function AddToUnsavedFiles(path){
+		if(!unsavedFiles.includes(path)) setUnsavedFiles([...unsavedFiles, path])
+	}
+	function isUnsavedFile(path){
+		if(unsavedFiles.includes(path))return true
+		else return false
+	}
+
+	function removeFromUnsavedFiles(path){
+		setUnsavedFiles(unsavedFiles.filter(e=>e!=path))
+	}
 	
 	const mouse = useMouse(ref, {
 		enterDelay: 100,
@@ -526,10 +541,13 @@ export default function CodeEditor(props) {
 	function handleChange(content,path){
 		clearTimeout(timer);
 		dispatch({type:"code_editor/UPDATE_FILE_CONTENT",payload:{content:content, path:path}})
+		AddToUnsavedFiles(path)
 		let mytime = setTimeout(() => {
 			dispatch({type:"code_editor/UPDATE_OPENED_FILE_CONTENT",payload:{content:content, path:path}})
 			axios.put(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file",{path:path, content:content},{headers: { Authorization: mystate.user.token }})
 				.then((res) => {
+					removeFromUnsavedFiles(path)
+					console.log(unsavedFiles)
 					setToast(res.data.message,3000)
 				}).catch(error=>{
 					setToast(error.data.message,3000)
@@ -702,7 +720,7 @@ export default function CodeEditor(props) {
 				{/* File content section */}
 				<div className="w-4/5">
 					<div className="flex overflow-hidden overflow-x-auto">
-						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles}/>
+						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles} isUnsavedFile={(path)=>isUnsavedFile(path)}/>
 					</div>
 					<div onClick={e=>e.stopPropagation()} className="relative">
 							{mystate.codeEditor.selectedFile.content!==null &&

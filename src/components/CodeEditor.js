@@ -457,8 +457,7 @@ function CodeEditorTabs(props){
 						</div>
 					</div>
 					<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-						{!props.isUnsavedFile(props.selectedFile.path) && <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
-						{props.isUnsavedFile(props.selectedFile.path) && <div className="h-2 w-2 bg-white rounded-full" />}
+						{props.isUnsavedFile(props.selectedFile.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
 					</div>
 				</div>
 				<div className="border-b-4 border-[#7900FF] w-full left-0 absolute bottom-0"/>
@@ -473,8 +472,7 @@ function CodeEditorTabs(props){
 					</div>
 				</div>
 				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-					{!props.isUnsavedFile(props.selectedFile.path) && <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
-					{props.isUnsavedFile(props.selectedFile.path) && <div className="h-2 w-2 bg-white rounded-full" />}
+					{props.isUnsavedFile(props.selectedFile.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
 				</div>
 			</div>
 			)

@@ -48,6 +48,89 @@ function MyModal(props) {
   );
 }
 
+function Schedule(props){
+	if(props.is_weeks) return (
+	<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+		<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+			EVERY
+		</div>
+		<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+			<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+			MONDAY
+			</div>
+		</div>
+		<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+			AT
+		</div>
+		<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+			<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+			08:00:00
+			</div>
+		</div>
+	</div>
+	)
+	else if(props.is_days) return (
+		<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				EVERY
+			</div>
+			<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+				Day
+				</div>
+			</div>
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				AT
+			</div>
+			<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+				08:00:00
+				</div>
+			</div>
+		</div>
+		)
+		else if(props.is_hours) return (
+			<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+				<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+					EVERY
+				</div>
+				<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+					<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+					Hour
+					</div>
+				</div>
+				<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+					AT
+				</div>
+				<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+					<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+					00:00
+					</div>
+				</div>
+			</div>
+			)
+			else if(props.is_minutes) return (
+				<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+					<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+						EVERY
+					</div>
+					<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+						<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+						Minute
+						</div>
+					</div>
+					<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+						AT
+					</div>
+					<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+						<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
+						00
+						</div>
+					</div>
+				</div>
+				)
+}
+
 export default function EditAction() {
 	// Global state
 	const dispatch = useDispatch();
@@ -148,7 +231,6 @@ export default function EditAction() {
 						/>
 					</div>
 				}
-
 				{/* Header */}
 				<div className="pt-[104px]">
 					<div className="flex justify-between">
@@ -219,6 +301,8 @@ export default function EditAction() {
 							</div>
 						</div>
 					</div>
+
+					{/* Schedule section */}
 					<div className="mt-[44px]">
 						<div className="text-white font-bold font-IBM-Plex-Sans text-[11px]">
 							SCHEDULE TASK

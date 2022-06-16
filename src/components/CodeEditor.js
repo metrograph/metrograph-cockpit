@@ -438,26 +438,26 @@ function CodeEditorTabs(props){
 	const dispatch = useDispatch(); 
 	const mystate = useSelector((state) => state);
 	function handleCloseTab(){
-		dispatch({type:"code_editor/CLOSE_FILE",payload:{path:props.selectedFile.path}})
-		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.selectedFile}})
+		dispatch({type:"code_editor/CLOSE_FILE",payload:{path:props.file.path}})
+		dispatch({type:"code_editor/LOAD_LAST_FILE_CONTENT",payload:{file:props.file}})
 	}
 	function handleClickTab(){
-		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.selectedFile.path}})
-		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.selectedFile, actionCode:props.actionCode}})
+		dispatch({type:"active_element/SELECT_FILE", payload:{path:props.file.path}})
+		dispatch({type:"code_editor/LOAD_FILE_CONTENT",payload:{file:props.file, actionCode:props.actionCode}})
 	}
 	
-	if(mystate.codeEditor.selectedFile.path===props.selectedFile.path)
+	if(mystate.codeEditor.selectedFile.path===props.file.path)
 		return (
 			<div onClick={()=>handleClickTab()} className="px-2 grid place-content-center bg-[#171717] min-w-[100px] h-[53px] cursor-pointer relative">
 				<div className="flex items-center min-w-[100px] justify-between">
 					<div className="flex items-center space-x-[1px]">
-						<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="file-icon" />
+						<img src={require("../assets/vsicons/"+getIconForFile(props.file.name))} className="w-[14px] h-[14px]" alt="file-icon" />
 						<div className="text-white align-middle font-IBM-Plex-Sans text-[14px] font-medium">
-						{props.selectedFile.name}
+						{props.file.name}
 						</div>
 					</div>
 					<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-						{props.isUnsavedFile(props.selectedFile.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
+						{props.isUnsavedFile(props.file.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
 					</div>
 				</div>
 				<div className="border-b-4 border-[#7900FF] w-full left-0 absolute bottom-0"/>
@@ -466,13 +466,13 @@ function CodeEditorTabs(props){
 		else return (
 			<div onClick={()=>handleClickTab()} className="px-2 bg-[#202020] min-w-[120px] h-[53px] flex items-center justify-between space-x-[4px] cursor-pointer">
 				<div className="flex items-center space-x-1">
-					<img src={require("../assets/vsicons/"+getIconForFile(props.selectedFile.name))} className="w-[14px] h-[14px]" alt="file-icon" />
+					<img src={require("../assets/vsicons/"+getIconForFile(props.file.name))} className="w-[14px] h-[14px]" alt="file-icon" />
 					<div  className=" text-white font-IBM-Plex-Sans text-[14px] font-medium">
-					{props.selectedFile.name}
+					{props.file.name}
 					</div>
 				</div>
 				<div onClick={(e)=>{e.stopPropagation(); handleCloseTab()}} className=" cursor-pointer hover:bg-[#292828] h-4 w-4 grid place-content-center rounded-full">
-					{props.isUnsavedFile(props.selectedFile.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
+					{props.isUnsavedFile(props.file.path) ? <div className="h-2 w-2 bg-white rounded-full" /> : <img src={closeIcon} className="h-2 w-2" alt="close-icon"/>}
 				</div>
 			</div>
 			)
@@ -483,7 +483,7 @@ function CodeEditorTabList(props){
 		return props.openedFiles.map(element=>{
 			return (
 				<div key={element.path}>
-					<CodeEditorTabs selectedFile={element} isUnsavedFile={(path)=>props.isUnsavedFile(path)}/>
+					<CodeEditorTabs file={element} isUnsavedFile={(path)=>props.isUnsavedFile(path)}/>
 				</div>
 				)
 			})
@@ -493,23 +493,30 @@ function CodeEditorTabList(props){
 }
 			
 export default function CodeEditor(props) {
+	// Global state
 	const dispatch = useDispatch();
 	const mystate = useSelector((state) => state);
 	const navigate = useNavigate()
+	
+	// Modal local state
 	const [modalVisible, setModalVisible]= useState(false)
 	const [modaldData, setModalData]= useState()
+
+	// Toast local state
+	const [showToast, setshowToast] = useState(false);
+	const [toastMessage, setToastMessage] = useState();
+
+	// Code editor local state
 	const [eventIDE, setEventIDE] = useState(JSON.stringify({event: "null"}, null, "\t"));
 	const [outputIDE, setOutputIDE] = useState("");
 	const [responseIDE, setResponseIDE] = useState("");
-	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
-	const ref = React.useRef(null);
-	const [timer,setTimer]=useState(null)
-	const loading = useRef(true)
 
 	const [unsavedFiles, setUnsavedFiles]=useState([])
+	const [timer,setTimer]=useState(null)
+	const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
+	const ref = React.useRef(null);
+	const [loading, setLoading]=useState(true)
 
-	const [showToast, setshowToast] = useState(false);
-	const [toastMessage, setToastMessage] = useState();
 	
 	function setToast(message,delay){
 		setToastMessage(message)
@@ -522,6 +529,7 @@ export default function CodeEditor(props) {
 	function AddToUnsavedFiles(path){
 		if(!unsavedFiles.includes(path)) setUnsavedFiles([...unsavedFiles, path])
 	}
+
 	function isUnsavedFile(path){
 		if(unsavedFiles.includes(path))return true
 		else return false
@@ -627,13 +635,11 @@ export default function CodeEditor(props) {
         	dispatch({ type: "user/SET", payload: data });
         	if(data.user.token)
         	{
-			
-			axios.get(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid, {headers: { Authorization: data.user.token}})
-			.then(response=>{
-				
-				loading.current=false
-				dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(response.data.payload.ActionCode)});
-			}).catch(error=>loading.current=false)
+				axios.get(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid, {headers: { Authorization: data.user.token}})
+				.then(response=>{
+					setLoading(false)
+					dispatch({type: "setFileExplorer",	payload: ActionCodeBuilder.build(response.data.payload.ActionCode)});
+				}).catch(()=>setLoading(false))
 			}
       }
       else return navigate("/login")

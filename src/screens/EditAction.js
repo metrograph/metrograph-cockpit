@@ -40,7 +40,9 @@ function MyModal(props) {
     >
       <Modal.Body
         as={ModelSchedule}
-        action={props.action}
+        actionCode={props.actionCode}
+		getSchedulesFromApi={()=>props.getSchedulesFromApi()}
+		setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
         show={props.show}
         onHide={() => props.onHide()}
         />
@@ -49,86 +51,112 @@ function MyModal(props) {
 }
 
 function Schedule(props){
-	if(props.is_weeks) return (
-	<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+	if(props.schedule.weeks) return (
+	<div className="px-4 h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex space-x-2 items-center">
 		<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
 			EVERY
 		</div>
-		<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-			<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-			MONDAY
+		<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+			<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+			{props.schedule.weeks} WEEKS
 			</div>
 		</div>
 		<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
 			AT
 		</div>
-		<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-			<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-			08:00:00
+		<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+			<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+			{props.schedule.at}
 			</div>
 		</div>
 	</div>
 	)
-	else if(props.is_days) return (
-		<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
+	else if(props.schedule.days) return (
+		<div className="px-4 h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex space-x-2 items-center">
 			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
 				EVERY
 			</div>
-			<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-				<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-				Day
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.days} Days
 				</div>
 			</div>
 			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
 				AT
 			</div>
-			<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-				<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-				08:00:00
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.at}
 				</div>
 			</div>
 		</div>
 		)
-		else if(props.is_hours) return (
-			<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
-				<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-					EVERY
-				</div>
-				<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-					<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-					Hour
-					</div>
-				</div>
-				<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-					AT
-				</div>
-				<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-					<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-					00:00
-					</div>
+	else if(props.schedule.hours) return (
+		<div className="px-4 h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex space-x-2 items-center">
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				EVERY
+			</div>
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.hours} Hours
 				</div>
 			</div>
-			)
-			else if(props.is_minutes) return (
-				<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
-					<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-						EVERY
-					</div>
-					<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-						<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-						Minute
-						</div>
-					</div>
-					<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-						AT
-					</div>
-					<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-						<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-						00
-						</div>
-					</div>
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				AT
+			</div>
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.at}
 				</div>
-				)
+			</div>
+		</div>
+	)
+	else if(props.schedule.minutes) return (
+		<div className="px-4 h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex space-x-2 items-center">
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				EVERY
+			</div>
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.minutes} Minutes
+				</div>
+			</div>
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				AT
+			</div>
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.at}
+				</div>
+			</div>
+		</div>
+	)
+	else if(props.schedule.seconds) return (
+		<div className="px-4 h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex space-x-2 items-center">
+			<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
+				EVERY
+			</div>
+			<div className="px-2 h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
+				<div className="text-[11px] font-IBM-Plex-Sans font-bold text-white">
+				{props.schedule.seconds} Seconds
+				</div>
+			</div>
+		</div>
+	)
+	else return <div></div>
+}
+
+function ScheduleList(props){
+	return (
+		<div className="flex space-x-4">
+			{props.scheduleList.map((element)=> {
+			return <Schedule
+						key={element.uuid}
+						schedule={element}
+					/>
+			})}
+		</div>
+		)
 }
 
 export default function EditAction() {
@@ -145,6 +173,7 @@ export default function EditAction() {
 	const runtimeVersionList=[{ key: 1, value: "3.9.10" }]
 	const [runtime, setRuntime] = useState("python");
 	const [runtimeVersion, setRuntimeVersion] = useState("3.9.10");
+	const [scheduleList, setScheduleList]=useState([])
 
 	// Alert local state
 	const [alertVisible, setAlertVisible]= useState(false)
@@ -155,7 +184,7 @@ export default function EditAction() {
 	const [runtimeVersionListOpen, setRuntimeVersionListOpen] = useState(false);
 	const [urlCheckBox, setUrlCheckBox] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
-	const loading=useRef(true)
+	const [loading, setLoading]=useState(true)
 
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -184,7 +213,31 @@ export default function EditAction() {
 
 	function handleAddSchedule(){
 		setModalVisible(true)
-	}  
+	}
+	
+	function filterScheduleAction(list){
+		let tempList=[]
+		list.forEach(element => {
+			if (element.action_uuid===actionCode.uuid) 
+				tempList.push(element)
+		});
+		setScheduleList(tempList)
+	}
+
+	function getActionCodeFromApi(token){
+		axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: token },})
+				.then(response=>{
+					setActionCode(response.data.payload.ActionCode)
+				}).catch(()=>setLoading(false))
+	}
+	
+	function getSchedulesFromApi(token){
+		axios.get(config.METROGRAPH_API+"/schedule", {headers: { Authorization: token },})
+			.then(response=>{
+				filterScheduleAction(response.data.payload.schedules)
+				setLoading(false)
+			}).catch(()=>setLoading(false))
+	}
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -192,15 +245,12 @@ export default function EditAction() {
 		const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
 		const data = JSON.parse(localstorage);
 		if (JSON.parse(localstorage)) {
-			if(loading.current){
+			if(loading){
 				dispatch({ type: "user/SET", payload: data });
 				if(data.user.token)
 				{
-				axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: data.user.token },})
-				.then(response=>{
-					setActionCode(response.data.payload.ActionCode)
-					loading.current = false
-				}).catch(error=>loading.current=false)
+					getActionCodeFromApi(data.user.token)
+					getSchedulesFromApi(data.user.token)
 				}
 			}
 		}
@@ -222,6 +272,9 @@ export default function EditAction() {
 				<MyModal
 					show={modalVisible}
 					onHide={() => setModalVisible(false)}
+					actionCode={actionCode}
+					setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+					getSchedulesFromApi={()=>getSchedulesFromApi(mystate.user.token)}
 				/>
 				{alertVisible &&
 					<div className="flex justify-center w-full absolute top-24">
@@ -308,47 +361,12 @@ export default function EditAction() {
 							SCHEDULE TASK
 						</div>
 						<div className="flex mt-[10px]">
-							<div onClick={(e)=>{handleAddSchedule()}} className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-[88px]">
+							<div onClick={(e)=>{handleAddSchedule()}} className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-4">
 								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
 									ADD SCHEDULE
 								</div>
 							</div>
-							<div className="w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
-								<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-									EVERY
-								</div>
-								<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-									<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-									MONDAY
-									</div>
-								</div>
-								<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-									AT
-								</div>
-								<div className="w-[53px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-									<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-									08:00
-									</div>
-								</div>
-							</div>
-							<div className="ml-[41px] w-[272px] h-[42px] border-2 border-[#3F3F3F] rounded-[15px] flex justify-evenly px-2 items-center">
-								<div className="text-[12px] font-IBM-Plex-Sans font-bold text-white">
-								EVERY
-								</div>
-								<div className="w-[67px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-									<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-									HOUR
-									</div>
-								</div>
-								<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-									AT
-								</div>
-								<div className="w-[63px] h-[22px] bg-[#7ECA9C] grid place-content-center rounded-[11px]">
-									<div className="text-[10px] font-IBM-Plex-Sans font-bold text-white">
-									30:00
-									</div>
-								</div>
-							</div>
+							<ScheduleList scheduleList={scheduleList}/>
 						</div>
 					</div>
 				</div>

@@ -1,16 +1,21 @@
 // React imports
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // Icons import
 import closeIcon from "../assets/icons/close.svg"
+
+// External components
+import axios from "axios";
+
+// Internal components
+import {config} from "../config";
 
 // Local imports
 import DropDpwnList from "./DropDownList";
 
 export default function ModelSchedule(props){
-    
-    const [weeks, setWeeks]=useState(true)
-    const [days, setDays]=useState(false)
+    const mystate = useSelector((state) => state);
     const [times, setTimes]=useState("")
     const [every, setEvery]=useState("")
     const dateList = [
@@ -18,7 +23,7 @@ export default function ModelSchedule(props){
         { key: 2, value: "Days" },
         { key: 3, value: "Hours" },
         { key: 4, value: "Minutes" },
-        { key: 5, value: "Secondes" }
+        { key: 5, value: "Seconds" }
         ]
     const [selectedDate, setSelectedDate] = useState("Weeks");
     const [listOpen, setListOpen] = useState(false);
@@ -32,11 +37,11 @@ export default function ModelSchedule(props){
         { key: 6, value: "Saturday" },
         { key: 7, value: "Sunday" }
         ]
-    const [selectedDay, setSelectedDay] = useState("Days");
+    const [selectedDay, setSelectedDay] = useState("Monday");
     const [listDayOpen, setListDayOpen] = useState(false);
     const [hours, setHours]=useState("")
     const [minutes, setMinutes]=useState("")
-    const [secondes, setSecondes]=useState("")
+    const [seconds, setSeconds]=useState("")
 
     function clearInputs(){
         setEvery()
@@ -44,30 +49,40 @@ export default function ModelSchedule(props){
         setSelectedDay()
         setHours("")
         setMinutes("")
-        setSecondes("")
+        setSeconds("")
         setTimes("")
     }
 
     function dataTosubmit(){
 
         if (selectedDate==="Weeks") {
-            return {every:every, weeks:"1", at: selectedDay.toLocaleLowerCase()+" "+hours+":"+minutes+":"+secondes, times:times}
+            return { weeks:every, at: selectedDay.toLocaleLowerCase()+" "+hours+":"+minutes+":"+seconds, times:times}
         }
         else if (selectedDate==="Days") {
-            return {every:every, at: selectedDay.toLocaleLowerCase()+" "+hours+":"+minutes+":"+secondes, times:times}
+            return { days:every, at:hours+":"+minutes+":"+seconds, times:times}
         }
         else if (selectedDate==="Hours") {
-            return {every:every, at: hours+":"+minutes+":"+secondes, times:times}
+            return { hours:every, at:minutes+":"+seconds, times:times}
         }
         else if (selectedDate==="Minutes") {
-            return {every:every, at: minutes+":"+secondes, times:times}
+            return { minutes:every, at:seconds, times:times}
         }
-        else if (selectedDate==="Secondes") {
-            return {every:every, at: secondes, times:times}
+        else if (selectedDate==="Seconds") {
+            return {seconds:every, times:times}
         }
     }
+
     function createSchedule(){
-        console.log(dataTosubmit())
+        let payload=dataTosubmit()
+        payload.action_uuid=props.actionCode.uuid
+        console.log(payload)
+		axios.post(config.METROGRAPH_API+"/schedule", payload, { headers: {Authorization: mystate.user.token} })
+			.then((res) => {
+                props.setAlert(res.data.message, "success", 3000)
+                handleCancel()
+                props.getSchedulesFromApi()
+				})
+			.catch(() => {props.setAlert("400, Bad request", "error", 3000)});
     }
 
     function handleCancel(){
@@ -97,7 +112,7 @@ export default function ModelSchedule(props){
                                     toogleList={(e)=>setListOpen(e)}
                             />
                         </div>
-                        <div className="font-IBM-Plex-Sans text-[16px] font-regular px-2 text-white">at</div>
+                        {selectedDate!="Seconds" && <div className="font-IBM-Plex-Sans text-[16px] font-regular px-2 text-white">at</div>}
                         {selectedDate==="Weeks" &&
                             <div className="w-[150px]">
                                 <DropDpwnList
@@ -110,18 +125,18 @@ export default function ModelSchedule(props){
                                 />
                             </div>
                         }
-                        {(selectedDate=="Weeks" || selectedDate=="Days" || selectedDate=="Hours") &&
+                        {(selectedDate=="Weeks" || selectedDate=="Days") &&
                             <div className="flex items-center justify-center space-x-2">
                             <input title="Hours" value={hours} onChange={(e)=> setHours(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
                             <div className="font-IBM-Plex-Sans text-[16px] font-regular text-white">:</div>    
                             </div>}
-                        {selectedDate!="Secondes" &&
+                        {selectedDate!="Seconds" && selectedDate!="Minutes" &&
                             <div className="flex items-center justify-center space-x-2">
                                 <input title="Minutes" value={minutes} onChange={(e)=> setMinutes(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
                                 <div className="font-IBM-Plex-Sans text-[16px] font-regular text-white">:</div>
                             </div>
                         }
-                        <input title="Seconds" value={secondes} onChange={(e)=> setSecondes(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
+                        {selectedDate!="Seconds" && <input title="Seconds" value={seconds} onChange={(e)=> setSeconds(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />}
                     </div>
                 </div>
                 <div className="flex flex-col mt-[35px] grow">

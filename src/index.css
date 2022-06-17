@@ -7,6 +7,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.box {
+  background-image: radial-gradient(circle, white 3px, #7900FF 3px);
+  background-size: 180px 180px;
+  height: 100%;
+}
+
+.fadeIn{
+ 
+  animation: fadeIn 400ms linear;
+ }
+
+.pattern {
+  background-image: url("./assets/pattern/pattern.svg");
+  position: fixed;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+}
+
+
 .height-panel {
   max-height: calc(100vh - 262px);
 }

@@ -1,198 +1,134 @@
-import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+// React imports
 import axios from "axios";
+import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import Alert from "../components/Alert";
-import art from "../assets/animation/art.gif";
-import dashboardIcon from "../assets/dashboard.svg";
+// Internal components
+import Alert from "../components/Alert"
+import logo from "../assets/logo-light-gray.png"
+import { config } from "../config";
 
-import "../assets/css/animation.css";
 
-const endPoint = "http://157.90.233.37/v1/auth";
+export default function Login(){
+    const navigate = useNavigate();
+    
+    // Inputs local state
+    const [username, setUsername]=useState("")
+    const [password, setPassword]=useState("")
 
-export default function Login() {
-  const [inputs, setInputs] = useState({ username: "", password: "" });
-  const [onLoad, setOnLoad] = useState(false);
-  const navigate = useNavigate();
-  const mystate = useSelector((state) => state);
-  const dispatch = useDispatch();
+    // Alert local state
+    const [alertVisible, setAlertVisible]= useState(false)
+    const [alertData, setAlertData]=useState()
 
-  function login() {
-    console.log(inputs);
-    setOnLoad(true);
-    if (!inputs.username || !inputs.password) {
-      let payloadAlert = {
-        is_hide: false,
-        type: "error",
-        title: "Login failed.",
-        description: "Invalid credentials or password requirements not met",
-      };
-      dispatch({ type: "setAlert", payload: payloadAlert });
-      setTimeout(() => setOnLoad(false), 200);
-      return console.log("error");
+    // Alert trigger function
+    function setAlert(title, type, delay){
+        setAlertData({title:title,type:type})
+        setAlertVisible(true)
+        setTimeout(() => {
+            setAlertVisible(false)
+            }, delay);
     }
-    axios
-      .post(endPoint, inputs)
-      .then(function (response) {
-        setTimeout(() => setOnLoad(false), 200);
-        if (response.status === 200) {
-          console.log(response.data.payload);
-          localStorage.setItem(
-            "localState",
-            JSON.stringify(response.data.payload)
-          );
-          dispatch({ type: "setUser", payload: response.data.payload });
-          dispatch({
-            type: "setAlert",
-            payload: { is_hide: true, type: null },
-          });
-          return navigate("/home");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          let payloadAlert = {
-            is_hide: false,
-            type: "error",
-            title: "Login failed.",
-            description: "Invalid credentials or password requirements not met",
-          };
-          dispatch({ type: "setAlert", payload: payloadAlert });
-          setTimeout(() => setOnLoad(false), 200);
-          return console.log("error");
-        } else {
-          setTimeout(() => setOnLoad(false), 200);
-          let payloadAlert = {
-            is_hide: false,
-            type: "error",
-            title: "Login failed.",
-            description: "Network Error",
-          };
-          dispatch({ type: "setAlert", payload: payloadAlert });
-        }
-      });
-  }
-
-  useEffect(() => {
-    function loadLocalStorage() {
-      const localstorage = localStorage.getItem("localState");
-      const data = JSON.parse(localstorage);
-      if (data) {
-        return navigate("/home");
-      }
+    
+    // Request API to login
+    function login() {
+        axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
+        .then(function (response) {
+            localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
+            return navigate("/");
+        })
+        .catch((error) =>{
+            if (error.response) setAlert("Invalid credentials", "error", 3000)
+            else setAlert(error.message,"error",3000)
+        });
     }
-    loadLocalStorage();
-  }, [navigate]);
-  return (
-    <div>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Login to Metrograph</title>
-      </Helmet>
+    
+    // Handle Enter on Login button
+    function handleEnterKey(event) {
+        if(event.key === 'Enter') login()
+    }
 
-      <div className="bg-cock-purple-dark min-h-screen ">
-        <div className="flex flex-row">
-          <div className="flex flex-col w-1/2 md:justify-start  md:pt-0 md:px-24">
-            {!mystate.alert.is_hide && (
-              <div className="mt-12 px-12">
-                <Alert />
-              </div>
-            )}
-            {onLoad && <div className="load_bar" />}
-            <div className="flex flex-col my-auto">
-              <div className="flex flex-col justify-center items-center">
-                <div className="logo" />
-              </div>
-              <div className="flex flex-col px-12">
-                <div className="mt-28 flex items-center space-x-4">
-                  <img alt="" src={dashboardIcon} height="38" width="38" />
-                  <div className="flex flex-col">
-                    <p className="text-2xl text-white font-Rajdhani font-medium">
-                      Login to your account
-                    </p>
-                    <p
-                      className="text-md text-white font-Rajdhani font-medium cursor-pointer hover:text-orange-500"
-                      onClick={() => navigate("/register")}
-                    >
-                      Create new account?
-                    </p>
-                  </div>
-                </div>
-                {/* username  input start */}
-                <div className="mt-16">
-                  <div className="flex flex-row items-center space-x-2">
-                    <div className="w-2 border-t-2 border-brand-header" />
-                    <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
-                      USERNAME
-                    </p>
-                    <div className="w-full border-t-2 border-brand-header" />
-                  </div>
-                  <div className="border-2 border-t-0 border-brand-header -mt-2">
-                    <input
-                      className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
-                      placeholder="@username.."
-                      onChange={(e) =>
-                        setInputs({
-                          username: e.target.value,
-                          password: inputs.password,
-                        })
-                      }
-                      value={inputs.username}
-                      onKeyDown={(e) => e.key === "Enter" && login()}
-                    />
-                  </div>
-                </div>
-                {/* username input end */}
+    useEffect(() => {
+        function loadLocalStorage() {
+          const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
+          if (JSON.parse(localstorage)) return navigate("/");
+        }
+        loadLocalStorage();
+      },[navigate]);
 
-                {/* password  input start */}
-                <div className="mt-4">
-                  <div className="flex flex-row items-center space-x-2">
-                    <div className="w-2 border-t-2 border-brand-header" />
-                    <p className="text-brand-dark-button text-xs flex-shrink-0 font-Inter font-bold">
-                      PASSWORD
-                    </p>
-                    <div className="w-full border-t-2 border-brand-header" />
-                  </div>
-                  <div className="border-2 border-t-0 border-brand-header -mt-2">
-                    <input
-                      type="password"
-                      className=" bg-transparent focus:outline-none h-8 text-white px-4 my-2  w-full text-lg font-Inter font-medium"
-                      placeholder="........."
-                      onChange={(e) =>
-                        setInputs({
-                          username: inputs.username,
-                          password: e.target.value,
-                        })
-                      }
-                      value={inputs.password}
-                      onKeyDown={(e) => e.key === "Enter" && login()}
-                    />
-                  </div>
+    return (
+        <div className="flex ">
+            <div className="bg-black h-screen w-[507px] relative">
+                <div className="flex flex-col justify-center items-center mt-20 mx-[87px] relative">
+                    <div className="flex justify-center items-center space-x-[32px] w-full">
+                        <img src={logo} className="w-[136px] h-[29px]" alt="Metrograph-logo"/>
+                        <div className="border-b border-[#535353] border-[1px] w-full"/>
+                    </div>
+                    {alertVisible && <div className="flex justify-center w-full absolute top-12">
+                        <Alert
+                            alertData={alertData}
+                            onHide={() => setAlertVisible(false)}
+                        />
+                    </div>}
                 </div>
-                {/* password input end */}
+                <div className="bottom-[140px] absolute">
+                    <div className="ml-[87px]">
+                        <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>
+                        <div className="text-[13px] text-white font-IBM-Plex-Sans">Please fill your crededntials to login</div>
+                    </div>
+                    <div className="mx-[87px] mt-[58px]">
+                        <input
+                        type="text"
+                        className="h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
+                        placeholder="Username"
+                        onChange={(e)=>setUsername(e.target.value)}
+                        onKeyPress={(e) => handleEnterKey(e)}
+                        value={username}
+                        />
 
-                {/* Button start */}
-
-                <div className="mt-12 flex justify-end">
-                  <button
-                    onClick={() => login()}
-                    className="bg-cock-green border-2 border-white h-10 w-28 space-x-2 px-6 hover:bg-green-400 cursor-pointer text-white text-xs font-Rajdhani font-bold"
-                  >
-                    LOGIN
-                  </button>
+                        <input
+                        type="password"
+                        className="mt-[14px] h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
+                        placeholder="****"
+                        onChange={(e)=>setPassword(e.target.value)}
+                        onKeyPress={(e) => handleEnterKey(e)}
+                        value={password}
+                        />
+                    </div>
+                    <div className="justify-end flex mt-[27px]  mx-[87px]">
+                        {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                        LOGIN
+                        </div>}
+                        {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+                        LOGIN
+                        </div>}
+                    </div>
+                    <div className="justify-end flex space-x-2  mt-[27px]  mx-[87px]">
+                        <div  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">
+                        Setup not done yet? 
+                        </div>
+                        <div  className="text-white text-[13px] font-IBM-Plex-Sans font-medium">
+                        |
+                        </div>
+                        <div  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">
+                        Forgot Password?
+                        </div>
+                    </div>
                 </div>
-                {/* Button end */}
-              </div>
             </div>
-          </div>
-          <div className="w-1/2 flex justify-end relative">
-            <img alt="" src={art} className="fadeIn h-screen" />
-            <div className="absolute h-screen w-full"></div>
-          </div>
+            <div className="bg-[#7900FF] h-screen grow relative overflow-hidden">
+                <div className="mx-16 my-20 flex  h-screen relative">
+                    <div className="pattern absolute"/>
+                </div>
+                <div className=" text-white font-bold text-right text-[16px] font-IBM-Plex-Mono absolute  top-20 right-6 bg-[#7900FF] px-10">
+                    2022    |    Metrogtaph.io    |    v1.29.3
+                    </div>
+                <div className="absolute bottom-[124px] right-6  px-10 bg-[#7900FF]">
+                    <div className="text-right font-light font-Inter text-[64px] text-white">The Open Source Cloud
+                    </div>
+                    <div className="text-right font-light font-Inter text-[64px] text-white ">Native Platform
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    )
 }

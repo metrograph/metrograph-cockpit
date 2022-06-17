@@ -1,16 +1,21 @@
 // React imports
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // Icons import
 import closeIcon from "../assets/icons/close.svg"
+
+// External components
+import axios from "axios";
+
+// Internal components
+import {config} from "../config";
 
 // Local imports
 import DropDpwnList from "./DropDownList";
 
 export default function ModelSchedule(props){
-    
-    const [weeks, setWeeks]=useState(true)
-    const [days, setDays]=useState(false)
+    const mystate = useSelector((state) => state);
     const [times, setTimes]=useState("")
     const [every, setEvery]=useState("")
     const dateList = [
@@ -66,8 +71,17 @@ export default function ModelSchedule(props){
             return {every:every, at: secondes, times:times}
         }
     }
+
     function createSchedule(){
-        console.log(dataTosubmit())
+        let payload=dataTosubmit()
+        payload.action_uuid=props.actionCode.uuid
+        console.log(payload)
+		axios.post(config.METROGRAPH_API+"/schedule", payload, { headers: {Authorization: mystate.user.token} })
+			.then((res) => {
+                props.setAlert(res.data.message, "success", 3000)
+                handleCancel()
+				})
+			.catch(() => {props.setAlert("400, Bad request", "error", 3000)});
     }
 
     function handleCancel(){

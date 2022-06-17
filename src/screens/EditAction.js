@@ -40,7 +40,8 @@ function MyModal(props) {
     >
       <Modal.Body
         as={ModelSchedule}
-        action={props.action}
+        actionCode={props.actionCode}
+		setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
         show={props.show}
         onHide={() => props.onHide()}
         />
@@ -222,6 +223,8 @@ export default function EditAction() {
 				<MyModal
 					show={modalVisible}
 					onHide={() => setModalVisible(false)}
+					actionCode={actionCode}
+					setAlert={(title, type, delay)=>setAlert(title, type, delay)}
 				/>
 				{alertVisible &&
 					<div className="flex justify-center w-full absolute top-24">

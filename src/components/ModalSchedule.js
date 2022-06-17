@@ -10,7 +10,9 @@ import DropDpwnList from "./DropDownList";
 export default function ModelSchedule(props){
     
     const [weeks, setWeeks]=useState(true)
-    const [days, setDat]=useState(false)
+    const [days, setDays]=useState(false)
+    const [times, setTimes]=useState("")
+    const [every, setEvery]=useState("")
     const dateList = [
         { key: 1, value: "Weeks" },
         { key: 2, value: "Days" },
@@ -32,12 +34,42 @@ export default function ModelSchedule(props){
         ]
     const [selectedDay, setSelectedDay] = useState("Days");
     const [listDayOpen, setListDayOpen] = useState(false);
-    const [hours, setHours]=useState()
-    const [minutes, setMinutes]=useState()
-    const [secondes, setSecondes]=useState()
-    
+    const [hours, setHours]=useState("")
+    const [minutes, setMinutes]=useState("")
+    const [secondes, setSecondes]=useState("")
 
-    
+    function clearInputs(){
+        setEvery()
+        setSelectedDate()
+        setSelectedDay()
+        setHours("")
+        setMinutes("")
+        setSecondes("")
+        setTimes("")
+    }
+
+    function dataTosubmit(){
+
+        if (selectedDate==="Weeks") {
+            return {every:every, weeks:"1", at: selectedDay.toLocaleLowerCase()+" "+hours+":"+minutes+":"+secondes, times:times}
+        }
+        else if (selectedDate==="Days") {
+            return {every:every, at: selectedDay.toLocaleLowerCase()+" "+hours+":"+minutes+":"+secondes, times:times}
+        }
+        else if (selectedDate==="Hours") {
+            return {every:every, at: hours+":"+minutes+":"+secondes, times:times}
+        }
+        else if (selectedDate==="Minutes") {
+            return {every:every, at: minutes+":"+secondes, times:times}
+        }
+        else if (selectedDate==="Secondes") {
+            return {every:every, at: secondes, times:times}
+        }
+    }
+    function createSchedule(){
+        console.log(dataTosubmit())
+    }
+
     function handleCancel(){
         props.onHide()
     }
@@ -54,9 +86,10 @@ export default function ModelSchedule(props){
                 <div className="flex flex-col mt-[35px] grow">
                     <div className="font-IBM-Plex-Sans font-regular text-white text-[16px]">Execute this Action every:</div>
                     <div className="flex items-center mt-[23px] space-x-2">
-                        <input title="every" className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
+                        <input title="every" value={every} onChange={(e)=>setEvery(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[13px] text-white font-Inter font-medium text-[14px] text-center" />
                         <div className="w-[150px]">
                             <DropDpwnList
+                                    key="date"
                                     listOptions={dateList}
                                     setValue={(e)=>setSelectedDate(e)}
                                     value={selectedDate}
@@ -68,11 +101,12 @@ export default function ModelSchedule(props){
                         {selectedDate==="Weeks" &&
                             <div className="w-[150px]">
                                 <DropDpwnList
-                                listOptions={dayList}
-                                setValue={(e)=>setSelectedDay(e)}
-                                value={selectedDay}
-                                listOpen={listDayOpen}
-                                toogleList={(e)=>setListDayOpen(e)}
+                                    key="day"
+                                    listOptions={dayList}
+                                    setValue={(e)=>setSelectedDay(e)}
+                                    value={selectedDay}
+                                    listOpen={listDayOpen}
+                                    toogleList={(e)=>setListDayOpen(e)}
                                 />
                             </div>
                         }
@@ -93,7 +127,7 @@ export default function ModelSchedule(props){
                 <div className="flex flex-col mt-[35px] grow">
                     <div className="font-IBM-Plex-Sans font-regular text-white text-[16px]">Run this schedule:</div>
                     <div className="flex items-center mt-[23px] space-x-4">
-                        <input title="times" className="h-[49px] w-[62px] bg-[#202020] rounded-[11px] text-white font-Inter font-medium text-[14px] text-center" />
+                        <input title="times" value={times} onChange={(e)=>setTimes(e.target.value)} className="h-[49px] w-[62px] bg-[#202020] rounded-[11px] text-white font-Inter font-medium text-[14px] text-center" />
                         <div className=" font-IBM-Plex-Sans text-[16px] font-regular text-white">Times</div>
                     </div>
                 </div>
@@ -103,9 +137,9 @@ export default function ModelSchedule(props){
                             CANCEL
                         </div>
                     </div>
-                    <div className="">
+                    <div onClick={()=>createSchedule()} className="">
                         <div  className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-                            RUN
+                            CREATE
                         </div>
                     </div>
                 </div>

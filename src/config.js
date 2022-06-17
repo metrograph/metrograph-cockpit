@@ -1,4 +1,4 @@
 const config ={
-    METROGRAPH_API:"http://195.201.146.87:80/v1",
+    METROGRAPH_API:process.env.REACT_APP_HOSTNAME,
 }
 export {config}

@@ -1,21 +1,24 @@
 // React imports
 import axios from "axios";
 import React, {useState, useEffect} from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Internal components
 import Alert from "../components/Alert"
+import MyInput from "../components/MyInput";
+import MyPasswordInput from "../components/MyPasswordInput";
 import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
 
 
-export default function Login(){
+
+export default function Register(){
     const navigate = useNavigate();
-    const location = useLocation()
     
     // Inputs local state
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
+    const [confirmPassword, setConfirmPassword]=useState("")
 
     // Alert local state
     const [alertVisible, setAlertVisible]= useState(false)
@@ -32,10 +35,10 @@ export default function Login(){
     
     // Request API to login
     function login() {
-        axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
+        axios.post(config.METROGRAPH_API+"/auth/register", {username: username, password: password})
         .then(function (response) {
-            localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
-            return navigate("/");
+            setAlert(response.data.message,"success",3000)
+            return navigate("/login",{state:{response:response.data.message}});
         })
         .catch((error) =>{
             if (error.response) setAlert("Invalid credentials", "error", 3000)
@@ -52,11 +55,6 @@ export default function Login(){
         function loadLocalStorage() {
           const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
           if (JSON.parse(localstorage)) return navigate("/");
-          if(location.state && location.state.response) {
-            setAlert(location.state.response, "success", 3000)
-            location.state.response=null
-            console.log(location.state.response)
-            }
         }
         loadLocalStorage();
       },[navigate]);
@@ -78,39 +76,25 @@ export default function Login(){
                 </div>
                 <div className="bottom-[140px] absolute">
                     <div className="ml-[87px]">
-                        <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>
-                        <div className="text-[13px] text-white font-IBM-Plex-Sans">Please fill your crededntials to login</div>
+                        <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Setup</div>
+                        <div className="text-[13px] text-white font-IBM-Plex-Sans">Please fill your account crededntials</div>
                     </div>
-                    <div className="mx-[87px] mt-[58px]">
-                        <input
-                        type="text"
-                        className="h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
-                        placeholder="Username"
-                        onChange={(e)=>setUsername(e.target.value)}
-                        onKeyPress={(e) => handleEnterKey(e)}
-                        value={username}
-                        />
-
-                        <input
-                        type="password"
-                        className="mt-[14px] h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
-                        placeholder="****"
-                        onChange={(e)=>setPassword(e.target.value)}
-                        onKeyPress={(e) => handleEnterKey(e)}
-                        value={password}
-                        />
+                    <div className="mx-[87px] mt-[58px] space-y-4">
+                    <MyInput key="username" placeholder="username" value={username} setValue={(e)=>setUsername(e)}/>
+                    <MyPasswordInput key="password" placeholder="****" value={password} setValue={(e)=>setPassword(e)} />
+                    <MyPasswordInput key="confirmPassword" placeholder="****" value={confirmPassword} setValue={(e)=>setConfirmPassword(e)} />
                     </div>
                     <div className="justify-end flex mt-[27px]  mx-[87px]">
-                        {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                        {username && password && (password===confirmPassword) && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
                         LOGIN
                         </div>}
-                        {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+                        {(!username || !password || (password!=confirmPassword)) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
                         LOGIN
                         </div>}
                     </div>
                     <div className="justify-end flex space-x-2  mt-[27px]  mx-[87px]">
-                        <div onClick={()=>navigate("/register")}  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">
-                        Setup not done yet? 
+                        <div onClick={()=>navigate("/login")}  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">
+                        You have account? 
                         </div>
                         <div  className="text-white text-[13px] font-IBM-Plex-Sans font-medium">
                         |

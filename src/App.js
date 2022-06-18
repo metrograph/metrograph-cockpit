@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 const Login = lazy(() => import("./screens/Login"));
+const Register = lazy(() => import("./screens/Register"));
 const Action = lazy(() => import("./screens/Action"));
 const CreateAction = lazy(() => import("./screens/CreateAction"));
 const EditAction = lazy(() => import("./screens/EditAction"));
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/" element={<Action />} />
             <Route path="/action" element={<Action />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/create-action" element={<CreateAction />} />
             <Route path="/edit-action/:uuid" element={<EditAction />} />

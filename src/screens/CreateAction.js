@@ -30,6 +30,7 @@ export default function CreateAction() {
 	const runtimeVersionList=[{ key: 1, value: "3.9.10" }]
 	const [runtime, setRuntime] = useState("python");
 	const [runtimeVersion, setRuntimeVersion] = useState("3.9.10");
+	const [loading, setLoading]= useState(true)
 
 	const [runtimeListOpen, setRuntimeListOpen] = useState(false);
 	const [runtimeVersionListOpen, setRuntimeVersionListOpen] = useState(false);
@@ -64,11 +65,15 @@ export default function CreateAction() {
 		function loadLocalStorage() {
 			const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
 			const data = JSON.parse(localstorage);
-			if (data) dispatch({ type: "user/SET", payload: data })
+			if (data)
+			{
+				dispatch({ type: "user/SET", payload: data })
+				setLoading(false)
+			}
 			else return navigate("/login")
 			}
 		loadLocalStorage();
-	},[dispatch, navigate])
+	},[dispatch, navigate, loading])
 
 	return (
 		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect">

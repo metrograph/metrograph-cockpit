@@ -18,6 +18,7 @@ import i_icon from "../assets/icons/i.svg";
 
 // External components
 import Modal from 'react-bootstrap/Modal'
+import Placeholder from 'react-bootstrap/Placeholder'
 import axios from "axios";
 
 // Internal components
@@ -30,7 +31,19 @@ import {config} from "../config"
 import { useRef } from "react";
 
 
+function Title(props){
+	if(props.loading)return(
+		<Placeholder  animation="glow">
+			<Placeholder xs={6} style={{width:"400px", height:"40px", borderRadius:"10px"}} />
+		</Placeholder>
+	)
+	else if(!props.loading) return (
+		<div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
+			{props.title}
+		</div>
+	)
 
+}
 function MyModal(props) {
   return (
     <Modal
@@ -287,9 +300,7 @@ export default function EditAction() {
 				{/* Header */}
 				<div className="pt-[104px]">
 					<div className="flex justify-between">
-						<div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
-							{title}
-						</div>
+						<Title title={title} loading={loading} />
 						<div className="justify-end flex space-x-[6px] pt-[30px]">
 							<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
 							CANCEL

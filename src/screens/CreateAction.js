@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 // External components
 import axios from "axios";
+import Spinner from 'react-bootstrap/Spinner'
+import Button from 'react-bootstrap/Button'
 
 // Internal components
 import DropDpwnList from "../components/DropDownList";
@@ -13,6 +15,24 @@ import Alert from "../components/Alert";
 import TopBar from "../components/TopBar";
 import {config} from "../config"
 
+function MySpinner(props){
+	if(props.show) return (
+		<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
+			<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] px-4 h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
+				<Spinner
+				className="mr-2"
+					as="span"
+					animation="border"
+					size="sm"
+					role="status"
+					aria-hidden="true"
+					/>
+				CREATING ACTION...
+			</div>
+		</div>
+	)
+	else return <></>
+}
 export default function CreateAction() {
 	// Global state
 	const dispatch = useDispatch();
@@ -34,6 +54,7 @@ export default function CreateAction() {
 
 	const [runtimeListOpen, setRuntimeListOpen] = useState(false);
 	const [runtimeVersionListOpen, setRuntimeVersionListOpen] = useState(false);
+	const [showLoading, setshowLoading]= useState(false)
 	
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -51,13 +72,18 @@ export default function CreateAction() {
 	// Request API to create Action
 	function handleSubmit(){
 		let payload={name:name, description:description, runtime:runtime, runtime_version:runtimeVersion}
+		setshowLoading(true)
 		axios.post(config.METROGRAPH_API+"/action", payload, { headers: {Authorization: mystate.user.token} })
 			.then((res) => {
 			let action=res.data.payload.action
+			setshowLoading(false)
 			dispatch({type:"action/ADD",payload:action})
 			navigate("/edit-action/"+action.uuid, {action: action})
 				})
-			.catch(() => {setAlert("400, Bad request", "error", 3000)});
+			.catch(() => {
+				setshowLoading(false)
+				setAlert("400, Bad request", "error", 3000)
+			});
 	}
 	
 	useEffect(()=>{
@@ -131,7 +157,7 @@ export default function CreateAction() {
 									/>
 								</div>
 							</div>
-							<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
+							{!showLoading &&<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
 								<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
 									CANCEL
 								</div>
@@ -145,7 +171,8 @@ export default function CreateAction() {
 									CREATE
 								</div>
 								}
-							</div>
+							</div>}
+							<MySpinner show={showLoading}/>
 						</div>
 					</div>
 				</div>

@@ -18,6 +18,7 @@ import i_icon from "../assets/icons/i.svg";
 
 // External components
 import Modal from 'react-bootstrap/Modal'
+import Spinner from 'react-bootstrap/Spinner'
 import Placeholder from 'react-bootstrap/Placeholder'
 import axios from "axios";
 
@@ -44,6 +45,24 @@ function Title(props){
 	)
 
 }
+
+function SpinnerSave(props){
+	if(props.show) return (
+		<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
+			<Spinner
+				className="mr-2"
+					as="span"
+					animation="border"
+					size="sm"
+					role="status"
+					aria-hidden="true"
+					/>
+				{props.title}
+		</div>
+	)
+	else return (<></>)
+}
+
 function MyModal(props) {
   return (
     <Modal
@@ -198,6 +217,7 @@ export default function EditAction() {
 	const [urlCheckBox, setUrlCheckBox] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [loading, setLoading]=useState(true)
+	const [loadingSave, setLoadingSave]= useState(false)
 
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -210,13 +230,18 @@ export default function EditAction() {
 
 	// Request API to update Action
 	function handleSave(){
+		setLoadingSave(true)
 		axios.patch(config.METROGRAPH_API+"/action/"+actionCode.uuid,{name: title, description: description, runtime: runtime, runtime_version: runtimeVersion} ,{ headers: {Authorization: mystate.user.token} })
 		.then((res) => {
+			setLoadingSave(false)
 			setActionCode(res.data.payload.action)
 			setAlert(res.data.message,"success",3000)
 			
 		})
-		.catch((error) => {setAlert(error.data.message,"error",3000)});
+		.catch((error) => {
+			setLoadingSave(false)
+			setAlert(error.data.message,"error",3000)
+		});
 	}
 	
 	function handleCloseList(){
@@ -305,12 +330,17 @@ export default function EditAction() {
 							<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
 							CANCEL
 							</div>
-							{(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-							SAVE
-							</div>}
-							{(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-							SAVE
-							</div>}
+							{!loadingSave &&
+								<div>
+									{(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+									SAVE
+									</div>}
+									{(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+									SAVE
+									</div>}
+								</div>
+							}
+							<SpinnerSave title="Saving..." show={loadingSave} />
 						</div>
 					</div>
 					<div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />

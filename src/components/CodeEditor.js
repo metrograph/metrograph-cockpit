@@ -29,8 +29,10 @@ import {config} from "../config";
 // External components
 import axios from "axios"
 import Modal from 'react-bootstrap/Modal'
+import Spinner from 'react-bootstrap/Spinner'
 import Toast from 'react-bootstrap/Toast'
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
+import { BsListTask } from "react-icons/bs";
 
 
 function MyModal(props) {
@@ -59,6 +61,44 @@ function MyToast(props){
 			</div>
 		</div>
 	)
+}
+
+function SpinnerRun(props){
+	if(props.show) return (
+		<div className="bg-[#7900FF]  h-[35px] grid place-content-center rounded-[9px] cursor-wait">
+			<div className="text-white font-IBM-Plex-Sans font-bold text-[12px] px-2">
+			<Spinner
+				className="mr-2"
+					as="span"
+					animation="border"
+					size="sm"
+					role="status"
+					aria-hidden="true"
+					/>
+				{props.title}
+			</div>
+		</div>
+	)
+	else return (<></>)
+}
+
+function SpinnerBuild(props){
+	if(props.show) return (
+		<div className="bg-[#7ECA9C]  h-[35px] grid place-content-center rounded-[9px] cursor-wait">
+			<div className="text-white font-IBM-Plex-Sans font-bold text-[12px] px-2">
+			<Spinner
+				className="mr-2"
+					as="span"
+					animation="border"
+					size="sm"
+					role="status"
+					aria-hidden="true"
+					/>
+				{props.title}
+			</div>
+		</div>
+	)
+	else return (<></>)
 }
 
 function CFileTree(props) {
@@ -517,7 +557,10 @@ export default function CodeEditor(props) {
 	const ref = React.useRef(null);
 	const [loading, setLoading]=useState(true)
 
-	
+	// Loading Spinner state
+	const [LoadingRun, setLoadingRun]= useState(false)
+	const [LoadingBuild, setLoadingBuild]= useState(false)
+
 	function setToast(message,delay){
 		setToastMessage(message)
 		setshowToast(true)
@@ -615,15 +658,29 @@ export default function CodeEditor(props) {
 	}
 
 	function handleRun(){
+		setLoadingRun(true)
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
-			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
-			.catch(error=>{props.setAlert(error.data.message, "error", 3000)})
+			.then((res) => {
+				setLoadingRun(false)
+				props.setAlert(res.data.message, "success", 3000)
+			})
+			.catch(error=>{
+				setLoadingRun(false)
+				props.setAlert(error.data.message, "error", 3000)
+			})
 	}
 
 	function handleBuild(){
+		setLoadingBuild(true)
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
-			.then((res) => {props.setAlert(res.data.message, "success", 3000)})
-			.catch(error=>{props.setAlert(error.data.message, "error", 3000)})
+			.then((res) => {
+				setLoadingBuild(false)
+				props.setAlert(res.data.message, "success", 3000)
+			})
+			.catch(error=>{
+				setLoadingBuild(false)
+				props.setAlert(error.data.message, "error", 3000)
+			})
 	}
 	
 	useEffect(() => {
@@ -790,16 +847,22 @@ export default function CodeEditor(props) {
 						/>
 					</div>
 					<div className="mt-[15px] flex place-content-end space-x-2">
-						<div onClick={(e)=>{e.stopPropagation(); handleRun()}} className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-purple-600">
-							<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+						{!LoadingRun &&
+							<div onClick={(e)=>{e.stopPropagation(); handleRun()}} className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-purple-600">
+								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
 								Run
+								</div>
 							</div>
-						</div>
-						<div onClick={(e)=>{e.stopPropagation(); handleBuild()}} className="bg-[#7ECA9C] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-green-400">
-							<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
-								Build
+						}
+						<SpinnerRun title="Running Action..." show={LoadingRun}/>
+						{!LoadingBuild &&
+							<div onClick={(e)=>{e.stopPropagation(); handleBuild()}} className="bg-[#7ECA9C] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-green-400">
+								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+									Build
+								</div>
 							</div>
-						</div>
+						}
+						<SpinnerBuild title="Building Action..." show={LoadingBuild}/>
 					</div>
 				</div>
 				<div className="w-2/5 border-r-[3px] border-[#343434] px-[19px]">

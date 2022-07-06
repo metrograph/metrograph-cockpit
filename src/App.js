@@ -9,6 +9,7 @@ const Action = lazy(() => import("./screens/Action"));
 const CreateAction = lazy(() => import("./screens/CreateAction"));
 const EditAction = lazy(() => import("./screens/EditAction"));
 const Settings = lazy(() => import("./screens/Settings"));
+const Flow = lazy(() => import("./screens/Flow"));
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Suspense fallback={<div className="bg-brand-primary min-h-screen"></div>}>
           <Routes>
             <Route path="/" element={<Action />} />
+            <Route path="/flow" element={<Flow />} />
             <Route path="/action" element={<Action />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

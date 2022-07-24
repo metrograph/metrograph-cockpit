@@ -32,8 +32,63 @@ import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 import Toast from 'react-bootstrap/Toast'
 import { getIconForFile, getIconForFolder, getIconForOpenFolder } from 'vscode-icons-js';
-import { BsListTask } from "react-icons/bs";
 
+//Buttons components
+function ButtonRun (props){
+	console.log(props)
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[100px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+				<Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                Running
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div onClick={(e)=>props.onClick(e)} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+			Run
+			</div>
+        }
+        </div>
+    )
+	
+}
+function ButtonBuild (props){
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[100px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-green-400">
+				<Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                Building
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div onClick={(e)=>props.onClick(e)} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-green-400">
+			Build
+			</div>
+        }
+        </div>
+    )
+	
+}
 
 function MyModal(props) {
     return (
@@ -61,44 +116,6 @@ function MyToast(props){
 			</div>
 		</div>
 	)
-}
-
-function SpinnerRun(props){
-	if(props.show) return (
-		<div className="bg-[#7900FF]  h-[35px] grid place-content-center rounded-[9px] cursor-wait">
-			<div className="text-white font-IBM-Plex-Sans font-bold text-[12px] px-2">
-			<Spinner
-				className="mr-2"
-					as="span"
-					animation="border"
-					size="sm"
-					role="status"
-					aria-hidden="true"
-					/>
-				{props.title}
-			</div>
-		</div>
-	)
-	else return (<></>)
-}
-
-function SpinnerBuild(props){
-	if(props.show) return (
-		<div className="bg-[#7ECA9C]  h-[35px] grid place-content-center rounded-[9px] cursor-wait">
-			<div className="text-white font-IBM-Plex-Sans font-bold text-[12px] px-2">
-			<Spinner
-				className="mr-2"
-					as="span"
-					animation="border"
-					size="sm"
-					role="status"
-					aria-hidden="true"
-					/>
-				{props.title}
-			</div>
-		</div>
-	)
-	else return (<></>)
 }
 
 function CFileTree(props) {
@@ -847,22 +864,8 @@ export default function CodeEditor(props) {
 						/>
 					</div>
 					<div className="mt-[15px] flex place-content-end space-x-2">
-						{!LoadingRun &&
-							<div onClick={(e)=>{e.stopPropagation(); handleRun()}} className="bg-[#7900FF] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-purple-600">
-								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
-								Run
-								</div>
-							</div>
-						}
-						<SpinnerRun title="Running Action..." show={LoadingRun}/>
-						{!LoadingBuild &&
-							<div onClick={(e)=>{e.stopPropagation(); handleBuild()}} className="bg-[#7ECA9C] w-[92px] h-[35px] grid place-content-center rounded-[9px] cursor-pointer hover:bg-green-400">
-								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
-									Build
-								</div>
-							</div>
-						}
-						<SpinnerBuild title="Building Action..." show={LoadingBuild}/>
+						<ButtonRun loading={LoadingRun} onClick={(e)=>{e.stopPropagation(); handleRun()}}/>
+						<ButtonBuild loading={LoadingBuild} onClick={(e)=>{e.stopPropagation(); handleBuild()}}/>
 					</div>
 				</div>
 				<div className="w-2/5 border-r-[3px] border-[#343434] px-[19px]">

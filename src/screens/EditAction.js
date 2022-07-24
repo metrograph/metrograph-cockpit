@@ -46,6 +46,39 @@ function Title(props){
 
 }
 
+function ButtonSave (props){
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[100px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+				<Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                SAVING
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div>
+                {(!props.title || !props.description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+				SAVE
+				</div>}
+				{(props.title && props.description) &&<div onClick={()=>props.onClick()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+				SAVE
+				</div>}
+            </div>
+        }
+        </div>
+    )
+	
+}
+
 function SpinnerSave(props){
 	if(props.show) return (
 		<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
@@ -330,17 +363,7 @@ export default function EditAction() {
 							<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
 							CANCEL
 							</div>
-							{!loadingSave &&
-								<div>
-									{(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-									SAVE
-									</div>}
-									{(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-									SAVE
-									</div>}
-								</div>
-							}
-							<SpinnerSave title="Saving..." show={loadingSave} />
+							<ButtonSave loading={loadingSave} onClick={()=>handleSave()} title={title} description={description}/>
 						</div>
 					</div>
 					<div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />

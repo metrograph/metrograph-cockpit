@@ -8,7 +8,40 @@ import Alert from "../components/Alert"
 import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
 
+// External components
+import Spinner from 'react-bootstrap/Spinner'
 
+function ButtonLogin (props){
+    return (
+        <div>
+            {props.loading &&
+            <div>
+                {props.username && props.password && <div className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-progress hover:bg-purple-600">
+                <Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                LOGIN
+                </div>}
+            </div>
+        }
+        {!props.loading &&
+            <div>
+                {props.username && props.password && <div onClick={()=>props.onClick()} onKeyPress={() => props.onKeyPress()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+                LOGIN
+                </div>}
+                {(!props.username || !props.password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+                LOGIN
+                </div>}
+            </div>
+        }
+        </div>
+    )
+}
 export default function Login(){
     const navigate = useNavigate();
     const location = useLocation()
@@ -21,6 +54,9 @@ export default function Login(){
     const [alertVisible, setAlertVisible]= useState(false)
     const [alertData, setAlertData]=useState()
 
+    // Loading response state
+    const [loading, setLoading]=useState(false)
+
     // Alert trigger function
     function setAlert(title, type, delay){
         setAlertData({title:title,type:type})
@@ -32,12 +68,15 @@ export default function Login(){
     
     // Request API to login
     function login() {
+        setLoading(true)
         axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
         .then(function (response) {
             localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
+            setLoading(false)
             return navigate("/");
         })
         .catch((error) =>{
+            setLoading(false)
             if (error.response) setAlert("Invalid credentials", "error", 3000)
             else setAlert(error.message,"error",3000)
         });
@@ -101,12 +140,7 @@ export default function Login(){
                         />
                     </div>
                     <div className="justify-end flex mt-[27px]  mx-[87px]">
-                        {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-                        LOGIN
-                        </div>}
-                        {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-                        LOGIN
-                        </div>}
+                        <ButtonLogin onClick={()=>login()} onKeyPress={() => handleEnterKey()} loading={loading} username={username} password={password}/>
                     </div>
                     <div className="justify-end flex space-x-2  mt-[27px]  mx-[87px]">
                         <div onClick={()=>navigate("/register")}  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">

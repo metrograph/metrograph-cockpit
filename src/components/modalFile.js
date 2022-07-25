@@ -1,4 +1,5 @@
 // React imports
+import { useState } from "react"
 import axios from "axios"
 import {useDispatch, useSelector} from "react-redux"
 
@@ -12,17 +13,51 @@ import {config} from "../config"
 
 // External components
 import {getIconForFile, getIconForFolder} from 'vscode-icons-js';
+import Spinner from 'react-bootstrap/Spinner'
+
+function ButtonConfirm (props){
+	console.log(props)
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[90px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
+				<Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                DELETING
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div onClick={(e)=>props.onClick(e)} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
+			CONFRIM
+			</div>
+        }
+        </div>
+    )
+	
+}
 
 export default function ModalFile(props){
     const dispatch = useDispatch()
     const mystate = useSelector((mystate)=>mystate)
+    const [loading, setLoading]= useState(false)
+
     function handleCancel(){
         props.onHide()
     }
 
     function handleDeleteFile(){
+        setLoading(true)
         axios.delete(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/file", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
         .then((response) => {
+            setLoading(false)
 			ActionCodeBuilder.delete(mystate.file_explorer, props.file.path);
 			dispatch({type:"setFileExplorer",payload:mystate.file_explorer})
 			dispatch({type:"activeElementContextMenu", payload:{path:""}})
@@ -32,11 +67,13 @@ export default function ModalFile(props){
             props.setAlert(response.data.message, "success", 3000)
         })
         .catch((error) => {
+            setLoading(false)
             handleCancel()
             props.setAlert(error.data.message, "success", 3000)
         });
         
     }
+
     function handleDeleteFolder(){
         axios.delete(config.METROGRAPH_API+"/actioncode/"+props.actionCode.uuid+"/folder", { headers: {Authorization: mystate.user.token},data:{path:props.file.path} })
         .then((response) => {
@@ -76,9 +113,7 @@ export default function ModalFile(props){
                         </div>
                     </div>
                     <div className="">
-                        <div onClick={()=>{props.file instanceof File?handleDeleteFile(): handleDeleteFolder()}}  className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
-                            CONFIRM
-                        </div>
+                        <ButtonConfirm loading={loading} onClick={()=>{props.file instanceof File?handleDeleteFile(): handleDeleteFolder()}}/>
                     </div>
                 </div>
             </div>

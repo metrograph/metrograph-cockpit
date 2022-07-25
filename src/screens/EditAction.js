@@ -79,23 +79,6 @@ function ButtonSave (props){
 	
 }
 
-function SpinnerSave(props){
-	if(props.show) return (
-		<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
-			<Spinner
-				className="mr-2"
-					as="span"
-					animation="border"
-					size="sm"
-					role="status"
-					aria-hidden="true"
-					/>
-				{props.title}
-		</div>
-	)
-	else return (<></>)
-}
-
 function MyModal(props) {
   return (
     <Modal

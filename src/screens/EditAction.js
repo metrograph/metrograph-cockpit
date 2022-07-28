@@ -243,6 +243,9 @@ export default function EditAction() {
 			setAlertVisible(false)
 			}, delay);
 	}
+	function handleCloseDropDown(){
+        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    }
 
 	// Request API to update Action
 	function handleSave(){
@@ -320,7 +323,7 @@ export default function EditAction() {
 	}, [actionCode, dispatch, navigate, loading,]);
 
 	return (
-		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
+		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
 			<div className="mx-20 w-full relative">
 				<TopBar/>
 				<MyModal

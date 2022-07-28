@@ -14,24 +14,6 @@ import Alert from "../components/Alert";
 import TopBar from "../components/TopBar";
 import {config} from "../config"
 
-function MySpinner(props){
-	if(props.show) return (
-		<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
-			<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] px-4 h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
-				<Spinner
-				className="mr-2"
-					as="span"
-					animation="border"
-					size="sm"
-					role="status"
-					aria-hidden="true"
-					/>
-				CREATING ACTION...
-			</div>
-		</div>
-	)
-	else return <></>
-}
 function ButtonCreate (props){
 	return (
         <div>
@@ -64,6 +46,7 @@ function ButtonCreate (props){
     )
 	
 }
+
 export default function CreateAction() {
 	// Global state
 	const dispatch = useDispatch();
@@ -95,7 +78,9 @@ export default function CreateAction() {
 			setAlertVisible(false)
 			}, delay);
 	}
-
+	function handleCloseDropDown(){
+        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    }
 	function handleCloseList(){
 		setRuntimeListOpen(false)
 		setRuntimeVersionListOpen(false)
@@ -133,7 +118,7 @@ export default function CreateAction() {
 	},[dispatch, navigate, loading])
 
 	return (
-		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect">
+		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect">
 			<div className="mx-20 relative">
 				{alertVisible &&
 					<div className="flex justify-center w-full absolute top-12">

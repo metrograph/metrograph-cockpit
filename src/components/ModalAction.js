@@ -1,4 +1,5 @@
 // React imports
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 // Icons imports
@@ -6,26 +7,61 @@ import closeIcon from "../assets/icons/close.svg"
 
 // External components
 import axios from "axios"
+import Spinner from 'react-bootstrap/Spinner'
 
 // Internal components
 import { config } from "../config"
 
+function ButtonConfirm (props){
+	console.log(props)
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[90px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
+				<Spinner
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                DELETING
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div onClick={(e)=>props.onClick(e)} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
+			CONFRIM
+			</div>
+        }
+        </div>
+    )
+	
+}
+
 export default function ModalAction(props){
     const mystate = useSelector((state)=>state)
     const dispatch = useDispatch()
-
+    const [loading, setLoading]= useState(false)
     
     function handleCancel(){
         props.onHide()
     }
 
     function handleDelete(){
+        setLoading(true)
         axios.delete(config.METROGRAPH_API+"/action/"+props.action.uuid, {headers: { Authorization: mystate.user.token }})
 			.then(response=>{
+                setLoading(false)
                 dispatch({type:"action/DELETE",payload:{uuid:props.action.uuid}})
                 handleCancel()
                 props.setAlert(response.data.message, "success", 3000)
-            }).catch(error=>{props.setAlert(error.data.message, "error", 3000)})
+            }).catch(error=>{
+                setLoading(false)
+                props.setAlert(error.data.message, "error", 3000)
+            })
     }
 
     if(!props.show) return <></>
@@ -49,9 +85,7 @@ export default function ModalAction(props){
                         </div>
                     </div>
                     <div className="">
-                        <div onClick={()=>handleDelete()}  className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-red-400 w-[80px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-red-600">
-                            CONFIRM
-                        </div>
+                        <ButtonConfirm loading={loading} onClick={()=>handleDelete()}/>
                     </div>
                 </div>
             </div>

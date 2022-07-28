@@ -14,24 +14,39 @@ import Alert from "../components/Alert";
 import TopBar from "../components/TopBar";
 import {config} from "../config"
 
-function MySpinner(props){
-	if(props.show) return (
-		<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
-			<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] px-4 h-[35px] rounded-[9px] flex items-center justify-center cursor-wait">
+function ButtonCreate (props){
+	return (
+        <div>
+            {props.loading &&
+            <div>
+               <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[100px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
 				<Spinner
-				className="mr-2"
-					as="span"
-					animation="border"
-					size="sm"
-					role="status"
-					aria-hidden="true"
-					/>
-				CREATING ACTION...
-			</div>
-		</div>
-	)
-	else return <></>
+                    className="mr-2"
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />
+                CREATING
+                </div>
+            </div>
+        }
+        {!props.loading &&
+            <div>
+                {(!props.title || !props.description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+				CREATE
+				</div>}
+				{(props.title && props.description) &&<div onClick={()=>props.onClick()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+				CREATE
+				</div>}
+            </div>
+        }
+        </div>
+    )
+	
 }
+
 export default function CreateAction() {
 	// Global state
 	const dispatch = useDispatch();
@@ -63,7 +78,9 @@ export default function CreateAction() {
 			setAlertVisible(false)
 			}, delay);
 	}
-
+	function handleCloseDropDown(){
+        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+    }
 	function handleCloseList(){
 		setRuntimeListOpen(false)
 		setRuntimeVersionListOpen(false)
@@ -101,7 +118,7 @@ export default function CreateAction() {
 	},[dispatch, navigate, loading])
 
 	return (
-		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect">
+		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect">
 			<div className="mx-20 relative">
 				{alertVisible &&
 					<div className="flex justify-center w-full absolute top-12">
@@ -156,22 +173,12 @@ export default function CreateAction() {
 									/>
 								</div>
 							</div>
-							{!showLoading &&<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
+							<div className="w-full justify-end  items-end flex space-x-[6px] pt-[30px]">
 								<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
 									CANCEL
 								</div>
-								{(!name || !description) &&
-								<div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed opacity-50">
-									CREATE
-								</div>
-								}
-								{(name && description) &&
-								<div onClick={()=>handleSubmit()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-									CREATE
-								</div>
-								}
-							</div>}
-							<MySpinner show={showLoading}/>
+								<ButtonCreate loading={showLoading} onClick={()=>handleSubmit()} title={name} description={description}/>
+							</div>
 						</div>
 					</div>
 				</div>

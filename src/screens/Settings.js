@@ -37,6 +37,10 @@ export default function Settings() {
         }, delay);
   }
 
+  function handleCloseDropDown(){
+    dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+  }
+
   // Request API to edit password
   function handleSubmit(){
     axios.patch(config.METROGRAPH_API+"/auth/account",{username: mystate.user.username, password: password, new_password: newPassword} ,{ headers: {Authorization: mystate.user.token} })
@@ -56,7 +60,7 @@ export default function Settings() {
   },[dispatch, navigate])
 
   return (
-    <div className="bg-black min-h-screen noselect">
+    <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen noselect">
       <div className="container mx-auto relative">
         <TopBar/>
         {alertVisible &&

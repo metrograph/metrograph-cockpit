@@ -545,7 +545,7 @@ function CodeEditorTabList(props){
 				)
 			})
 		}
-	else return <div className=" bg-[#141414] w-full h-[53px]"/>
+	else return <div className="w-full h-[53px]"></div>
 		
 }
 			
@@ -679,10 +679,12 @@ export default function CodeEditor(props) {
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/run", {}, {headers: { Authorization: mystate.user.token }})
 			.then((res) => {
 				setLoadingRun(false)
+				window.scrollTo(0, 0);
 				props.setAlert(res.data.message, "success", 3000)
 			})
 			.catch(error=>{
 				setLoadingRun(false)
+				window.scrollTo(0, 0);
 				props.setAlert(error.data.message, "error", 3000)
 			})
 	}
@@ -692,10 +694,12 @@ export default function CodeEditor(props) {
 		axios.post(config.METROGRAPH_API+"/action/"+props.actionCode.uuid+"/image/build", {}, {headers: { Authorization: mystate.user.token }})
 			.then((res) => {
 				setLoadingBuild(false)
+				window.scrollTo(0, 0);
 				props.setAlert(res.data.message, "success", 3000)
 			})
 			.catch(error=>{
 				setLoadingBuild(false)
+				window.scrollTo(0, 0);
 				props.setAlert(error.data.message, "error", 3000)
 			})
 	}
@@ -722,7 +726,7 @@ export default function CodeEditor(props) {
 	},[loading, dispatch, navigate, props.actionCode.uuid]);
 	
 	return (
-		<div className="flex flex-col bg-black relative">
+		<div className="flex min-h-screen flex-col bg-black relative">
 			<MyModal
 				file={modaldData}
 				actionCode={props.actionCode}
@@ -730,7 +734,7 @@ export default function CodeEditor(props) {
                 onHide={() => setModalVisible(false)}
 				setAlert={(title, type, delay)=>props.setAlert(title, type, delay)}
 			/>
-			<div className="flex h-[427px] bg-[#202020]">
+			<div className="grow flex overflow-hidden bg-[#202020]">
 				{/*Lef panel section*/}
 				<div onContextMenu={(e) => e.preventDefault()} className="bg-[#202020] w-1/5 relative" ref={ref}>
 					<div onClick={handleClick} onContextMenu={handleClick} className="h-full flex flex-col">
@@ -796,17 +800,22 @@ export default function CodeEditor(props) {
 				</div>
 				{/*Left panel section end*/}
 				{/* File content section */}
-				<div className="w-4/5">
-					<div className="flex overflow-hidden overflow-x-auto">
+				<div className="w-4/5 flex flex-col">
+					<div className="flex h-[53px] relative overflow-hidden overflow-x-auto">
 						<CodeEditorTabList openedFiles={mystate.codeEditor.openedFiles} isUnsavedFile={(path)=>isUnsavedFile(path)}/>
+						<div className="h-full absolute grid place-content-center top-0 right-2 cursor-pointer">
+							<div onClick={()=>props.togglFullScreen()} title="full screen mode" className="bg-[#7ECA9C] h-[18px] w-[18px] rounded-full grid place-content-center cursor-pointer">
+									<div className="text-[8px] font-bold font-IBM-Plex-Sans text-white">[]</div>
+								</div>
+						</div>
 					</div>
-					<div onClick={e=>e.stopPropagation()} className="relative">
+					<div onClick={e=>e.stopPropagation()} className="relative h-full">
 							{mystate.codeEditor.selectedFile.content!==null &&
-							<div>
+							<div className="h-full">
 								<AceEditor
 								key={mystate.codeEditor.selectedFile.path}
 								showPrintMargin={false}
-								height="374px"
+								height="100%"
 								fontSize="17px"
 								width="100%"
 								mode="python"

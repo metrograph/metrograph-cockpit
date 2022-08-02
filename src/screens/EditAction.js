@@ -234,6 +234,7 @@ export default function EditAction() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [loading, setLoading]=useState(true)
 	const [loadingSave, setLoadingSave]= useState(false)
+	const [showFullScreen, setShowFullScreen]=useState(false)
 
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -322,7 +323,37 @@ export default function EditAction() {
 		}
 	}, [actionCode, dispatch, navigate, loading,]);
 
+	if (showFullScreen) 
 	return (
+		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect flex justify-center">
+			<div className="w-full relative">
+				<MyModal
+					show={modalVisible}
+					onHide={() => setModalVisible(false)}
+					actionCode={actionCode}
+					setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+					getSchedulesFromApi={()=>getSchedulesFromApi(mystate.user.token)}
+				/>
+				{alertVisible &&
+					<div className="flex justify-center w-full absolute top-2 z-10">
+						<Alert
+							alertData={alertData}
+							onHide={() => setAlertVisible(false)}
+						/>
+					</div>
+				}
+				<div className="">
+					<CodeEditor
+						actionCode={actionCode}
+						setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+						togglFullScreen={()=>setShowFullScreen(!showFullScreen)}
+					/>
+				</div>
+			</div>
+		</div>
+	);
+
+	else return (
 		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
 			<div className="mx-20 w-full relative">
 				<TopBar/>
@@ -429,9 +460,11 @@ export default function EditAction() {
 					<CodeEditor
 						actionCode={actionCode}
 						setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+						togglFullScreen={()=>setShowFullScreen(!showFullScreen)}
 					/>
 				</div>
 			</div>
 		</div>
 	);
+	
 }

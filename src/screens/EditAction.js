@@ -31,6 +31,8 @@ import TopBar from "../components/TopBar"
 import {config} from "../config"
 import { useRef } from "react";
 
+import "../assets/css/animation.css"
+
 
 function Title(props){
 	if(props.loading)return(
@@ -355,7 +357,7 @@ export default function EditAction() {
 
 	else return (
 		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
-			<div className="mx-20 w-full relative">
+			<div className="w-full relative">
 				<TopBar/>
 				<MyModal
 					show={modalVisible}

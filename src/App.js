@@ -9,7 +9,7 @@ const Action = lazy(() => import("./screens/Action"));
 const CreateAction = lazy(() => import("./screens/CreateAction"));
 const EditAction = lazy(() => import("./screens/EditAction"));
 const Settings = lazy(() => import("./screens/Settings"));
-const Flow = lazy(() => import("./screens/Flow"));
+const Flow = lazy(() => import("./screens/flow/Flow"));
 
 export default function App() {
   return (

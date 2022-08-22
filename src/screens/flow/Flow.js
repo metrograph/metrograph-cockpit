@@ -33,18 +33,14 @@ const initialNodes = [
   {
     id: '1',
     type: 'input',
-    data: { label: <MyNode/> },
+    data: { label: 'first node' },
     position: { x: 250, y: 25 },
-    style:{
-      backgroundColor:"unset",
-      height:"auto",
-      width:"auto",
-      border:"unset",
-      display: "inline-grid",
-      justifyItems:"center",
-      alignItems:"center",
-      
-    }
+  },
+  {
+    id: '2',
+    type: 'input',
+    data: { label: 'second node' },
+    position: { x: 250, y: 70 },
   },
 ];
 
@@ -74,12 +70,8 @@ function MyFlow() {
 
 export default function Flow(){
     return (
-      <div>
-         <TopBar/>
-         <div className='flex mx-auto container w-full h-screen'>
-        <div className='mt-20'><MyNode /></div>
-        </div>
-        <MyFlow/>
+      <div className='h-screen'>
+         <MyFlow/>
       </div>
     )
 }

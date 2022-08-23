@@ -1,77 +1,48 @@
-import { useState, useCallback } from 'react';
-import ReactFlow, { applyEdgeChanges, applyNodeChanges, Background } from 'react-flow-renderer';
-import TopBar from "./TopBar";
-
-import githubIcon from "../../assets/icons/github.svg"
-function MyNode(){
-  return (
-    <div className='w-full bg-red-400 relative items-center flex space-x-4'>
-      <div className='grid place-content-center w-24 h-24 rounded-2xl bg-white border-2 border-[#D8D8D8]'>
-        <div>
-            <img src={githubIcon} className="w-12 h-12"/>
-        </div>
-      </div>
-      <div className='absolute w-max left-24 flex flex-col items-start font-IBM-Plex-Sans'>
-        <div className='font-bold text-[15px]'>
-          GITHUB
-        </div>
-        <div className='font-bold text-[12px] text-[#838383]'>
-          Commit Trigger [main]
-        </div>
-        <div className='flex items-center space-x-2'>
-            <div className='bg-[#7ECA9C] w-[13px] h-[13px] rounded-full'/>
-            <div className='text-[#7ECA9C] font-IBM-Plex-Sans font-bold text-[9px]'>
-              Successful Test
-            </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { useCallback, useState } from 'react';
+import ReactFlow, {addEdge, applyNodeChanges, applyEdgeChanges} from 'react-flow-renderer';
 
 const initialNodes = [
   {
     id: '1',
-    type: 'input',
-    data: { label: 'first node' },
+    data: { label: <div className='bg-red-400 '>Node 1</div> },
     position: { x: 250, y: 25 },
   },
+
   {
     id: '2',
-    type: 'input',
-    data: { label: 'second node' },
-    position: { x: 250, y: 70 },
+    // you can also pass a React component as a label
+    data: { label: <div className='bg-green-400'>Node 2</div> },
+    position: { x: 100, y: 125 },
   },
 ];
 
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' }
-];
+const initialEdges = [];
 
-function MyFlow() {
+
+
+function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-  const reactFlowStyle = {
-    ".react-flow__nodes":{backgroundColor:"red"}
-  };
-  
+
   const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    (changes) => {setNodes((nds) => applyNodeChanges(changes, nds))},
     [setNodes]
   );
+
   const onEdgesChange = useCallback(
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [setEdges]
   );
 
-  return <ReactFlow style={reactFlowStyle} nodes={nodes} edges={edges} onNodesChange={onNodesChange}
-  onEdgesChange={onEdgesChange} fitView > <Background /></ReactFlow>;
+  const onConnect = useCallback(
+    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
+
+  return (
+  <div className='h-screen container mx-auto bg-yellow-200'>
+    <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} fitView />
+  </div>);
 }
 
-export default function Flow(){
-    return (
-      <div className='h-screen'>
-         <MyFlow/>
-      </div>
-    )
-}
+export default Flow;

@@ -23,9 +23,17 @@ const initialEdges = [];
 function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-
+  const [timer,setTimer]=useState(null)
+  const [position, setPosition]= useState({x:0, y:0})
+  
+  function showNode(nds){
+    clearTimeout(timer);
+    let mytime = setTimeout(() => {setPosition(nds[0].position)}, 3000);
+    setTimer(mytime)
+		return nds
+  }
   const onNodesChange = useCallback(
-    (changes) => {setNodes((nds) => applyNodeChanges(changes, nds))},
+    (changes) => {setNodes((nds) => applyNodeChanges(changes, showNode(nds)))},
     [setNodes]
   );
 
@@ -41,6 +49,7 @@ function Flow() {
 
   return (
   <div className='h-screen container mx-auto bg-yellow-200'>
+    <div className=' font-Inter font-bold text-xl '>Node 1 position (after 2s): (x: {position.x}, y: {position.y})</div>
     <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} fitView />
   </div>);
 }

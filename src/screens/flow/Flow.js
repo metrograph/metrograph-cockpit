@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
-import ReactFlow, {onNodeClick, addEdge, applyNodeChanges, applyEdgeChanges, useStore} from 'react-flow-renderer';
+import ReactFlow, {addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress} from 'react-flow-renderer';
 
 const initialNodes = [
   {
@@ -25,7 +25,7 @@ function Flow() {
   const [edges, setEdges] = useState(initialEdges);
   const [timer,setTimer]=useState(null)
   const [position, setPosition]= useState({x:0, y:0})
-  
+  const cmdAndSPressed = useKeyPress(['Meta+d', 'Strg+d']);
   const onNodesChange = useCallback(
     (changes) => {setNodes((nds) => applyNodeChanges(changes, nds))},
     [setNodes]
@@ -36,16 +36,37 @@ function Flow() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [setEdges]
   );
+  
+  
+  function deleteSelectedNode(node_id){
+    console.log(node_id, nodes)
+  }
 
+  // Handle Enter on Login button
+  function handleDeleteKey(event) {
+    if(event.key === 'Enter') console.log("Delete button")
+  }
+
+  function fnEd(connection,eds){
+    console.log("edge clicked")
+    console.log(connection)
+    return eds
+  }
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection) => setEdges((eds) => addEdge(connection, fnEd(connection, eds))),
     [setEdges]
   );
   
   useEffect(() => {
-    let mytime = setTimeout(() => { setPosition(nodes[0].position)}, 800);
+    
+    let mytime = setTimeout(() => { setPosition(nodes[0].position);console.log({edges, nodes})}, 800);
     return () => clearTimeout(mytime)
-  },[nodes]) // <-- here put the parameter to listen
+  },[nodes, edges])
+
+  useEffect(() => {
+    let newNodes=nodes.filter(e=>!e.selected)
+    setNodes(newNodes)
+  },[cmdAndSPressed])
 
 
   return (

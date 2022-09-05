@@ -1,18 +1,21 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import useMouse from "@react-hook/mouse-position";
-import ReactFlow, {addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress} from 'react-flow-renderer';
+import ReactFlow, {Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress} from 'react-flow-renderer';
 
 const initialNodes = [
   {
     id: '1',
     data: { label: <div id="1" className='bg-red-400 '>Node 1</div> },
-    position: { x: 250, y: 25 },
+    position: { x: 0, y: 0 },
+  },
+  {
+    id: '2',
+    data: { label: <div id="1" className='bg-yellow-400 '>Node 2</div> },
+    position: { x: 400, y: 0 },
   }
 ];
 
 const initialEdges = [];
-
-
 
 function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
@@ -20,10 +23,12 @@ function Flow() {
   const [timer,setTimer]=useState(null)
   const [position, setPosition]= useState({x:0, y:0})
   const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
+  const [addnodeMode, setAddNodeMode]=useState(false)
   const [contextMenu, setContextMenu]= useState(false)
   const ref = React.useRef(null);
 
   const cmdAndSPressed = useKeyPress(['Meta+d', 'Strg+d', 'Delete']);
+  
   const onNodesChange = useCallback(
     (changes) => {setNodes((nds) => applyNodeChanges(changes, nds))},
     [setNodes]
@@ -65,10 +70,20 @@ function Flow() {
     (connection) => setEdges((eds) => addEdge(connection, fnEd(connection, eds))),
     [setEdges]
   );
+
   const mouse = useMouse(ref, {
 		enterDelay: 100,
 		leaveDelay: 100,
 	});
+
+  function handleClick(){
+    if (addnodeMode) {
+      console.log("add the node")
+      createNode({ x: mouse.x, y: mouse.y })
+      setAddNodeMode(false)
+    }
+    setContextMenu(false)
+  }
   
   useEffect(() => {
     
@@ -81,30 +96,36 @@ function Flow() {
     deleteEdge()
   },[cmdAndSPressed])
 
+  
+
 
   return (
-  <div onClick={e=>setContextMenu(false)} onContextMenu={(e) => {e.preventDefault();setMouseRadar({ x: mouse.x, y: mouse.y });; setContextMenu(!contextMenu)}}  className='h-screen bg-yellow-200 relative'>
-    {contextMenu && (
-					<div
-					className="bg-[#191919] w-[187px] h-[89px] rounded-[9px] flex flex-col justify-center  border-1 border-[#292929] space-y-[1px]"
-					style={{
-						position: "absolute",
-						top: mouseRadar.y,
-						left: mouseRadar.x,
-						zIndex: 6,
-					}}
-					>
-					<div onClick={e=>{createNode({x:mouseRadar.x, y:mouseRadar.y}); setContextMenu(false)}}  className="text-white font-IBM-Plex-Sans font-bold text-lg hover:bg-[#292929] pl-[13px] cursor-pointer">
-					CREATE NODE
-					</div>
-					
-					</div>
-						)}
-    <div className=' font-Inter font-bold text-xl '>Timer :{timer}</div>
-    <div className=' font-Inter font-bold text-xl '>(x: {position.x}, y: {position.y})</div>
-    <div className=' font-Inter font-bold text-xl '>Mouse </div>
-    <div className=' font-Inter font-bold text-xl '>(x: {mouse.x}, y: {mouse.y})</div>
-    <ReactFlow className='bg-red-400' ref={ref} nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} fitView />
+  <div  className='h-screen'>
+    <div className='flex space-x-16'>
+      <div className='w-48'>
+        <div className=' font-Inter font-bold text-xl '>Timer :{timer}</div>
+        <div className=' font-Inter font-bold text-xl '>(x: {position.x}, y: {position.y})</div>
+        <div className=' font-Inter font-bold text-xl '>Mouse </div>
+        <div className=' font-Inter font-bold text-xl '>(x: {mouse.x}, y: {mouse.y})</div>
+      </div>
+      <div>
+      <div onClick={()=>setAddNodeMode(!addnodeMode)} className='font-Inter font-bold text-xl cursor-default hover:text-red-400'>Create Node</div>
+      </div>
+    </div>
+    <ReactFlow
+      className={addnodeMode?"cursor-cell":"cursor-pointer"}
+      onClick={()=>handleClick()}
+      onContextMenu={(e) => {e.preventDefault();setMouseRadar({ x: mouse.x, y: mouse.y });
+      setContextMenu(!contextMenu)}}
+      ref={ref}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      fitView >
+      <Background />
+    </ReactFlow>
   </div>);
 }
 

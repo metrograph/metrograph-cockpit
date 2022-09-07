@@ -26,7 +26,8 @@
     "react-scripts": "5.0.0",
     "redux": "^4.1.2",
     "vscode-icons-js": "^11.6.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

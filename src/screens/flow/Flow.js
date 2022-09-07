@@ -1,33 +1,19 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import useMouse from "@react-hook/mouse-position";
-import ReactFlow, {Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress} from 'react-flow-renderer';
+import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress} from 'react-flow-renderer';
 
-const initialNodes = [
-  {
-    id: '1',
-    data: { label: <div id="1" className='bg-red-400 '>Node 1</div> },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: '2',
-    data: { label: <div id="1" className='bg-yellow-400 '>Node 2</div> },
-    position: { x: 400, y: 0 },
-  }
-];
 
-const initialEdges = [];
 
 function Flow() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
   const [timer,setTimer]=useState(null)
   const [position, setPosition]= useState({x:0, y:0})
-  const [mouseRadar, setMouseRadar] = useState({ x: "0", y: "0" });
   const [addnodeMode, setAddNodeMode]=useState(false)
   const [contextMenu, setContextMenu]= useState(false)
+  const reactFlowInstance = useReactFlow();
   const ref = React.useRef(null);
-
-  const cmdAndSPressed = useKeyPress(['Meta+d', 'Strg+d', 'Delete']);
+  const cmdAndSPressed = useKeyPress(['Meta+d','d', 'Strg+d', 'Delete']);
   
   const onNodesChange = useCallback(
     (changes) => {setNodes((nds) => applyNodeChanges(changes, nds))},
@@ -38,6 +24,7 @@ function Flow() {
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [setEdges]
   );
+
   function deleteNode() {
     let newNodes=nodes.filter(e=>!e.selected)
     setNodes(newNodes)
@@ -51,23 +38,16 @@ function Flow() {
   }
 
   function createNode(position){
-    console.log(nodes.length)
     let node ={
       id:(nodes.length+1).toString(),
-      data: { label: <div id="3" className='bg-red-400 '>{(nodes.length+1).toString()}</div> },
-      position: { x: position.x-330, y: position.y-90 },
+      data: { label: <div id={(nodes.length+1).toString()} className='bg-red-400 '>{(nodes.length+1).toString()}</div> },
+      position: reactFlowInstance.project({x:position.x, y:position.y}),
     }
    setNodes(nodes => [...nodes, node]);
   }
 
-  function fnEd(connection,eds){
-    console.log("edge clicked")
-    console.log(connection)
-    return eds
-  }
-
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, fnEd(connection, eds))),
+    (connection) => setEdges((eds) => addEdge(connection,eds)),
     [setEdges]
   );
 
@@ -78,7 +58,6 @@ function Flow() {
 
   function handleClick(){
     if (addnodeMode) {
-      console.log("add the node")
       createNode({ x: mouse.x, y: mouse.y })
       setAddNodeMode(false)
     }
@@ -86,7 +65,6 @@ function Flow() {
   }
   
   useEffect(() => {
-    
     let mytime = setTimeout(() => { setPosition(nodes[0].position);console.log({edges, nodes})}, 800);
     return () => clearTimeout(mytime)
   },[nodes, edges])
@@ -96,27 +74,17 @@ function Flow() {
     deleteEdge()
   },[cmdAndSPressed])
 
-  
-
-
   return (
   <div  className='h-screen'>
     <div className='flex space-x-16'>
-      <div className='w-48'>
-        <div className=' font-Inter font-bold text-xl '>Timer :{timer}</div>
-        <div className=' font-Inter font-bold text-xl '>(x: {position.x}, y: {position.y})</div>
-        <div className=' font-Inter font-bold text-xl '>Mouse </div>
-        <div className=' font-Inter font-bold text-xl '>(x: {mouse.x}, y: {mouse.y})</div>
-      </div>
-      <div>
+    <div>
       <div onClick={()=>setAddNodeMode(!addnodeMode)} className='font-Inter font-bold text-xl cursor-default hover:text-red-400'>Create Node</div>
       </div>
     </div>
     <ReactFlow
       className={addnodeMode?"cursor-cell":"cursor-pointer"}
       onClick={()=>handleClick()}
-      onContextMenu={(e) => {e.preventDefault();setMouseRadar({ x: mouse.x, y: mouse.y });
-      setContextMenu(!contextMenu)}}
+      onContextMenu={(e) =>{e.preventDefault();setContextMenu(!contextMenu)}}
       ref={ref}
       nodes={nodes}
       edges={edges}
@@ -129,4 +97,10 @@ function Flow() {
   </div>);
 }
 
-export default Flow;
+export default function FlowWithProvider() {
+  return (
+      <ReactFlowProvider>
+        <Flow />
+      </ReactFlowProvider>
+  );
+}

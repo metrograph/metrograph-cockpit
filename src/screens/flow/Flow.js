@@ -1,9 +1,10 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import useMouse from "@react-hook/mouse-position";
-import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position} from 'react-flow-renderer';
+import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position, Controls} from 'react-flow-renderer';
 import githubIcon from "../../assets/icons/github.svg"
-function TextUpdaterNode({ data }) {
-  const onChange = useCallback((evt) => {
+
+function MetroNode({ data }) {
+ const onChange = useCallback((evt) => {
     console.log(evt.target.value);
   }, []);
 
@@ -16,7 +17,7 @@ function TextUpdaterNode({ data }) {
         </div>
         <div className='absolute left-28 w-[123px]'>
           <div className=' font-IBM-Plex-Sans font-bold text-[15px]'>
-          Github
+          Github {data.nodeData}
           </div>
           <div className=' font-IBM-Plex-Sans font-medium text-[12px] text-[#838383]'>
           Commit Trigger [main]
@@ -31,15 +32,10 @@ function TextUpdaterNode({ data }) {
   );
 }
 
-function CostumNode(){
-  const nodeTypes = useMemo(() => ({ textUpdater: TextUpdaterNode }), []);
 
-return <ReactFlow nodeTypes={nodeTypes} />;
-}
-
+const nodeTypes = { metroNode: MetroNode };
 function Flow() {
-  const nodeTypes = { textUpdater: TextUpdaterNode };
-  const [nodes, setNodes] = useState([ { id: 'node-1', type: 'textUpdater', position: { x: 0, y: 0 }, data: { value: 123 } }]);
+ const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [timer,setTimer]=useState(null)
   const [position, setPosition]= useState({x:0, y:0})
@@ -76,7 +72,8 @@ function Flow() {
   function createNode(position){
     let node ={
       id:(nodes.length+1).toString(),
-      data: { label: <div id={(nodes.length+1).toString()} className='bg-red-400 '>{(nodes.length+1).toString()}</div> },
+      data: { nodeData:nodes.length+1 },
+      type: 'metroNode',
       position: reactFlowInstance.project({x:position.x, y:position.y}),
     }
    setNodes(nodes => [...nodes, node]);
@@ -121,14 +118,15 @@ function Flow() {
       className={addnodeMode?"cursor-cell":"cursor-pointer"}
       onClick={()=>handleClick()}
       onContextMenu={(e) =>{e.preventDefault();setContextMenu(!contextMenu)}}
-      nodeTypes={nodeTypes}
       ref={ref}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      nodeTypes={nodeTypes}
       fitView >
+      <Controls />
       <Background />
     </ReactFlow>
   </div>);

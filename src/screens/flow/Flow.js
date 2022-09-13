@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import useMouse from "@react-hook/mouse-position";
 import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position, Controls} from 'react-flow-renderer';
 import githubIcon from "../../assets/icons/github.svg"
+import MetroEdge from './components/MetroEdge';
 
 function MetroNode({ data }) {
  const onChange = useCallback((evt) => {
@@ -33,7 +34,10 @@ function MetroNode({ data }) {
 }
 
 
+
 const nodeTypes = { metroNode: MetroNode };
+const edgeTypes = { metroEdge: MetroEdge }
+
 function Flow() {
  const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
@@ -41,9 +45,12 @@ function Flow() {
   const [position, setPosition]= useState({x:0, y:0})
   const [addnodeMode, setAddNodeMode]=useState(false)
   const [contextMenu, setContextMenu]= useState(false)
+  const [connectionType, setConnectionType]= useState("add")
   const reactFlowInstance = useReactFlow();
   const ref = React.useRef(null);
   const cmdAndSPressed = useKeyPress(['Meta+d','d', 'Strg+d', 'Delete']);
+  const aPressed = useKeyPress(['a']);
+  const cPressed = useKeyPress(['c']);
 
  
   
@@ -79,11 +86,14 @@ function Flow() {
    setNodes(nodes => [...nodes, node]);
   }
 
+  
+  
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection,eds)),
-    [setEdges]
+    (connection) => setEdges((eds) => addEdge({ ...connection, type: 'metroEdge', data:connectionType }, eds)) ,
+    [setEdges,connectionType]
   );
 
+  
   const mouse = useMouse(ref, {
 		enterDelay: 100,
 		leaveDelay: 100,
@@ -107,12 +117,25 @@ function Flow() {
     deleteEdge()
   },[cmdAndSPressed])
 
+ 
+
+  useEffect(() => {
+    setConnectionType("cloud")
+  },[cPressed])
+
+  useEffect(() => {
+    setConnectionType("add")
+  },[aPressed])
+
   return (
   <div  className='h-screen'>
     <div className='flex space-x-16'>
-    <div>
-      <div onClick={()=>setAddNodeMode(!addnodeMode)} className='font-Inter font-bold text-xl cursor-default hover:text-red-400'>Create Node</div>
-      </div>
+    <div className='my-8 ml-12'>
+      {!addnodeMode && <div onClick={()=>setAddNodeMode(!addnodeMode)} className='px-4 grid place-content-center text-white font-Inter font-bold text-lg cursor-pointer hover:text-red-400  h-[65px] bg-[#979797] rounded-[20px] hover:bg-black'>Create Node</div>} 
+      {addnodeMode && <div onClick={()=>setAddNodeMode(!addnodeMode)} className='px-4 grid place-content-center text-white font-Inter font-bold text-lg cursor-pointer hover:text-red-400  h-[65px] bg-[#156FF8] rounded-[20px] hover:bg-blue-500'>Create Node</div>}
+      <div className='mt-4 text-sm'>*Connection type (Press "a" for add, "c" for cloud)</div>
+      <div className='text-lg'>Connection Type : {connectionType}</div>
+    </div>
     </div>
     <ReactFlow
       className={addnodeMode?"cursor-cell":"cursor-pointer"}
@@ -125,6 +148,7 @@ function Flow() {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       fitView >
       <Controls />
       <Background />

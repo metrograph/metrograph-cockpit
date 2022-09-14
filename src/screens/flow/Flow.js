@@ -3,7 +3,7 @@ import useMouse from "@react-hook/mouse-position";
 import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position, Controls} from 'react-flow-renderer';
 import githubIcon from "../../assets/icons/github.svg"
 import MetroEdge from './components/MetroEdge';
-
+import TopBar from './TopBar';
 function MetroNode({ data }) {
  const onChange = useCallback((evt) => {
     console.log(evt.target.value);
@@ -156,7 +156,7 @@ function Flow() {
   </div>);
 }
 
-export default function FlowWithProvider() {
+export default function MetroFlow() {
   return (
       <ReactFlowProvider>
         <Flow />

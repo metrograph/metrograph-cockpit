@@ -25,6 +25,13 @@
   fill: black;
 }
 
+.roundedAreaSelected:hover>svg *,
+.roundedAreaSelected:hover {
+  background-color: #322741;
+  color: white;
+  fill: white;
+}
+
 .strokeArea:hover>svg *,
 .strokeArea:hover {
   background-color: #F5F5F5;

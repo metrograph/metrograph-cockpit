@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TopBar from "./TopBar";
 import loopIcon from "../../assets/icons/loop.svg";
-import { ReactComponent as ArrowDown } from "../../assets/icons/arrow-down.svg";
 import { ReactComponent as ActionIcon } from "../../assets/icons/action.svg";
 import { ReactComponent as LoopIcon } from "../../assets/icons/loopi.svg";
 import { ReactComponent as DelayIcon } from "../../assets/icons/delay.svg";
@@ -12,29 +11,15 @@ import { ReactComponent as ToggleIcon } from "../../assets/icons/toggle.svg";
 import { ReactComponent as ClipperIcon } from "../../assets/icons/cliper.svg";
 import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
 import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
-import { BsFillCheckCircleFill } from "react-icons/bs";
+import { BsFillCloudCheckFill, BsPlusSquareFill } from "react-icons/bs";
 import "../../assets/css/App.css";
 import MetroFlow from "./Flow";
 export default function Main() {
-  const [is_listOpen, setIs_listOpen] = useState(false);
-
-  const [optionList, setOptionList] = useState([
-    { key: 2, value: "Discrod Server A" },
-    { key: 3, value: "Discrod Server B" },
-    { key: 4, value: "Discrod Server C" },
-  ]);
-  const [selectedOption, setSelectedOtion] = useState("Choose Discrod Server");
-
-  const [is_listbOpen, setIs_listbOpenb] = useState(false);
-
-  const [optionListb, setOptionListb] = useState([
-    { key: 2, value: "Channel Server A" },
-    { key: 3, value: "Channel Server B" },
-    { key: 4, value: "Channel Server C" },
-  ]);
-  const [selectedOptionb, setSelectedOtionb] = useState("Choose Channel");
-
   const [selectedPanel, setSelectedPanel] = useState("basic");
+  const [addnodeMode, setAddNodeMode]=useState(false)
+  const connectionTypeList=[{key:"1", name:"add"},{key:"2", name:"cloud"}]
+  const [connectionType, setConnectionType]=useState(connectionTypeList[0])
+
   function Panel(props) {
     switch (props.panel_name) {
       case "basic":
@@ -44,10 +29,18 @@ export default function Main() {
             style={{ scrollbarWidth: "thin" }}
           >
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ActionIcon className="mb-[36px] hover:fill-black cursor-pointer" />
+            {addnodeMode &&
+              <div onClick={()=>setAddNodeMode(false)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer bg-[#322741]">
+                <ActionIcon className="mb-[36px] hover:fill-white fill-white cursor-pointer"/>
+                <div className="font-Inter text-[11px] text-white">Action</div>
+              </div>
+              }
+              {!addnodeMode &&
+              <div onClick={()=>setAddNodeMode(true)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer roundedArea">
+                <ActionIcon className="mb-[36px] hover:fill-white cursor-pointer"/>
                 <div className="font-Inter text-[11px] ">Action</div>
               </div>
+              }
               <div className="w-[2px] bg-[#F5F5F5]"></div>
               <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
                 <DelayIcon className="mb-[36px] hover:fill-black cursor-pointer" />
@@ -100,7 +93,6 @@ export default function Main() {
             </div>
           </div>
         );
-
       case "triggers":
         return (
           <div className="bg-red-300 h-max flex py-20 justify-center  text-xl">
@@ -109,8 +101,36 @@ export default function Main() {
         );
       case "connectors":
         return (
-          <div className="bg-blue-300 h-max flex py-20 pt-20 justify-center text-xl">
-            CONNECTORS
+          <div
+            className="flex flex-col  overflow-y-auto height-panel text-[#545454]"
+            style={{ scrollbarWidth: "thin" }}
+          >
+            <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
+            {connectionType.key==="1" &&
+              <div className="w-1/2 flex flex-col justify-center items-center cursor-pointer bg-[#322741]">
+                <h2><BsPlusSquareFill className="mb-[36px] hover:fill-white fill-white cursor-pointer"/></h2>
+                <div className="font-Inter text-[11px] text-white">Action</div>
+              </div>
+              }
+              {connectionType.key!=="1" &&
+              <div onClick={()=>setConnectionType(connectionTypeList[0])} className="w-1/2 flex flex-col justify-center items-center cursor-pointer roundedArea">
+                <h2><BsPlusSquareFill className="mb-[36px] hover:fill-white cursor-pointer"/></h2>
+                <div className="font-Inter text-[11px] ">Action</div>
+              </div>
+              }
+              <div className="w-[2px] bg-[#F5F5F5]"></div>
+              {connectionType.key!=="2" &&
+              <div onClick={()=>setConnectionType(connectionTypeList[1])} className="w-1/2 flex flex-col justify-center items-center cursor-pointer roundedArea">
+              <h2><BsFillCloudCheckFill className="mb-[36px] hover:fill-white cursor-pointer"/></h2>
+              <div className="font-Inter text-[11px] ">Action</div>
+            </div>}
+            {connectionType.key==="2" &&
+              <div className="w-1/2 flex flex-col justify-center items-center cursor-pointer bg-[#322741]">
+                <h2><BsFillCloudCheckFill className="mb-[36px] hover:fill-white fill-white cursor-pointer"/></h2>
+                <div className="font-Inter text-[11px] text-white">Action</div>
+              </div>
+              }
+            </div>
           </div>
         );
       case "apps":
@@ -194,7 +214,12 @@ export default function Main() {
 
         {/* Left Side End*/}
         <div className="grow bg-cock-board">
-            <MetroFlow/>
+            <MetroFlow
+              addnodeMode={addnodeMode}
+              setAddNodeMode={(e)=>setAddNodeMode()}
+              connectionType={connectionType}
+              setConnectionType={(e)=>setConnectionType()}
+            />
         </div>
       </div>
     </div>

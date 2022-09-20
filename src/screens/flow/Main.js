@@ -14,9 +14,40 @@ import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
 import { BsFillCloudCheckFill, BsPlusSquareFill } from "react-icons/bs";
 import "../../assets/css/App.css";
 import MetroFlow from "./Flow";
+
+const ReactComponentList=[
+  {name:"ActionIcon",ReactComponent:ActionIcon},
+  {name:"LoopIcon",ReactComponent:LoopIcon},
+  {name:"DelayIcon",ReactComponent:DelayIcon},
+  {name:"BranchIcon",ReactComponent:BranchIcon},
+  {name:"StopIcon",ReactComponent:StopIcon},
+  {name:"ScriptIcon",ReactComponent:ScriptIcon},
+  {name:"ToggleIcon",ReactComponent:ToggleIcon},
+  {name:"ClipperIcon",ReactComponent:ClipperIcon},
+  {name:"OutIcon",ReactComponent:OutIcon},
+  {name:"ParamsIcon",ReactComponent:ParamsIcon}
+]
+function BoxItem(props){
+  const Component =ReactComponentList.find(item => item.name === props.icon).ReactComponent;
+  if (props.is_selected) return (
+    <div onClick={()=>props.handleClick(false)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer bg-[#322741]">
+      <Component className="mb-[36px] hover:fill-white fill-white cursor-pointer"/>
+      <div className="font-Inter text-[11px] text-white">{props.name}</div>
+    </div>
+  )
+  else return (
+    <div onClick={()=>props.handleClick(true)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer roundedArea">
+      <Component className="mb-[36px] hover:fill-white cursor-pointer"/>
+      <div className="font-Inter text-[11px] ">{props.name}</div>
+    </div>
+  )
+
+}
+
 export default function Main() {
   const [selectedPanel, setSelectedPanel] = useState("basic");
   const [addnodeMode, setAddNodeMode]=useState(false)
+  const [isSelected, setIsSelected]=useState(false)
   const connectionTypeList=[{key:"1", name:"add"},{key:"2", name:"cloud"}]
   const [connectionType, setConnectionType]=useState(connectionTypeList[0])
 
@@ -29,67 +60,29 @@ export default function Main() {
             style={{ scrollbarWidth: "thin" }}
           >
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-            {addnodeMode &&
-              <div onClick={()=>setAddNodeMode(false)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer bg-[#322741]">
-                <ActionIcon className="mb-[36px] hover:fill-white fill-white cursor-pointer"/>
-                <div className="font-Inter text-[11px] text-white">Action</div>
-              </div>
-              }
-              {!addnodeMode &&
-              <div onClick={()=>setAddNodeMode(true)} className="w-1/2 flex flex-col justify-center items-center cursor-pointer roundedArea">
-                <ActionIcon className="mb-[36px] hover:fill-white cursor-pointer"/>
-                <div className="font-Inter text-[11px] ">Action</div>
-              </div>
-              }
+              <BoxItem name="Action" icon="ActionIcon" handleClick={(e)=>setAddNodeMode(e)} is_selected={addnodeMode}/>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <DelayIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Delay</div>
-              </div>
+              <BoxItem name="Delay" icon="DelayIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center strokeArea cursor-pointer">
-                <BranchIcon className="mb-[36px] hover:stroke-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Branch Condition</div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <LoopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Loop</div>
-              </div>
+              <BoxItem name="Branch Condition" icon="BranchIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
+                <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <BoxItem name="Loop" icon="LoopIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ScriptIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter text-[11px] ">Script</div>
-              </div>
-              <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <StopIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Stop</div>
-              </div>
+              <BoxItem name="Script" icon="ScriptIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
+                <div className="w-[2px] bg-[#F5F5F5]"></div>
+              <BoxItem name="Stop" icon="StopIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ToggleIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Toggle</div>
-              </div>
+              <BoxItem name="Toggle" icon="ToggleIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ClipperIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px]">Call Endpoint</div>
-              </div>
+              <BoxItem name="Call Endpoint" icon="ClipperIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
             </div>
             <div className="min-h-[195px] flex justify-between  border-b-[2px] border-[#F5F5F5]">
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <OutIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter  text-[11px] ">Action</div>
-              </div>
+              <BoxItem name="Out" icon="OutIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
               <div className="w-[2px] bg-[#F5F5F5]"></div>
-              <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
-                <ParamsIcon className="mb-[36px] hover:fill-black cursor-pointer" />
-                <div className="font-Inter text-[11px]">Parameters</div>
-              </div>
+              <BoxItem name="Parameters" icon="ParamsIcon" handleClick={(e)=>setIsSelected(e)} is_selected={isSelected}/>
             </div>
           </div>
         );

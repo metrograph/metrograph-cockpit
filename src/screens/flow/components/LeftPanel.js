@@ -12,6 +12,27 @@ import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
 import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
 import "../../assets/css/App.css";
 
+const ReactComponentList=[
+  {name:"ActionIcon",ReactComponent:ActionIcon},
+  {name:"LoopIcon",ReactComponent:LoopIcon},
+  {name:"DelayIcon",ReactComponent:DelayIcon},
+  {name:"BranchIcon",ReactComponent:BranchIcon},
+  {name:"StopIcon",ReactComponent:StopIcon},
+  {name:"ScriptIcon",ReactComponent:ScriptIcon},
+  {name:"ToggleIcon",ReactComponent:ToggleIcon},
+  {name:"ClipperIcon",ReactComponent:ClipperIcon},
+  {name:"OutIcon",ReactComponent:OutIcon},
+  {name:"ParamsIcon",ReactComponent:ParamsIcon}
+]
+function BoxItem(props){
+  const Component =ReactComponentList.find(item => item.name === props.icon).ReactComponent;
+  return (
+  <div className="w-1/2 flex flex-col justify-center items-center roundedArea cursor-pointer">
+  <Component className="mb-[36px] hover:fill-black cursor-pointer" />
+  <div className="font-Inter text-[11px] ">{props.title}</div>
+  </div>
+  )
+}
 export default function LeftPanel(){
     
     const [selectedPanel, setSelectedPanel] = useState("basic");

@@ -46,7 +46,6 @@ function Flow(props) {
   let setAddNodeMode=()=>props.setAddNodeMode()
   let connectionType=props.connectionType
   let setConnectionType=()=>props.setConnectionType()
-  console.log(props)
   const [contextMenu, setContextMenu]= useState(false)
   const reactFlowInstance = useReactFlow();
   const ref = React.useRef(null);

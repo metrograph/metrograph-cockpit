@@ -1,5 +1,5 @@
 import React from 'react';
-import { getBezierPath, getEdgeCenter, getMarkerEnd } from 'react-flow-renderer';
+import { getBezierPath, getEdgeCenter, getMarkerEnd, getSmoothStepPath } from 'react-flow-renderer';
 import addIcon from "../../../assets/icons/add.svg"
 import minusIcon from "../../../assets/icons/cloud.svg"
 import './index.css';
@@ -23,14 +23,15 @@ export default function MetroEdge({
   markerEnd,
   data
 }) {
-    console.log(data)
-  const edgePath = getBezierPath({
+  console.log(data)
+  const edgePath = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
     targetPosition,
+    borderRadius:20,
   });
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
@@ -43,7 +44,7 @@ export default function MetroEdge({
     <>
       <path
         id={id}
-        style={style}
+        style={{strokeWidth:2,radius:"20%"}}
         className="react-flow__edge-path"
         d={edgePath}
         markerEnd={markerEnd}
@@ -65,4 +66,3 @@ export default function MetroEdge({
     </>
   );
 }
-

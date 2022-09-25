@@ -12,6 +12,7 @@ import { ReactComponent as ClipperIcon } from "../../assets/icons/cliper.svg";
 import { ReactComponent as OutIcon } from "../../assets/icons/out.svg";
 import { ReactComponent as ParamsIcon } from "../../assets/icons/params.svg";
 import { BsFillCloudCheckFill, BsPlusSquareFill } from "react-icons/bs";
+import RightPanel from "./components/RightPanel";
 import "../../assets/css/App.css";
 import MetroFlow from "./Flow";
 
@@ -27,6 +28,7 @@ const ReactComponentList=[
   {name:"OutIcon",ReactComponent:OutIcon},
   {name:"ParamsIcon",ReactComponent:ParamsIcon}
 ]
+
 function BoxItem(props){
   const Component =ReactComponentList.find(item => item.name === props.icon).ReactComponent;
   if (props.is_selected) return (
@@ -214,6 +216,7 @@ export default function Main() {
               setConnectionType={(e)=>setConnectionType()}
             />
         </div>
+        <RightPanel />
       </div>
     </div>
   );

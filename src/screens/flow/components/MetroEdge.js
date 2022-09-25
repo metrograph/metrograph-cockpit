@@ -44,7 +44,7 @@ export default function MetroEdge({
     <>
       <path
         id={id}
-        style={{strokeWidth:2,radius:"20%"}}
+        style={{strokeWidth:2}}
         className="react-flow__edge-path"
         d={edgePath}
         markerEnd={markerEnd}

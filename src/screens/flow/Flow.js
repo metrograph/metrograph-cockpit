@@ -1,21 +1,24 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import useMouse from "@react-hook/mouse-position";
-import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position, Controls} from 'react-flow-renderer';
+import ReactFlow, {useReactFlow, ReactFlowProvider, Background, addEdge, applyNodeChanges, applyEdgeChanges, useKeyPress, Handle, Position, onNodeClick} from 'react-flow-renderer';
 import githubIcon from "../../assets/icons/github.svg"
 import MetroEdge from './components/MetroEdge';
 import TopBar from './TopBar';
-function MetroNode({ data }) {
- const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
 
+function MetroNode({ data,selected }) {
+  
   return (
     <>
       <Handle type="target" position={Position.Top} />
-      <div className='h-[99px] w-[99px] flex items-center relative'>
+      <div  className='h-[99px] w-[99px] flex items-center relative'>
+        {selected && 
+        <div className='bg-white h-[99px] w-[99px] grid place-items-center rounded-[25px] border-1 border-cock-purple'>
+          <img src={githubIcon} className="w-[49px] h-[50px]" alt="github-logo" />
+        </div>}
+        {!selected && 
         <div className='bg-white h-[99px] w-[99px] grid place-items-center rounded-[25px] border-2 border-[#D8D8D8]'>
           <img src={githubIcon} className="w-[49px] h-[50px]" alt="github-logo" />
-        </div>
+        </div>}
         <div className='absolute left-28 w-[123px]'>
           <div className=' font-IBM-Plex-Sans font-bold text-[15px]'>
           Github {data.nodeData}
@@ -35,10 +38,11 @@ function MetroNode({ data }) {
 
 
 
-const nodeTypes = { metroNode: MetroNode };
+const nodeTypes = { metroNode: MetroNode }
 const edgeTypes = { metroEdge: MetroEdge }
 
 function Flow(props) {
+  
  const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [position, setPosition]= useState({x:0, y:0})
@@ -47,6 +51,7 @@ function Flow(props) {
   let connectionType=props.connectionType
   let setConnectionType=()=>props.setConnectionType()
   const [contextMenu, setContextMenu]= useState(false)
+  const [element,setElement]=useState({id:0})
   const reactFlowInstance = useReactFlow();
   const ref = React.useRef(null);
   const cmdAndSPressed = useKeyPress(['Meta+d','d', 'Strg+d', 'Delete']);
@@ -79,7 +84,7 @@ function Flow(props) {
   function createNode(position){
     let node ={
       id:(nodes.length+1).toString(),
-      data: { nodeData:nodes.length+1 },
+      data: { nodeData:nodes.length+1, coloredNodeId:"false"},
       type: 'metroNode',
       position: reactFlowInstance.project({x:position.x, y:position.y}),
     }
@@ -87,7 +92,9 @@ function Flow(props) {
   }
 
   
-  
+  function showNodes(){
+    setNodes(nodes)
+  }
   const onConnect = useCallback(
     (connection) => setEdges((eds) => addEdge({ ...connection, type: 'metroEdge', data:connectionType.name }, eds)) ,
     [setEdges,connectionType]
@@ -117,6 +124,9 @@ function Flow(props) {
     deleteEdge()
   },[cmdAndSPressed])
 
+  
+
+
 
   return (
   <div  className=' h-full overflow-y-hidden'>
@@ -131,6 +141,7 @@ function Flow(props) {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onNodeClick={()=>showNodes()}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}

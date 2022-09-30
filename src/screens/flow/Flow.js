@@ -6,11 +6,14 @@ import MetroEdge from './components/MetroEdge';
 import TopBar from './TopBar';
 
 function MetroNode({ data,selected }) {
-  
+  function handleClick(){
+    console.log("Setting node data")
+    data.setNodeState(data.nodeData)
+  }
   return (
     <>
       <Handle type="target" position={Position.Top} />
-      <div  className='h-[99px] w-[99px] flex items-center relative'>
+      <div onClick={()=>handleClick()}  className='h-[99px] w-[99px] flex items-center relative'>
         {selected && 
         <div className='bg-white h-[99px] w-[99px] grid place-items-center rounded-[25px] border-1 border-cock-purple'>
           <img src={githubIcon} className="w-[49px] h-[50px]" alt="github-logo" />
@@ -80,11 +83,10 @@ function Flow(props) {
     setEdges(newEdges)
    
   }
-
   function createNode(position){
     let node ={
       id:(nodes.length+1).toString(),
-      data: { nodeData:nodes.length+1, coloredNodeId:"false"},
+      data: { nodeData:nodes.length+1, coloredNodeId:"false",NodeState:props.NodeState, setNodeState:(e)=>props.setNodeState(e)},
       type: 'metroNode',
       position: reactFlowInstance.project({x:position.x, y:position.y}),
     }
@@ -155,6 +157,8 @@ export default function MetroFlow(props) {
   return (
       <ReactFlowProvider>
         <Flow
+        NodeState={props.NodeState}
+        setNodeState={(e)=>props.setNodeState(e)}
         addnodeMode={props.addnodeMode}
         setAddNodeMode={(e)=>props.setAddNodeMode()}
         connectionType={props.connectionType}

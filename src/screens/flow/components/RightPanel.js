@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { ReactComponent as ArrowDown } from "../../../assets/icons/arrow-down.svg";
 import "../../../assets/css/App.css";
 
 
-export default function RightPanel(){
-    const [is_listOpen, setIs_listOpen] = useState(false);
+export default function RightPanel(props){
+  const [is_listOpen, setIs_listOpen] = useState(false);
 
   const [optionList, setOptionList] = useState([
     { key: 2, value: "Discrod Server A" },
@@ -22,6 +22,9 @@ export default function RightPanel(){
     { key: 4, value: "Channel Server C" },
   ]);
   const [selectedOptionb, setSelectedOtionb] = useState("Choose Channel");
+  useEffect(() => {
+    console.log("Node state changed")
+  },[props.nodeState])
 
     return (
         <div>
@@ -129,6 +132,7 @@ export default function RightPanel(){
                 <input
                   className="mt-[16px] font-Inter font-medium text-[15px] rounded-[11px] h-[46px] bg-[#F5F5F5] flex items-center px-[19px] w-full"
                   placeholder="Bot name"
+                  value={props.nodeState}
                 />
               </div>
 

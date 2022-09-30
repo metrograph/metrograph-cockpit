@@ -52,6 +52,7 @@ export default function Main() {
   const [isSelected, setIsSelected]=useState(false)
   const connectionTypeList=[{key:"1", name:"add"},{key:"2", name:"cloud"}]
   const [connectionType, setConnectionType]=useState(connectionTypeList[0])
+  const [NodeState, setNodeState]=useState(false)
 
   function Panel(props) {
     switch (props.panel_name) {
@@ -214,9 +215,13 @@ export default function Main() {
               setAddNodeMode={(e)=>setAddNodeMode()}
               connectionType={connectionType}
               setConnectionType={(e)=>setConnectionType()}
+              NodeState={NodeState}
+              setNodeState={(e)=>setNodeState(e)}
             />
         </div>
-        <RightPanel />
+        <RightPanel
+        NodeState={NodeState}
+        setNodeState={(e)=>setNodeState(e)}/>
       </div>
     </div>
   );

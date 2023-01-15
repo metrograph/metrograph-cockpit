@@ -48,6 +48,10 @@ export default function CreateAction() {
 		setRuntimeListOpen(false)
 		setRuntimeVersionListOpen(false)
 	}
+	function handleCloseDropDown(){
+        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
+        dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+    }
 	// Request API to create Action
 	function handleSubmit(){
 		let payload={name:name, description:description, runtime:runtime, runtime_version:runtimeVersion}
@@ -76,7 +80,7 @@ export default function CreateAction() {
 	},[dispatch, navigate, loading])
 
 	return (
-		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect">
+		<div onClick={()=>{handleCloseList();handleCloseDropDown()}} className="bg-black min-h-screen noselect">
 			<div className="mx-20 relative">
 				{alertVisible &&
 					<div className="flex justify-center w-full absolute top-12">
@@ -120,7 +124,7 @@ export default function CreateAction() {
 									toogleList={(e)=>setRuntimeListOpen(e)}
 									/>
 								</div>
-								<div className="w-[400px]">
+								<div className="w-[400px] z-10">
 									<DropDpwnList
 									key="version"
 									listOptions={runtimeVersionList}

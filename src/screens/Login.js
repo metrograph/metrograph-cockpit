@@ -7,8 +7,30 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Alert from "../components/Alert"
 import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
+import "../animation.css"
 
-
+function LoginButton({login,handleEnterKey, username, password, loading}){
+    if (loading) {
+        return(
+            <div className="justify-end flex mt-[27px]  mx-[87px]">
+                <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer">
+                    <div className="dot-falling" />
+                </div>
+            </div>
+        )
+    }
+    else return(
+        <div className="justify-end flex mt-[27px]  mx-[87px]">
+            {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+            LOGIN
+            </div>}
+            {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+            LOGIN
+            </div>}
+            
+        </div>
+    )
+}
 export default function Login(){
     const navigate = useNavigate();
     const location = useLocation()
@@ -20,6 +42,7 @@ export default function Login(){
     // Alert local state
     const [alertVisible, setAlertVisible]= useState(false)
     const [alertData, setAlertData]=useState()
+    const [loading, setLoading]=useState(false)
 
     // Alert trigger function
     function setAlert(title, type, delay){
@@ -32,12 +55,15 @@ export default function Login(){
     
     // Request API to login
     function login() {
+        setLoading(true)
         axios.post(config.METROGRAPH_API+"/auth", {username: username, password: password})
         .then(function (response) {
+            setLoading(false)
             localStorage.setItem("METROGRAPH_STORAGE", JSON.stringify(response.data.payload));
             return navigate("/");
         })
         .catch((error) =>{
+            setLoading(false)
             if (error.response) setAlert("Invalid credentials", "error", 3000)
             else setAlert(error.message,"error",3000)
         });
@@ -100,14 +126,7 @@ export default function Login(){
                         value={password}
                         />
                     </div>
-                    <div className="justify-end flex mt-[27px]  mx-[87px]">
-                        {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-                        LOGIN
-                        </div>}
-                        {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-                        LOGIN
-                        </div>}
-                    </div>
+                    <LoginButton login={()=>login()} handleEnterKey={()=>handleEnterKey()} username={username} password={password} loading={loading}/>
                     <div className="justify-end flex space-x-2  mt-[27px]  mx-[87px]">
                         <div onClick={()=>navigate("/register")}  className="text-white text-[13px] font-IBM-Plex-Sans font-medium cursor-pointer">
                         Setup not done yet? 

@@ -1,6 +1,6 @@
 // React imports
 import axios from "axios";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // Internal components
@@ -29,6 +29,18 @@ function LoginButton({login,handleEnterKey, username, password, loading}){
             </div>}
             
         </div>
+    )
+}
+function Input({value, setValue, handleEnterKey, type, placeholder}){
+    return(
+        <input
+            type={type}
+            className="h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
+            placeholder={placeholder}
+            onChange={(e)=>setValue(e.target.value)}
+            onKeyPress={(e) => handleEnterKey(e)}
+            value={value}
+            />
     )
 }
 export default function Login(){
@@ -73,7 +85,6 @@ export default function Login(){
     function handleEnterKey(event) {
         if(event.key === 'Enter') login()
     }
-
     useEffect(() => {
         function loadLocalStorage() {
           const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
@@ -107,23 +118,20 @@ export default function Login(){
                         <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>
                         <div className="text-[13px] text-white font-IBM-Plex-Sans">Please fill your crededntials to login</div>
                     </div>
-                    <div className="mx-[87px] mt-[58px]">
-                        <input
-                        type="text"
-                        className="h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
-                        placeholder="Username"
-                        onChange={(e)=>setUsername(e.target.value)}
-                        onKeyPress={(e) => handleEnterKey(e)}
-                        value={username}
+                    <div className="mx-[87px] mt-[58px] space-y-[14px]">
+                        <Input
+                            type="text"
+                            placeholder="username"
+                            setValue={(e)=>setUsername(e)}
+                            handleEnterKey={(e) => handleEnterKey(e)}
+                            value={username}
                         />
-
-                        <input
-                        type="password"
-                        className="mt-[14px] h-[46px] bg-[#1A1A1A] w-full rounded-[14px] text-[15px] font-Inter font-medium pl-[20px] pr-[40px] text-white"
-                        placeholder="****"
-                        onChange={(e)=>setPassword(e.target.value)}
-                        onKeyPress={(e) => handleEnterKey(e)}
-                        value={password}
+                        <Input
+                            type="password"
+                            placeholder="password"
+                            setValue={(e)=>setPassword(e)}
+                            handleEnterKey={(e) => handleEnterKey(e)}
+                            value={password}
                         />
                     </div>
                     <LoginButton login={()=>login()} handleEnterKey={()=>handleEnterKey()} username={username} password={password} loading={loading}/>

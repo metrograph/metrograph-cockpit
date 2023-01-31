@@ -11,6 +11,28 @@ import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
 
 
+function CreateButton({login,handleEnterKey, username, password, loading}){
+    if (loading) {
+        return(
+            <div className="justify-end flex mt-[27px]  mx-[87px]">
+                <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer">
+                    <div className="dot-falling" />
+                </div>
+            </div>
+        )
+    }
+    else return(
+        <div className="justify-end flex mt-[27px]  mx-[87px]">
+            {username && password && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+            LOGIN
+            </div>}
+            {(!username || !password) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+            LOGIN
+            </div>}
+            
+        </div>
+    )
+}
 
 export default function Register(){
     const navigate = useNavigate();
@@ -86,10 +108,10 @@ export default function Register(){
                     </div>
                     <div className="justify-end flex mt-[27px]  mx-[87px]">
                         {username && password && (password===confirmPassword) && <div onClick={()=>login()} onKeyPress={() => handleEnterKey()}  className="text-white font-Inter text-[13px] font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-                        LOGIN
+                        CREATE
                         </div>}
                         {(!username || !password || (password!=confirmPassword)) && <div  className="text-white font-Inter text-[13px] opacity-50 font-bold bg-[#7900FF] w-[118px] h-[46px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-                        LOGIN
+                        CREATE
                         </div>}
                     </div>
                     <div className="justify-end flex space-x-2  mt-[27px]  mx-[87px]">

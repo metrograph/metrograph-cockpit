@@ -1,6 +1,6 @@
 
 const http_https = "http"
-const api="http://157.90.151.38:9090"
+const api="http://157.90.151.38:8080"
 
 const config ={
    // METROGRAPH_API: http_https + "://" + window.API_URI+":"+window.API_PORT+"/v1",

@@ -10,6 +10,7 @@ import Alert from "../components/Alert"
 import axios from "axios";
 import Modal from 'react-bootstrap/Modal'
 import Placeholder from 'react-bootstrap/Placeholder'
+import {motion} from "framer-motion"
 
 // Internal components
 import ModalAction from "../components/ModalAction";
@@ -108,7 +109,12 @@ function ActionRow(props){
     }
 
     return (
-        <div>
+        
+        <motion.div
+            initial={{opacity:0}}
+            animate={{opacity:1}}
+            transition={{duration:1.2}}
+        >
             <div className="flex justify-between items-center w-full h-[114px] bg-[#070707] px-4">
             <div onClick={()=>handleManage()} className="flex flex-col grow cursor-pointer">
                 <div className="text-white font-regular text-[20px] font-IBM-Plex-Sans">{props.element.name}</div>
@@ -142,7 +148,7 @@ function ActionRow(props){
             
         </div>
         <div className="border-b-[1px] border-[#202020] w-full" />
-        </div>
+        </motion.div>
     )
 }
 

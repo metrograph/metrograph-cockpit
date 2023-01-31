@@ -31,9 +31,9 @@ export default function DropDpwnList(props){
             </div>
             <ArrowDown height="8px" width="13px" fill="white" />
             {props.listOpen && (
-                <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
+               <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                 {listOptions.map((element) => (
-                    <div
+                   <div
                     onClick={() => {
                         props.setValue(element.value);
                         setSelectedOtion(element.value);
@@ -52,8 +52,10 @@ export default function DropDpwnList(props){
                         <div></div>
                     )}
                     </div>
+                    
                 ))}
                 </div>
+               
             )}
             </div>
         </div>

@@ -11,6 +11,7 @@ import MyPasswordInput from "../components/MyPasswordInput";
 import TopBar from "../components/TopBar";
 import Alert from "../components/Alert"
 import {config} from "../config"
+import FadeAnimation from "../components/Animations/FadeAnimation";
 
 export default function Settings() {
   
@@ -67,6 +68,7 @@ export default function Settings() {
           />
         </div>
         }
+        <FadeAnimation>
         <div className="max-w-[1662px] w-full pt-[104px] pr-4">
           <div className="w-full">
               <div className="flex justify-between">
@@ -108,6 +110,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
+        </FadeAnimation>
       </div>
     </div>
   );

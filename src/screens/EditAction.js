@@ -20,6 +20,7 @@ import i_icon from "../assets/icons/i.svg";
 import Modal from 'react-bootstrap/Modal'
 import Placeholder from 'react-bootstrap/Placeholder'
 import axios from "axios";
+import FadeAnimation from "../components/Animations/FadeAnimation";
 
 // Internal components
 import DropDpwnList from "../components/DropDownList";
@@ -298,6 +299,7 @@ export default function EditAction() {
 					</div>
 				}
 				{/* Header */}
+				<FadeAnimation>
 				<div className="pt-[104px]">
 					<div className="flex justify-between">
 						<Title title={title} loading={loading} />
@@ -392,6 +394,7 @@ export default function EditAction() {
 						setAlert={(title, type, delay)=>setAlert(title, type, delay)}
 					/>
 				</div>
+				</FadeAnimation>
 			</div>
 		</div>
 	);

@@ -11,6 +11,7 @@ import axios from "axios";
 import Modal from 'react-bootstrap/Modal'
 import Placeholder from 'react-bootstrap/Placeholder'
 import {motion} from "framer-motion"
+import ScaleAnimation from "../components/Animations/ScaleAnimation";
 
 // Internal components
 import ModalAction from "../components/ModalAction";
@@ -235,11 +236,13 @@ export default function Action(){
                             <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
                                 Actions
                             </div>
+                            <ScaleAnimation>
                             <div onClick={()=>navigate("/create-action")} className="justify-end flex space-x-[6px] pt-[30px]">
-                                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-green-600">
+                                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer">
                                 CREATE ACTION
                                 </div>
                             </div>
+                            </ScaleAnimation>
                         </div>
                     
                     </div>

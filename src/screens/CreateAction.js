@@ -63,7 +63,12 @@ export default function CreateAction() {
 			dispatch({type:"action/ADD",payload:action})
 			navigate("/edit-action/"+action.uuid, {action: action})
 				})
-			.catch(() => {setAlert("400, Bad request", "error", 3000)});
+			.catch((error) => {
+				if(error.response?.status===401){
+					localStorage.removeItem("METROGRAPH_STORAGE")
+					return navigate("/login")
+				}
+				else setAlert("400, Bad request", "error", 3000)});
 	}
 	
 	return (

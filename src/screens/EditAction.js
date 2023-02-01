@@ -218,7 +218,12 @@ export default function EditAction() {
 			setAlert(res.data.message,"success",3000)
 			
 		})
-		.catch((error) => {setAlert(error.data.message,"error",3000)});
+		.catch((error) => {
+			if(error.response?.status===401){
+				localStorage.removeItem("METROGRAPH_STORAGE")
+				return navigate("/login")
+			}
+			else setAlert("400, Bad request", "error", 3000)});
 	}
 	
 	function handleCloseList(){
@@ -243,7 +248,13 @@ export default function EditAction() {
 		axios.get(config.METROGRAPH_API+"/action/"+actionCode.uuid, {headers: { Authorization: token },})
 				.then(response=>{
 					setActionCode(response.data.payload.ActionCode)
-				}).catch(()=>setLoading(false))
+				}).catch((error) => {
+					setLoading(false)
+					if(error.response?.status===401){
+						localStorage.removeItem("METROGRAPH_STORAGE")
+						return navigate("/login")
+					}
+					else setAlert("400, Bad request", "error", 3000)});
 	}
 	
 	function getSchedulesFromApi(token){
@@ -251,7 +262,13 @@ export default function EditAction() {
 			.then(response=>{
 				filterScheduleAction(response.data.payload.schedules)
 				setLoading(false)
-			}).catch(()=>setLoading(false))
+			}).catch((error) => {
+				setLoading(false)
+				if(error.response?.status===401){
+					localStorage.removeItem("METROGRAPH_STORAGE")
+					return navigate("/login")
+				}
+				else setAlert("400, Bad request", "error", 3000)});
 	}
 
 	useEffect(() => {

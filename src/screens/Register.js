@@ -9,6 +9,7 @@ import MyInput from "../components/MyInput";
 import MyPasswordInput from "../components/MyPasswordInput";
 import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
+import FadeAnimation from "../components/Animations/FadeAnimation";
 
 
 function CreateButton({login,handleEnterKey, username, password, loading}){
@@ -96,6 +97,7 @@ export default function Register(){
                         />
                     </div>}
                 </div>
+                <FadeAnimation>
                 <div className="bottom-[140px] absolute">
                     <div className="ml-[87px]">
                         <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Setup</div>
@@ -126,6 +128,7 @@ export default function Register(){
                         </div>
                     </div>
                 </div>
+                </FadeAnimation>
             </div>
             <div className="bg-[#7900FF] h-screen grow relative overflow-hidden">
                 <div className="mx-16 my-20 flex  h-screen relative">

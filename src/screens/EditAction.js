@@ -29,6 +29,7 @@ import ModelSchedule from "../components/ModalSchedule";
 import Alert from "../components/Alert";
 import TopBar from "../components/TopBar"
 import {config} from "../config"
+import AuthCheck from "../components/AuthCheck";
 import { useRef } from "react";
 
 
@@ -254,148 +255,138 @@ export default function EditAction() {
 	}
 
 	useEffect(() => {
-		window.scrollTo(0, 0);
-		function loadLocalStorage() {
-		const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
-		const data = JSON.parse(localstorage);
-		if (JSON.parse(localstorage)) {
-			if(loading){
-				dispatch({ type: "user/SET", payload: data });
-				if(data.user.token)
-				{
-					getActionCodeFromApi(data.user.token)
-					getSchedulesFromApi(data.user.token)
-				}
-			}
+		function loadData() {
+			getActionCodeFromApi(mystate.user.token)
+			getSchedulesFromApi(mystate.user.token)
 		}
-		else return navigate("/login")
-		}
-		loadLocalStorage();
+		if(mystate.user.token) loadData();
 		if(actionCode.name!==""){
 			setTitle(actionCode.name)
 			setDescription(actionCode.description)
 			setRuntime(actionCode.runtime)
 			setRuntimeVersion(actionCode.runtime_version)
 		}
-	}, [actionCode, dispatch, navigate, loading,]);
+	}, [actionCode, dispatch, navigate, loading, mystate.user.token]);
 
 	return (
-		<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
-			<div className="mx-20 w-full relative">
-				<TopBar/>
-				<MyModal
-					show={modalVisible}
-					onHide={() => setModalVisible(false)}
-					actionCode={actionCode}
-					setAlert={(title, type, delay)=>setAlert(title, type, delay)}
-					getSchedulesFromApi={()=>getSchedulesFromApi(mystate.user.token)}
-				/>
-				{alertVisible &&
-					<div className="flex justify-center w-full absolute top-24">
-						<Alert
-							alertData={alertData}
-							onHide={() => setAlertVisible(false)}
-						/>
-					</div>
-				}
-				{/* Header */}
-				<FadeAnimation>
-				<div className="pt-[104px]">
-					<div className="flex justify-between">
-						<Title title={title} loading={loading} />
-						<div className="justify-end flex space-x-[6px] pt-[30px]">
-							<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
-							CANCEL
-							</div>
-							{(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
-							SAVE
-							</div>}
-							{(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
-							SAVE
-							</div>}
-						</div>
-					</div>
-					<div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />
-				</div>
-				
-				{/* Action configuration */}
-				<div>
-					<div className="flex space-x-8">
-						<MyInput key="title" title="TITLE" placeholder="Action name.." value={title} setValue={(e)=>setTitle(e)}/>
-						<MyInput key="description" title="DESCRIPTION" placeholder="Description.." value={description} setValue={(e)=>setDescription(e)}/>
-						<DropDpwnList
-							key="runtime"
-							listOptions={runtimeList}
-							title="RUNTIME"
-							setValue={(e)=>setRuntime(e)}
-							listOpen={runtimeListOpen}
-							toogleList={(e)=>setRuntimeListOpen(e)}
-						/>
-						<DropDpwnList
-							key="version"
-							listOptions={runtimeVersionList}
-							title="VERSION"
-							setValue={(e)=>setRuntimeVersion(e)}
-							listOpen={runtimeVersionListOpen}
-							toogleList={(e)=>setRuntimeVersionListOpen(e)}
-						/>
-					</div>
-					<div className="flex space-x-[40px]  mt-[40px] items-center">
-						<div className="flex space-x-2 w-[165px] justify-between items-center">
-							<div
-							onClick={() => setUrlCheckBox(!urlCheckBox)}
-							className={
-								urlCheckBox
-								? "w-[16px] h-[16px] rounded-[5px] bg-[#7900FF] border-2 border-[#272727] cursor-pointer"
-								: "w-[16px] h-[16px] rounded-[5px] border-2 border-[#272727] cursor-pointer"
-							}
-							>
-							</div>
-							<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
-							ENABLE ACTION URL
-							</div>
-							<img src={i_icon} height="11px" width="11px" alt="icon"/>
-						</div>
-						<div className="flex items-center space-x-[10px]">
-							<div className="bg-[#7ECA9C] h-[17px] w-[39px] grid place-content-center">
-							<div className=" text-[10px] font-IBM-Plex-Sans font-bold text-white">
-								LIVE
-							</div>
-							</div>
-							<div className="text-[#AC62FF] font-IBM-Plex-Sans font-medium text-[14px] cursor-pointer">
-							{"http://metrpgraph.io/action/"+actionCode.uuid}
-							</div>
-						</div>
-					</div>
-
-					{/* Schedule section */}
-					<div className="mt-[44px]">
-						<div className="text-white font-bold font-IBM-Plex-Sans text-[11px]">
-							SCHEDULE TASK
-						</div>
-						<div className="flex mt-[10px]">
-							<div onClick={(e)=>{handleAddSchedule()}} className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-4">
-								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
-									ADD SCHEDULE
-								</div>
-							</div>
-							<ScheduleList scheduleList={scheduleList}/>
-						</div>
-					</div>
-				</div>
-				
-				{/* Action code editor*/}
-				<div className="mt-12">
-					<div className="font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
-					ACTION CODE
-					</div>
-					<CodeEditor
+		<AuthCheck>
+			<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
+				<div className="mx-20 w-full relative">
+					<TopBar/>
+					<MyModal
+						show={modalVisible}
+						onHide={() => setModalVisible(false)}
 						actionCode={actionCode}
 						setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+						getSchedulesFromApi={()=>getSchedulesFromApi(mystate.user.token)}
 					/>
+					{alertVisible &&
+						<div className="flex justify-center w-full absolute top-24">
+							<Alert
+								alertData={alertData}
+								onHide={() => setAlertVisible(false)}
+							/>
+						</div>
+					}
+					{/* Header */}
+					<FadeAnimation>
+					<div className="pt-[104px]">
+						<div className="flex justify-between">
+							<Title title={title} loading={loading} />
+							<div className="justify-end flex space-x-[6px] pt-[30px]">
+								<div onClick={()=>navigate("/action")} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#545454] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-gray-400">
+								CANCEL
+								</div>
+								{(!title || !description) &&<div className="opacity-50 text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-not-allowed">
+								SAVE
+								</div>}
+								{(title && description) &&<div onClick={()=>handleSave()} className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7900FF] w-[92px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer hover:bg-purple-600">
+								SAVE
+								</div>}
+							</div>
+						</div>
+						<div className="border-b-2 mt-[18px] mb-[39px] border-[#2B2B2B] w-full" />
+					</div>
+					
+					{/* Action configuration */}
+					<div>
+						<div className="flex space-x-8">
+							<MyInput key="title" title="TITLE" placeholder="Action name.." value={title} setValue={(e)=>setTitle(e)}/>
+							<MyInput key="description" title="DESCRIPTION" placeholder="Description.." value={description} setValue={(e)=>setDescription(e)}/>
+							<DropDpwnList
+								key="runtime"
+								listOptions={runtimeList}
+								title="RUNTIME"
+								setValue={(e)=>setRuntime(e)}
+								listOpen={runtimeListOpen}
+								toogleList={(e)=>setRuntimeListOpen(e)}
+							/>
+							<DropDpwnList
+								key="version"
+								listOptions={runtimeVersionList}
+								title="VERSION"
+								setValue={(e)=>setRuntimeVersion(e)}
+								listOpen={runtimeVersionListOpen}
+								toogleList={(e)=>setRuntimeVersionListOpen(e)}
+							/>
+						</div>
+						<div className="flex space-x-[40px]  mt-[40px] items-center">
+							<div className="flex space-x-2 w-[165px] justify-between items-center">
+								<div
+								onClick={() => setUrlCheckBox(!urlCheckBox)}
+								className={
+									urlCheckBox
+									? "w-[16px] h-[16px] rounded-[5px] bg-[#7900FF] border-2 border-[#272727] cursor-pointer"
+									: "w-[16px] h-[16px] rounded-[5px] border-2 border-[#272727] cursor-pointer"
+								}
+								>
+								</div>
+								<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+								ENABLE ACTION URL
+								</div>
+								<img src={i_icon} height="11px" width="11px" alt="icon"/>
+							</div>
+							<div className="flex items-center space-x-[10px]">
+								<div className="bg-[#7ECA9C] h-[17px] w-[39px] grid place-content-center">
+								<div className=" text-[10px] font-IBM-Plex-Sans font-bold text-white">
+									LIVE
+								</div>
+								</div>
+								<div className="text-[#AC62FF] font-IBM-Plex-Sans font-medium text-[14px] cursor-pointer">
+								{"http://metrpgraph.io/action/"+actionCode.uuid}
+								</div>
+							</div>
+						</div>
+
+						{/* Schedule section */}
+						<div className="mt-[44px]">
+							<div className="text-white font-bold font-IBM-Plex-Sans text-[11px]">
+								SCHEDULE TASK
+							</div>
+							<div className="flex mt-[10px]">
+								<div onClick={(e)=>{handleAddSchedule()}} className="w-[146px] h-[42px] bg-[#2B2B2B] grid place-content-center rounded-[9px] hover:bg-gray-400 cursor-pointer mr-4">
+									<div className="text-white font-IBM-Plex-Sans font-bold text-[12px]">
+										ADD SCHEDULE
+									</div>
+								</div>
+								<ScheduleList scheduleList={scheduleList}/>
+							</div>
+						</div>
+					</div>
+					
+					{/* Action code editor*/}
+					<div className="mt-12">
+						<div className="font-IBM-Plex-Sans font-bold text-[11px] mb-[10px] text-white">
+						ACTION CODE
+						</div>
+						<CodeEditor
+							actionCode={actionCode}
+							setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+						/>
+					</div>
+					</FadeAnimation>
 				</div>
-				</FadeAnimation>
 			</div>
-		</div>
+		</AuthCheck>
 	);
 }

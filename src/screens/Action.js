@@ -12,6 +12,7 @@ import Modal from 'react-bootstrap/Modal'
 import Placeholder from 'react-bootstrap/Placeholder'
 import {motion} from "framer-motion"
 import ScaleAnimation from "../components/Animations/ScaleAnimation";
+import AuthCheck from "../components/AuthCheck";
 
 // Internal components
 import ModalAction from "../components/ModalAction";
@@ -184,83 +185,73 @@ export default function Action(){
     }
 
     useEffect(()=>{
-        window.scrollTo(0, 0);
-        dispatch({type:"active_element/SET", payload:{}})
-        dispatch({type:"code_editor/SET", payload:{selectedFile:{path :"", name :"",content :null},openedFiles:[]}})
-        dispatch({type:"setFileExplorer", payload:{}})
         function loadLocalStorage() {
-            const localstorage = localStorage.getItem("METROGRAPH_STORAGE");
-            const data = JSON.parse(localstorage);
-            if (data) {
-                dispatch({ type: "user/SET", payload: data });
-               if(data.user.token)
-                {
-                    axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: data.user.token }})
-                    .then(response=>{
-                        dispatch({type:"action/SET",payload:response.data.payload.actions})
-                        setloading(false)
-                    }).catch((error) => {
-                    if(error.response.status===401){
-                        localStorage.removeItem("METROGRAPH_STORAGE")
-                        return navigate("/login")
-                    }
-                  });
-          }
+            axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: mystate.user.token }})
+            .then(response=>{
+                dispatch({type:"action/SET",payload:response.data.payload.actions})
+                setloading(false)
+            }).catch((error) => {
+            if(error.response.status===401){
+                localStorage.removeItem("METROGRAPH_STORAGE")
+                return navigate("/login")
             }
-            else return navigate("/login")
+          });
+            
           }
-        loadLocalStorage();
+        if(mystate.user.token) loadLocalStorage();
        
-    },[loading, dispatch, navigate])
+    },[loading, dispatch, navigate,mystate.user.token])
 
     return (
-        <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
-            <MyModal
-                setAlert={(title, type, delay)=>setAlert(title, type, delay)}
-                action={ActionCode}
-                show={modalVisible}
-                onHide={() => setModalVisible(false)}
-            />
-            <div className="mx-20 pb-20 relative">
-                <TopBar/>
-                {alertVisible && <div className="flex justify-center w-full absolute top-28">
-                        <Alert
-                            alertData={alertData}
-                            onHide={() => setAlertVisible(false)}
-                        />
-                    </div>}
-                {/* page title */}
-                <div className="w-full pt-[104px] pr-4">
-                    <div className="w-full">
-                        <div className="flex justify-between">
-                            <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
-                                Actions
-                            </div>
-                            <ScaleAnimation>
-                            <div onClick={()=>navigate("/create-action")} className="justify-end flex space-x-[6px] pt-[30px]">
-                                <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer">
-                                CREATE ACTION
-                                </div>
-                            </div>
-                            </ScaleAnimation>
-                        </div>
-                    
-                    </div>
-                </div>
-                <div className="border-b-2 mt-[18px] border-[#2B2B2B] w-full" />
-                 {/* page end */}
-                
-                {/* Actions list start */}
-                <ActionList
-                    actionList={mystate.actions}
+        <AuthCheck>
+            <div onClick={()=>handleCloseDropDown()} className="bg-black min-h-screen relative noselect">
+                <MyModal
+                    setAlert={(title, type, delay)=>setAlert(title, type, delay)}
+                    action={ActionCode}
                     show={modalVisible}
-                    onVisible={() => setModalVisible(true)}
-                    setActionCode={(e) => setActionCode(e)}
-                    navigate={(e)=>navigate(e)}
-                    loading={loading}    
+                    onHide={() => setModalVisible(false)}
                 />
-                {/* Actions list end */}
+                <div className="mx-20 pb-20 relative">
+                    <TopBar/>
+                    {alertVisible && <div className="flex justify-center w-full absolute top-28">
+                            <Alert
+                                alertData={alertData}
+                                onHide={() => setAlertVisible(false)}
+                            />
+                        </div>}
+                    {/* page title */}
+                    <div className="w-full pt-[104px] pr-4">
+                        <div className="w-full">
+                            <div className="flex justify-between">
+                                <div className="font-light font-IBM-Plex-Sans text-[36px] text-white">
+                                    Actions
+                                </div>
+                                <ScaleAnimation>
+                                <div onClick={()=>navigate("/create-action")} className="justify-end flex space-x-[6px] pt-[30px]">
+                                    <div className="text-white font-IBM-Plex-Sans text-[10px] font-bold bg-[#7ECA9C] w-[109px] h-[35px] rounded-[9px] flex items-center justify-center cursor-pointer">
+                                    CREATE ACTION
+                                    </div>
+                                </div>
+                                </ScaleAnimation>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <div className="border-b-2 mt-[18px] border-[#2B2B2B] w-full" />
+                    {/* page end */}
+                    
+                    {/* Actions list start */}
+                    <ActionList
+                        actionList={mystate.actions}
+                        show={modalVisible}
+                        onVisible={() => setModalVisible(true)}
+                        setActionCode={(e) => setActionCode(e)}
+                        navigate={(e)=>navigate(e)}
+                        loading={loading}    
+                    />
+                    {/* Actions list end */}
+                </div>
             </div>
-        </div>
+        </AuthCheck>
     )
 }

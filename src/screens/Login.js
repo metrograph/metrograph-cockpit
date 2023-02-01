@@ -8,6 +8,7 @@ import Alert from "../components/Alert"
 import logo from "../assets/logo-light-gray.png"
 import { config } from "../config";
 import "../animation.css"
+import FadeAnimation from "../components/Animations/FadeAnimation";
 
 function LoginButton({login,handleEnterKey, username, password, loading}){
     if (loading) {
@@ -113,6 +114,7 @@ export default function Login(){
                         />
                     </div>}
                 </div>
+                <FadeAnimation>
                 <div className="bottom-[140px] absolute">
                     <div className="ml-[87px]">
                         <div className="text-[48px] text-white font-IBM-Plex-Sans mb-[14px]">Sign In</div>
@@ -147,6 +149,7 @@ export default function Login(){
                         </div>
                     </div>
                 </div>
+                </FadeAnimation>
             </div>
             <div className="bg-[#7900FF] h-screen grow relative overflow-hidden">
                 <div className="mx-16 my-20 flex  h-screen relative">

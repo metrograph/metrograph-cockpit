@@ -17,6 +17,7 @@ export default function App() {
         <Suspense fallback={<div className="bg-black min-h-screen"></div>}>
           <Routes>
             <Route path="/" element={<Action />} />
+            <Route path="*" element={<Action />} />
             <Route path="/action" element={<Action />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

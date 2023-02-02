@@ -34,6 +34,7 @@ export default function DropDpwnList(props){
                <div className="flex flex-col space-y-2  bg-[#1A1A1A]  w-full  rounded-lg  cursor-pointer absolute top-12 py-4 right-0">
                 {listOptions.map((element) => (
                    <div
+                    key={element.key}
                     onClick={() => {
                         props.setValue(element.value);
                         setSelectedOtion(element.value);

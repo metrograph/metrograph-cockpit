@@ -81,7 +81,7 @@ function ActionRowPlaceholder(){
 
 function ActionList(props){
     if(props.loading) return <ActionRowPlaceholder/>    
-    if(props.actionList.length)
+    else if(props.actionList.length)
         return(
             <div className="">
                 {props.actionList.map((element)=> {
@@ -111,7 +111,6 @@ function ActionRow(props){
     }
 
     return (
-        
         <motion.div
             initial={{opacity:0}}
             animate={{opacity:1}}
@@ -185,6 +184,7 @@ export default function Action(){
     }
 
     useEffect(()=>{
+        console.log("home")
         function loadLocalStorage() {
             axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: mystate.user.token }})
             .then(response=>{

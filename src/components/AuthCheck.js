@@ -29,7 +29,7 @@ function AuthCheck({ children }){
 if (isAuthenticated) {
     return <>{children}</>
 }
-else return <></>
+else return <div className="h-screen bg-black"></div>
 };
 
 export default AuthCheck;

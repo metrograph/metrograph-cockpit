@@ -26,8 +26,8 @@ export default function CreateAction() {
 	const [alertData, setAlertData]=useState()
 	
 	// Inputs local state
-	const [name, setName]=useState()
-	const [description, setDescription]=useState()
+	const [name, setName]=useState("")
+	const [description, setDescription]=useState("")
 	const runtimeList=[{ key: 1, value: "python"}]
 	const runtimeVersionList=[{ key: 1, value: "3.9.10" }]
 	const [runtime, setRuntime] = useState("python");

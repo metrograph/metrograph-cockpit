@@ -36,6 +36,7 @@ export default function CreateAction() {
 
 	const [runtimeListOpen, setRuntimeListOpen] = useState(false);
 	const [runtimeVersionListOpen, setRuntimeVersionListOpen] = useState(false);
+	const [topbarListOpen, setTopbarListOpen]=useState(false)
 	
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -53,6 +54,7 @@ export default function CreateAction() {
 	function handleCloseDropDown(){
         dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
         dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+		setTopbarListOpen(false)
     }
 	// Request API to create Action
 	function handleSubmit(){
@@ -83,7 +85,7 @@ export default function CreateAction() {
 							/>
 						</div>
 					}
-					<TopBar/>
+					<TopBar listOpen={topbarListOpen} setListOpen={(e)=>setTopbarListOpen(e)}/>
 					<div className="max-w-[1662px] w-full pt-[104px] pr-4">
 						<div className="w-full">
 							<div className="flex justify-between">

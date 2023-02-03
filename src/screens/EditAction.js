@@ -200,6 +200,7 @@ export default function EditAction() {
 	const [urlCheckBox, setUrlCheckBox] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [loading, setLoading]=useState(true)
+	const [topbarListOpen, setTopbarListOpen]=useState(false)
 
 	// Alert trigger function
 	function setAlert(title, type, delay){
@@ -227,6 +228,7 @@ export default function EditAction() {
 	}
 	
 	function handleCloseList(){
+		setTopbarListOpen(false)
 		setRuntimeListOpen(false)
 		setRuntimeVersionListOpen(false)
 	}
@@ -289,7 +291,7 @@ export default function EditAction() {
 		<AuthCheck>
 			<div onClick={()=>handleCloseList()} className="bg-black min-h-screen noselect flex justify-center pb-24 px-12">
 				<div className="mx-20 w-full relative">
-					<TopBar/>
+					<TopBar listOpen={topbarListOpen} setListOpen={(e)=>setTopbarListOpen(e)}/>
 					<MyModal
 						show={modalVisible}
 						onHide={() => setModalVisible(false)}

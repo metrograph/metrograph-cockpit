@@ -168,6 +168,7 @@ export default function Action(){
     const [ActionCode, setActionCode]=useState()
     
     const [loading, setloading]=useState(true)
+    const [topbarListOpen, setTopbarListOpen]=useState(false)
     
     // Alert trigger function
 	function setAlert(title, type, delay){
@@ -179,27 +180,24 @@ export default function Action(){
 	}
 
     function handleCloseDropDown(){
-        dispatch({type:"active_element/DROP_DOWN", payload:{key:"0"}})
-        dispatch({type:"alert/SET_ALERT", payload:{is_hide:true, type:""}})
+        setTopbarListOpen(false)
     }
 
+    function getActions() {
+        axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: mystate.user.token }})
+        .then(response=>{
+            dispatch({type:"action/SET",payload:response.data.payload.actions})
+            setloading(false)
+        }).catch((error) => {
+        if(error.response.status===401){
+            localStorage.removeItem("METROGRAPH_STORAGE")
+            return navigate("/login")
+        }
+      });
+        
+      }
     useEffect(()=>{
-        console.log("home")
-        function loadLocalStorage() {
-            axios.get(config.METROGRAPH_API+"/action", {headers: { Authorization: mystate.user.token }})
-            .then(response=>{
-                dispatch({type:"action/SET",payload:response.data.payload.actions})
-                setloading(false)
-            }).catch((error) => {
-            if(error.response.status===401){
-                localStorage.removeItem("METROGRAPH_STORAGE")
-                return navigate("/login")
-            }
-          });
-            
-          }
-        if(mystate.user.token) loadLocalStorage();
-       
+        if(mystate.user.token) getActions();
     },[loading, dispatch, navigate,mystate.user.token])
 
     return (
@@ -212,7 +210,7 @@ export default function Action(){
                     onHide={() => setModalVisible(false)}
                 />
                 <div className="mx-20 pb-20 relative">
-                    <TopBar/>
+                    <TopBar listOpen={topbarListOpen} setListOpen={(e)=>setTopbarListOpen(e)}/>
                     {alertVisible && <div className="flex justify-center w-full absolute top-28">
                             <Alert
                                 alertData={alertData}
